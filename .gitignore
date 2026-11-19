@@ -1,0 +1,24 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Radhya Realty Strict Data Security (Rule 3)
+api/enquiries-log.json
+api/enquiries-log-*.json
+*.log
+
+# Build, publish & local artifacts
+publish_website/
+tasks/
+uploads/temp/
+
+# Agent & local configs
+CLAUDE.local.md
+GEMINI.local.md
+.claude/settings.local.json
+.gemini/

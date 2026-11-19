@@ -1,0 +1,19 @@
+{
+  "name": "Radhya Realty - Anubhav Bharat Group",
+  "short_name": "Radhya Realty",
+  "description": "Radhya Realty (Anubhav Bharat Group) — Real Estate, Renovation, Loans & LAP, Vehicle Sale Purchase & Insurance in Burari, Delhi 110084",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#060f20",
+  "theme_color": "#060f20",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
