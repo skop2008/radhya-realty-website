@@ -1297,7 +1297,7 @@
        !window.location.hostname || 
        window.location.protocol === 'file:');
     if (isLocal) {
-      return ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://radhya-crm-ran4.onrender.com', 'https://crm.radhyarealty.com'];
+      return ['https://radhya-crm-ran4.onrender.com', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://crm.radhyarealty.com'];
     }
     return ['https://radhya-crm-ran4.onrender.com', 'https://crm.radhyarealty.com', 'http://localhost:3000'];
   }
