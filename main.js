@@ -341,7 +341,13 @@
         });
         slides.forEach((slide, idx) => {
           const vid = slide.querySelector('video');
-          if (vid && idx !== currentIndex) vid.pause();
+          if (vid) {
+            if (idx === currentIndex) {
+              vid.play().catch(() => {});
+            } else {
+              vid.pause();
+            }
+          }
         });
       }
 
@@ -1002,9 +1008,18 @@
 
     function openModal(card) {
       const btn = card.querySelector('.prop-card__more');
-      mTag.textContent   = btn.dataset.tag   || '';
-      mTitle.textContent = btn.dataset.title || card.querySelector('h4').textContent;
-      mDesc.textContent  = btn.dataset.desc  || card.querySelector('p').textContent;
+      mTag.textContent   = (btn && btn.dataset.tag)   || card.querySelector('.prop-tag')?.textContent || '';
+      mTitle.textContent = (btn && btn.dataset.title) || card.querySelector('h4')?.textContent || '';
+      mDesc.textContent  = (btn && btn.dataset.desc)  || card.querySelector('p')?.textContent || '';
+
+      const cta = modal.querySelector('.prop-modal__cta');
+      if (cta) {
+        const pageRole = document.body.dataset.role || '';
+        cta.dataset.division = (btn && btn.dataset.division) || card.dataset.division || mapRoleToDivision(pageRole);
+        cta.dataset.title = mTitle.textContent;
+        cta.dataset.price = (btn && btn.dataset.price) || card.dataset.price || card.querySelector('.prop-card__price')?.textContent || '';
+        cta.dataset.cardId = card.dataset.cardId || (btn && btn.dataset.cardId) || '';
+      }
       
       /* media figure */
       mFig.innerHTML = '';
@@ -1027,7 +1042,7 @@
           v.play().catch(() => {});
         });
       } else {
-        const imgSrc = btn.dataset.img || '';
+        const imgSrc = btn ? btn.dataset.img : '';
         if (imgSrc) {
           const img = document.createElement('img');
           img.src = imgSrc; img.alt = mTitle.textContent;
@@ -1048,12 +1063,26 @@
     }
 
     document.addEventListener('click', e => {
+      // Do not intercept clicks on slider navigation controls or links/buttons inside slider
+      if (e.target.closest('.prop-slider__btn') || e.target.closest('.prop-slider__dots') || e.target.closest('.prop-tag')) return;
+
       const btn = e.target.closest('.prop-card__more');
       if (btn) {
         e.preventDefault();
         e.stopPropagation();
         const card = btn.closest('.prop-card');
         if (card) openModal(card);
+        return;
+      }
+
+      // Also allow clicking card body or heading to view details modal
+      const body = e.target.closest('.prop-card__body');
+      if (body) {
+        const card = body.closest('.prop-card');
+        if (card) {
+          e.preventDefault();
+          openModal(card);
+        }
       }
     });
 
@@ -1160,6 +1189,14 @@
             vid.playsInline = true;
             vid.setAttribute('playsinline', '');
             vid.preload = 'metadata';
+            vid.onerror = function() {
+              const fallbackImg = document.createElement('img');
+              fallbackImg.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
+              fallbackImg.alt = card.title;
+              if (slide.contains(vid)) {
+                slide.replaceChild(fallbackImg, vid);
+              }
+            };
             slide.appendChild(vid);
           } else {
             const img = document.createElement('img');
@@ -1167,6 +1204,11 @@
             img.alt = m.alt || card.title;
             img.loading = 'lazy';
             img.decoding = 'async';
+            img.onerror = function() {
+              if (this.src !== 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80') {
+                this.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
+              }
+            };
             slide.appendChild(img);
           }
           track.appendChild(slide);
@@ -1189,6 +1231,18 @@
         h4.textContent = card.title;
         body.appendChild(h4);
 
+        if (card.priceText) {
+          const priceEl = document.createElement('p');
+          priceEl.className = 'prop-card__price';
+          priceEl.style.fontWeight = '600';
+          priceEl.style.color = 'var(--gold)';
+          priceEl.style.fontSize = '0.92rem';
+          priceEl.style.marginBottom = '0.35rem';
+          priceEl.style.fontVariantNumeric = 'tabular-nums';
+          priceEl.textContent = card.priceText;
+          body.appendChild(priceEl);
+        }
+
         const p = document.createElement('p');
         p.textContent = card.shortDesc || card.fullDesc || '';
         body.appendChild(p);
@@ -1198,6 +1252,9 @@
         moreBtn.dataset.tag = card.badge || '';
         moreBtn.dataset.title = card.title;
         moreBtn.dataset.desc = card.fullDesc || card.shortDesc || '';
+        if (card.division) moreBtn.dataset.division = card.division;
+        if (card.priceText) moreBtn.dataset.price = card.priceText;
+        moreBtn.dataset.cardId = card.id;
         moreBtn.textContent = 'View details';
         body.appendChild(moreBtn);
 
@@ -1414,7 +1471,6 @@
     }
 
     return deliveredResult || { status: 'QUEUED_LOCALLY', message: 'Lead safely recorded to local CRM queue and MilesWeb server.' };
-  };
   };
 
   // =========================================================================

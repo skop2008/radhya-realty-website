@@ -936,6 +936,7 @@ body{background:#ffffff}
 .prop-card__more {
   align-self: flex-start;
   margin-top: auto;
+  min-height: 44px;
   padding: .65rem 1.2rem;
   background: rgba(201, 162, 75, 0.16);
   border: 1px solid rgba(201, 162, 75, 0.5);
@@ -1003,7 +1004,8 @@ body{background:#ffffff}
 .prop-modal__close {
   position: sticky; top: 1rem; left: 100%;
   float: right; margin: 1rem 1rem 0 0;
-  width: 36px; height: 36px;
+  width: 44px; height: 44px;
+  min-width: 44px; min-height: 44px;
   background: rgba(255,255,255,.08);
   border: 1px solid rgba(255,255,255,.18);
   border-radius: 50%;
@@ -1135,6 +1137,15 @@ body{background:#ffffff}
   stroke-linecap: round;
   stroke-linejoin: round;
   pointer-events: none;
+}
+.prop-slider__btn::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: -6px;
+  right: -6px;
+  pointer-events: auto;
 }
 .prop-slider__prev { left: 8px; }
 .prop-slider__next { right: 8px; }
@@ -2197,7 +2208,8 @@ body{background:#ffffff}
    ========================================================================= */
 
 /* Default: completely hidden when collapsed, takes 0 space, zero collision */
-.dropdown-cards {
+.dropdown-cards,
+.service-dropdown-body {
   display: none !important;
   height: 0 !important;
   min-height: 0 !important;
@@ -2212,7 +2224,10 @@ body{background:#ffffff}
 /* Active / Open state: perfectly auto-expanding grid that naturally stacks unlimited cards */
 .service-dropdown-item.open > .dropdown-cards,
 .service-dropdown-item.active > .dropdown-cards,
-.service-dropdown-item.is-open > .dropdown-cards {
+.service-dropdown-item.is-open > .dropdown-cards,
+.service-dropdown-item.open > .service-dropdown-body,
+.service-dropdown-item.active > .service-dropdown-body,
+.service-dropdown-item.is-open > .service-dropdown-body {
   display: grid !important;
   height: auto !important;
   min-height: auto !important;
@@ -2228,7 +2243,8 @@ body{background:#ffffff}
 }
 
 /* Ensure cards cleanly fill their grid slots with uniform height and zero overlap */
-.dropdown-cards .prop-card {
+.dropdown-cards .prop-card,
+.service-dropdown-body .prop-card {
   display: flex !important;
   flex-direction: column !important;
   width: 100% !important;
@@ -2241,7 +2257,10 @@ body{background:#ffffff}
 @media (max-width: 640px) {
   .service-dropdown-item.open > .dropdown-cards,
   .service-dropdown-item.active > .dropdown-cards,
-  .service-dropdown-item.is-open > .dropdown-cards {
+  .service-dropdown-item.is-open > .dropdown-cards,
+  .service-dropdown-item.open > .service-dropdown-body,
+  .service-dropdown-item.active > .service-dropdown-body,
+  .service-dropdown-item.is-open > .service-dropdown-body {
     grid-template-columns: 1fr !important;
     gap: 1.25rem !important;
     padding: 0.75rem 0 2rem !important;
@@ -2251,7 +2270,10 @@ body{background:#ffffff}
 @media (min-width: 641px) and (max-width: 1024px) {
   .service-dropdown-item.open > .dropdown-cards,
   .service-dropdown-item.active > .dropdown-cards,
-  .service-dropdown-item.is-open > .dropdown-cards {
+  .service-dropdown-item.is-open > .dropdown-cards,
+  .service-dropdown-item.open > .service-dropdown-body,
+  .service-dropdown-item.active > .service-dropdown-body,
+  .service-dropdown-item.is-open > .service-dropdown-body {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
     gap: 1.25rem !important;
   }
