@@ -1133,19 +1133,21 @@
 
     const sections = document.querySelectorAll('.service-dropdown-item');
     sections.forEach((section, sIdx) => {
-      const spaceCards = roleCards.filter(c => Number(c.spaceIndex) === sIdx);
-      if (spaceCards.length === 0) return;
-
       const container = section.querySelector('.dropdown-cards');
       if (!container) return;
+
+      const spaceCards = roleCards.filter(c => Number(c.spaceIndex) === sIdx);
 
       // Ensure zero inline style pollution that might cause collisions or bleed
       container.style.removeProperty('display');
       container.style.removeProperty('max-height');
       container.style.removeProperty('height');
 
-      // Render cards in order
+      // Clear container first so deleted cards are cleanly wiped
       container.innerHTML = '';
+      if (spaceCards.length === 0) return;
+
+      // Render cards in order
       spaceCards.forEach(card => {
         const article = document.createElement('article');
         article.className = 'prop-card';
@@ -1295,9 +1297,9 @@
        !window.location.hostname || 
        window.location.protocol === 'file:');
     if (isLocal) {
-      return ['http://localhost:3000', 'https://crm.radhyarealty.com', 'https://radhya-crm.onrender.com'];
+      return ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://radhya-crm.onrender.com', 'https://crm.radhyarealty.com'];
     }
-    return ['https://crm.radhyarealty.com', 'https://radhya-crm.onrender.com', 'http://localhost:3000'];
+    return ['https://radhya-crm.onrender.com', 'https://crm.radhyarealty.com', 'http://localhost:3000'];
   }
 
   // Hydrate on initial load
@@ -1307,6 +1309,7 @@
   async function syncFromCmsApi() {
     if (typeof fetch === 'undefined') return;
     const urls = getCrmBaseUrls();
+    let syncSucceeded = false;
     for (const base of urls) {
       try {
         const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
@@ -1338,11 +1341,33 @@
           } catch (e) {
             console.warn('LocalStorage quota bypass: keeping full card registry in memory.');
           }
+          syncSucceeded = true;
           break; // successfully fetched from active host
         }
       } catch (e) {
         // try next endpoint in list
       }
+    }
+
+    // Fallback: If external CRM is suspended, sleeping, or unreachable, load from website static data
+    if (!syncSucceeded) {
+      try {
+        const localDataUrl = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+          ? `${window.location.origin}/data/cards-registry.json?t=` + Date.now()
+          : 'data/cards-registry.json';
+        const localRes = await fetch(localDataUrl);
+        if (localRes.ok) {
+          const localData = await localRes.json();
+          const cards = Array.isArray(localData) ? localData : (localData && localData.cards ? localData.cards : null);
+          if (Array.isArray(cards) && cards.length > 0) {
+            window.__radhyaCardsRegistry = cards;
+            rebindInteractiveCards(cards);
+            try {
+              localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(cards));
+            } catch (e) {}
+          }
+        }
+      } catch (e) {}
     }
   }
 
