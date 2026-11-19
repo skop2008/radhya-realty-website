@@ -1824,63 +1824,6 @@
     "order": 4
   },
   {
-    "id": "card-real-estate-sec0-5",
-    "division": "REAL_ESTATE",
-    "role": "real-estate",
-    "spaceIndex": 0,
-    "spaceTitle": "Residential Sales & Rentals",
-    "dataType": "apartment flat 4bhk penthouse",
-    "dataDeal": "buy rent",
-    "dataPriceBuy": 88000000,
-    "dataPriceRent": 220000,
-    "title": "4BHK Sky Penthouse — Golf Course Road",
-    "badge": "Luxury • 4BHK Penthouse",
-    "priceText": "Buy: ₹8.8 Cr | Rent: ₹2.2L/mo.",
-    "shortDesc": "4,800 sq ft duplex penthouse with panoramic skyline view, private plunge pool and 3 parking bays. Buy: ₹8.8 Cr | Rent: ₹2.2L/mo.",
-    "fullDesc": "Architectural masterpiece spanning 4,800 sq ft across the top two floors of a landmark condominium on Golf Course Road. Features double-height living foyer, private rooftop splash pool, Italian marble flooring, and concierge desk. Available for outright purchase at ₹8.8 Cr or luxury lease at ₹2.2 Lakh/mo.",
-    "media": [
-      {
-        "type": "image",
-        "url": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-        "alt": "Sky Penthouse Living | Radhya Realty Burari Delhi"
-      },
-      {
-        "type": "image",
-        "url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
-        "alt": "Penthouse View | Radhya Realty Burari Delhi"
-      }
-    ],
-    "order": 5
-  },
-  {
-    "id": "card-real-estate-sec0-6",
-    "division": "REAL_ESTATE",
-    "role": "real-estate",
-    "spaceIndex": 0,
-    "spaceTitle": "Residential Sales & Rentals",
-    "dataType": "independent-house villa 4bhk",
-    "dataDeal": "buy",
-    "dataPriceBuy": 64000000,
-    "title": "Luxury Independent Villa — Nirvana Country, Sector 50",
-    "badge": "Villa • Independent House",
-    "priceText": "Buy: ₹6.4 Cr.",
-    "shortDesc": "320 sq yard private gated villa, landscaped lawn, 4 master suites, home theatre, and servant quarter. Buy: ₹6.4 Cr.",
-    "fullDesc": "Independent European-style villa on a 320 sq yd plot in Nirvana Country, Sector 50. Features private front and rear manicured gardens, 4 luxurious en-suite bedrooms, basement lounge, solar water heating, and 3-car driveway. Freehold deed with mutation registered. Offered at ₹6.4 Cr.",
-    "media": [
-      {
-        "type": "image",
-        "url": "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1200&q=80",
-        "alt": "Villa Exterior | Radhya Realty Burari Delhi"
-      },
-      {
-        "type": "image",
-        "url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-        "alt": "Villa Lawn & Garden | Radhya Realty Burari Delhi"
-      }
-    ],
-    "order": 6
-  },
-  {
     "id": "card-real-estate-sec1-0",
     "division": "REAL_ESTATE",
     "role": "real-estate",
