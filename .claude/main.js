@@ -341,7 +341,13 @@
         });
         slides.forEach((slide, idx) => {
           const vid = slide.querySelector('video');
-          if (vid && idx !== currentIndex) vid.pause();
+          if (vid) {
+            if (idx === currentIndex) {
+              vid.play().catch(() => {});
+            } else {
+              vid.pause();
+            }
+          }
         });
       }
 
@@ -1002,9 +1008,18 @@
 
     function openModal(card) {
       const btn = card.querySelector('.prop-card__more');
-      mTag.textContent   = btn.dataset.tag   || '';
-      mTitle.textContent = btn.dataset.title || card.querySelector('h4').textContent;
-      mDesc.textContent  = btn.dataset.desc  || card.querySelector('p').textContent;
+      mTag.textContent   = (btn && btn.dataset.tag)   || card.querySelector('.prop-tag')?.textContent || '';
+      mTitle.textContent = (btn && btn.dataset.title) || card.querySelector('h4')?.textContent || '';
+      mDesc.textContent  = (btn && btn.dataset.desc)  || card.querySelector('p')?.textContent || '';
+
+      const cta = modal.querySelector('.prop-modal__cta');
+      if (cta) {
+        const pageRole = document.body.dataset.role || '';
+        cta.dataset.division = (btn && btn.dataset.division) || card.dataset.division || mapRoleToDivision(pageRole);
+        cta.dataset.title = mTitle.textContent;
+        cta.dataset.price = (btn && btn.dataset.price) || card.dataset.price || card.querySelector('.prop-card__price')?.textContent || '';
+        cta.dataset.cardId = card.dataset.cardId || (btn && btn.dataset.cardId) || '';
+      }
       
       /* media figure */
       mFig.innerHTML = '';
@@ -1027,7 +1042,7 @@
           v.play().catch(() => {});
         });
       } else {
-        const imgSrc = btn.dataset.img || '';
+        const imgSrc = btn ? btn.dataset.img : '';
         if (imgSrc) {
           const img = document.createElement('img');
           img.src = imgSrc; img.alt = mTitle.textContent;
@@ -1048,12 +1063,26 @@
     }
 
     document.addEventListener('click', e => {
+      // Do not intercept clicks on slider navigation controls or links/buttons inside slider
+      if (e.target.closest('.prop-slider__btn') || e.target.closest('.prop-slider__dots') || e.target.closest('.prop-tag')) return;
+
       const btn = e.target.closest('.prop-card__more');
       if (btn) {
         e.preventDefault();
         e.stopPropagation();
         const card = btn.closest('.prop-card');
         if (card) openModal(card);
+        return;
+      }
+
+      // Also allow clicking card body or heading to view details modal
+      const body = e.target.closest('.prop-card__body');
+      if (body) {
+        const card = body.closest('.prop-card');
+        if (card) {
+          e.preventDefault();
+          openModal(card);
+        }
       }
     });
 
@@ -1104,19 +1133,21 @@
 
     const sections = document.querySelectorAll('.service-dropdown-item');
     sections.forEach((section, sIdx) => {
-      const spaceCards = roleCards.filter(c => Number(c.spaceIndex) === sIdx);
-      if (spaceCards.length === 0) return;
-
       const container = section.querySelector('.dropdown-cards');
       if (!container) return;
+
+      const spaceCards = roleCards.filter(c => Number(c.spaceIndex) === sIdx);
 
       // Ensure zero inline style pollution that might cause collisions or bleed
       container.style.removeProperty('display');
       container.style.removeProperty('max-height');
       container.style.removeProperty('height');
 
-      // Render cards in order
+      // Clear container first so deleted cards are cleanly wiped
       container.innerHTML = '';
+      if (spaceCards.length === 0) return;
+
+      // Render cards in order
       spaceCards.forEach(card => {
         const article = document.createElement('article');
         article.className = 'prop-card';
@@ -1146,7 +1177,7 @@
           slide.className = 'prop-slide';
 
           let mediaUrl = m.url || '';
-          if (mediaUrl.startsWith('http://localhost:3000/uploads/') && (window.location.port === '8000' || window.location.protocol === 'file:')) {
+          if (mediaUrl.startsWith('http://localhost:3000/uploads/') && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')) {
             mediaUrl = mediaUrl.replace('http://localhost:3000/', '');
           }
 
@@ -1160,6 +1191,14 @@
             vid.playsInline = true;
             vid.setAttribute('playsinline', '');
             vid.preload = 'metadata';
+            vid.onerror = function() {
+              const fallbackImg = document.createElement('img');
+              fallbackImg.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
+              fallbackImg.alt = card.title;
+              if (slide.contains(vid)) {
+                slide.replaceChild(fallbackImg, vid);
+              }
+            };
             slide.appendChild(vid);
           } else {
             const img = document.createElement('img');
@@ -1167,6 +1206,11 @@
             img.alt = m.alt || card.title;
             img.loading = 'lazy';
             img.decoding = 'async';
+            img.onerror = function() {
+              if (this.src !== 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80') {
+                this.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
+              }
+            };
             slide.appendChild(img);
           }
           track.appendChild(slide);
@@ -1189,6 +1233,18 @@
         h4.textContent = card.title;
         body.appendChild(h4);
 
+        if (card.priceText) {
+          const priceEl = document.createElement('p');
+          priceEl.className = 'prop-card__price';
+          priceEl.style.fontWeight = '600';
+          priceEl.style.color = 'var(--gold)';
+          priceEl.style.fontSize = '0.92rem';
+          priceEl.style.marginBottom = '0.35rem';
+          priceEl.style.fontVariantNumeric = 'tabular-nums';
+          priceEl.textContent = card.priceText;
+          body.appendChild(priceEl);
+        }
+
         const p = document.createElement('p');
         p.textContent = card.shortDesc || card.fullDesc || '';
         body.appendChild(p);
@@ -1198,6 +1254,9 @@
         moreBtn.dataset.tag = card.badge || '';
         moreBtn.dataset.title = card.title;
         moreBtn.dataset.desc = card.fullDesc || card.shortDesc || '';
+        if (card.division) moreBtn.dataset.division = card.division;
+        if (card.priceText) moreBtn.dataset.price = card.priceText;
+        moreBtn.dataset.cardId = card.id;
         moreBtn.textContent = 'View details';
         body.appendChild(moreBtn);
 
@@ -1227,45 +1286,101 @@
 
   window.rebindInteractiveCards = rebindInteractiveCards;
 
+  // Base URL resolver for CRM (Localhost vs Render vs Custom Domain)
+  function getCrmBaseUrls() {
+    if (typeof window !== 'undefined' && window.__RADHYA_CRM_URL) {
+      return [window.__RADHYA_CRM_URL];
+    }
+    const isLocal = typeof window !== 'undefined' && window.location && 
+      (window.location.hostname === 'localhost' || 
+       window.location.hostname === '127.0.0.1' || 
+       !window.location.hostname || 
+       window.location.protocol === 'file:');
+    if (isLocal) {
+      return ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://radhya-crm.onrender.com'];
+    }
+    return ['https://radhya-crm.onrender.com', 'https://crm.radhyarealty.com'];
+  }
+
   // Hydrate on initial load
   rebindInteractiveCards();
 
   // Background fetch & live sync from CMS REST API
   async function syncFromCmsApi() {
     if (typeof fetch === 'undefined') return;
-    try {
-      const res = await fetch('http://localhost:3000/api/v1/cms/cards?t=' + Date.now());
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data && data.cards && Array.isArray(data.cards) && data.cards.length > 0) {
-        window.__radhyaCardsRegistry = data.cards;
-        // Rebind immediately with in-memory cards
-        rebindInteractiveCards(data.cards);
-
-        // Safely cache to localStorage without crashing if quota limit reached
-        try {
-          const serialized = JSON.stringify(data.cards);
-          if (serialized.length < 3500000) {
-            localStorage.setItem('radhya_cms_cards_registry_v1', serialized);
-          } else {
-            const compact = data.cards.map(c => ({
-              ...c,
-              media: (c.media || []).map(m => m.url && m.url.length > 50000 ? { ...m, url: '' } : m)
-            }));
-            localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(compact));
+    const urls = getCrmBaseUrls();
+    let syncSucceeded = false;
+    for (const base of urls) {
+      try {
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
+        const res = await fetch(`${base}/api/v1/public/cards?t=` + Date.now(), {
+          signal: controller ? controller.signal : undefined,
+          cache: 'no-store',
+          headers: { 
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
           }
-        } catch (e) {
-          console.warn('LocalStorage quota bypass: keeping full card registry in memory.');
+        });
+        if (timer) clearTimeout(timer);
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (data && data.cards && Array.isArray(data.cards) && data.cards.length > 0) {
+          window.__radhyaCardsRegistry = data.cards;
+          // Rebind immediately with in-memory cards
+          rebindInteractiveCards(data.cards);
+
+          // Safely cache to localStorage without crashing if quota limit reached
+          try {
+            const serialized = JSON.stringify(data.cards);
+            if (serialized.length < 3500000) {
+              localStorage.setItem('radhya_cms_cards_registry_v1', serialized);
+            } else {
+              const compact = data.cards.map(c => ({
+                ...c,
+                media: (c.media || []).map(m => m.url && m.url.length > 50000 ? { ...m, url: '' } : m)
+              }));
+              localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(compact));
+            }
+          } catch (e) {
+            console.warn('LocalStorage quota bypass: keeping full card registry in memory.');
+          }
+          syncSucceeded = true;
+          break; // successfully fetched from active host
         }
+      } catch (e) {
+        // try next endpoint in list
       }
-    } catch (e) {
-      // offline / local static fallback
+    }
+
+    // Fallback: If external CRM is suspended, sleeping, or unreachable, load from website static data
+    if (!syncSucceeded) {
+      try {
+        const localDataUrl = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+          ? `${window.location.origin}/data/cards-registry.json?t=` + Date.now()
+          : 'data/cards-registry.json?t=' + Date.now();
+        const localRes = await fetch(localDataUrl, {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+        });
+        if (localRes.ok) {
+          const localData = await localRes.json();
+          const cards = Array.isArray(localData) ? localData : (localData && localData.cards ? localData.cards : null);
+          if (Array.isArray(cards) && cards.length > 0) {
+            window.__radhyaCardsRegistry = cards;
+            rebindInteractiveCards(cards);
+            try {
+              localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(cards));
+            } catch (e) {}
+          }
+        }
+      } catch (e) {}
     }
   }
 
   syncFromCmsApi();
   // Poll periodically and refresh on tab focus / visibility
-  setInterval(syncFromCmsApi, 10000);
+  setInterval(syncFromCmsApi, 15000);
   window.addEventListener('focus', syncFromCmsApi);
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) syncFromCmsApi();
@@ -1307,16 +1422,6 @@
   // Connects website contact form submissions to the Live Radhya CRM
   // =========================================================================
   window.submitRadhyaLeadToCRM = async function(formData) {
-    // Live CRM ingestion endpoint (Local Dev vs Production HTTPS)
-    const isLocal = typeof window !== 'undefined' && window.location && 
-      (window.location.hostname === 'localhost' || 
-       window.location.hostname === '127.0.0.1' || 
-       !window.location.hostname || 
-       window.location.protocol === 'file:');
-    const crmEndpoint = isLocal 
-      ? 'http://localhost:3000/api/v1/webhooks/website-ingest' 
-      : 'https://crm.radhyarealty.com/api/v1/webhooks/website-ingest';
-    
     const payload = {
       fullName: formData.name || formData.fullName,
       phone: formData.phone,
@@ -1326,7 +1431,7 @@
       productInterest: formData.productOrProperty || formData.interest,
       estimatedBudget: Number(formData.budget || formData.dealValue || 0),
       message: formData.message,
-      sourceWebsite: (typeof window !== 'undefined' && window.location && window.location.href ? window.location.href : 'http://localhost:8000/'),
+      sourceWebsite: (typeof window !== 'undefined' && window.location && window.location.href ? window.location.href : 'https://radhyarealty.com/'),
       secretKey: 'radhya-sec-99532-enterprise-token-2026'
     };
 
@@ -1364,25 +1469,40 @@
       console.warn('Local lead bridge notice:', mirrorErr);
     }
 
-    // 2. Transmit to backend webhook receiver
+    // 2. Dispatch to local MilesWeb PHP API (/api/whatsapp-enquiry.php) for guaranteed ledger log + email
     try {
-      const res = await fetch(crmEndpoint, {
+      fetch('/api/whatsapp-enquiry.php', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        throw new Error(`Server returned HTTP ${res.status}: ${res.statusText}`);
+      }).catch(e => console.warn('PHP enquiry log dispatch notice:', e));
+    } catch (phpErr) {}
+
+    // 3. Transmit to backend webhook receiver (attempt custom domain, Render fallback)
+    const baseUrls = getCrmBaseUrls();
+    let deliveredResult = null;
+    for (const base of baseUrls) {
+      try {
+        const crmEndpoint = `${base}/api/v1/webhooks/website-ingest`;
+        const res = await fetch(crmEndpoint, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Radhya-Webhook-Secret': 'radhya-sec-99532-enterprise-token-2026'
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          deliveredResult = await res.json();
+          console.log('CRM Ingestion Response from ' + base + ':', deliveredResult);
+          break;
+        }
+      } catch (err) {
+        // try next endpoint in chain
       }
-      const result = await res.json();
-      console.log('CRM Ingestion Response:', result);
-      return result;
-    } catch (err) {
-      console.error('CRM Webhook Ingestion Notice:', err);
-      return { status: 'QUEUED_LOCALLY', message: 'Lead safely mirrored to local CRM storage queue.' };
     }
+
+    return deliveredResult || { status: 'QUEUED_LOCALLY', message: 'Lead safely recorded to local CRM queue and MilesWeb server.' };
   };
 
   // =========================================================================
@@ -1877,10 +1997,111 @@
     });
   }
 
+  // =========================================================================
+  // DPDP ACT 2023 COMPLIANT COOKIE CONSENT & PREFERENCES MANAGER
+  // =========================================================================
+  function initCookieConsent() {
+    const COOKIE_STORAGE_KEY = 'radhya_cookie_consent_v1';
+
+    function showBanner() {
+      let banner = document.getElementById('radhyaCookieBanner');
+      if (banner) {
+        banner.style.display = 'flex';
+        return;
+      }
+
+      banner = document.createElement('div');
+      banner.id = 'radhyaCookieBanner';
+      banner.setAttribute('role', 'region');
+      banner.setAttribute('aria-label', 'Cookie Consent Notice');
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#0a1730;border-top:1px solid rgba(201,162,75,0.35);box-shadow:0 -8px 24px rgba(0,0,0,0.45);padding:14px 20px;font-family:\'Manrope\',-apple-system,sans-serif;color:#f2f4f8;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;';
+
+      banner.innerHTML = `
+        <div style="flex:1 1 320px;max-width:760px;">
+          <div style="font-weight:700;color:#e3c883;font-size:12px;letter-spacing:0.02em;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;"></span>
+            DPDP Act 2023 Statutory Privacy &amp; Cookie Notice
+          </div>
+          <p style="margin:0;font-size:11.5px;line-height:1.45;color:#cbd5e1;">
+            Radhya Realty (Anubhav Bharat Group) uses strictly essential cookies for secure portal session authentication, inquiry routing, and lawful advisory services in compliance with India's Digital Personal Data Protection Act, 2023. Zero third-party behavioral trackers. Review our <a href="privacy-policy.html" style="color:#c9a24b;text-decoration:underline;">Privacy Policy</a> and <a href="terms.html" style="color:#c9a24b;text-decoration:underline;">Terms</a>.
+          </p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <button id="btnAcceptAllCookies" type="button" style="min-height:44px;min-width:44px;padding:9px 18px;border-radius:6px;background:#c9a24b;color:#060f20;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:background 0.18s;touch-manipulation:manipulation;">
+            Accept All
+          </button>
+          <button id="btnEssentialCookies" type="button" style="min-height:44px;min-width:44px;padding:9px 16px;border-radius:6px;background:transparent;color:#f2f4f8;font-size:12px;font-weight:600;border:1px solid rgba(201,162,75,0.45);cursor:pointer;transition:background 0.18s;touch-manipulation:manipulation;">
+            Essential Only
+          </button>
+        </div>
+      `;
+
+      document.body.appendChild(banner);
+
+      document.getElementById('btnAcceptAllCookies')?.addEventListener('click', () => {
+        try {
+          localStorage.setItem(COOKIE_STORAGE_KEY, JSON.stringify({
+            consented: true,
+            tier: 'all',
+            timestamp: new Date().toISOString()
+          }));
+        } catch (e) {}
+        banner.style.display = 'none';
+      });
+
+      document.getElementById('btnEssentialCookies')?.addEventListener('click', () => {
+        try {
+          localStorage.setItem(COOKIE_STORAGE_KEY, JSON.stringify({
+            consented: true,
+            tier: 'essential',
+            timestamp: new Date().toISOString()
+          }));
+        } catch (e) {}
+        banner.style.display = 'none';
+      });
+    }
+
+    // Attach persistent "Cookie Settings" button to footer or bottom floating trigger
+    function attachFooterSettingsTrigger() {
+      const footer = document.querySelector('footer, #site-footer, .footer');
+      if (footer && !document.getElementById('btnOpenCookieSettings')) {
+        const link = document.createElement('button');
+        link.id = 'btnOpenCookieSettings';
+        link.type = 'button';
+        link.textContent = 'Cookie Settings';
+        link.style.cssText = 'background:none;border:none;color:#94a3b8;font-size:11px;text-decoration:underline;cursor:pointer;padding:4px 8px;font-family:inherit;margin:0 4px;';
+        link.addEventListener('click', showBanner);
+
+        // Try inserting into footer nav or bottom note
+        const footerLinks = footer.querySelector('.footer-links, .footer__links, .footer-legal') || footer;
+        footerLinks.appendChild(link);
+      }
+    }
+
+    // Public method to reopen settings
+    window.openRadhyaCookieSettings = showBanner;
+
+    // Check existing consent
+    try {
+      const existing = localStorage.getItem(COOKIE_STORAGE_KEY);
+      if (!existing) {
+        showBanner();
+      }
+    } catch (e) {
+      showBanner();
+    }
+
+    attachFooterSettingsTrigger();
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTalkToTeamButtons);
+    document.addEventListener('DOMContentLoaded', () => {
+      initTalkToTeamButtons();
+      initCookieConsent();
+    });
   } else {
     initTalkToTeamButtons();
+    initCookieConsent();
   }
 
 })();

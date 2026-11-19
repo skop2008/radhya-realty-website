@@ -126,6 +126,46 @@ $headers = "From: noreply@radhyarealty.com
 
 @mail($backupEmail, $emailSubject, $emailBody, $headers);
 
+// 2b. Forward lead payload to Live CRM Webhook (Render / Custom Domain)
+if (function_exists('curl_init')) {
+    $crmEndpoints = [
+        "https://radhya-crm.onrender.com/api/v1/webhooks/website-ingest",
+        "https://crm.radhyarealty.com/api/v1/webhooks/website-ingest"
+    ];
+    $crmPayload = json_encode([
+        "fullName"        => $name,
+        "phone"           => $phone,
+        "email"           => $backupEmail,
+        "cityLocality"    => "Delhi-NCR",
+        "division"        => $division,
+        "productInterest" => $item,
+        "message"         => $details,
+        "sourceWebsite"   => $url,
+        "secretKey"       => "radhya-sec-99532-enterprise-token-2026"
+    ]);
+
+    foreach ($crmEndpoints as $endpoint) {
+        $ch = @curl_init($endpoint);
+        if ($ch) {
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $crmPayload);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                "Content-Type: application/json",
+                "X-Radhya-Webhook-Secret: radhya-sec-99532-enterprise-token-2026"
+            ]);
+            $crmRes = @curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            @curl_close($ch);
+            if ($httpCode >= 200 && $httpCode < 300) {
+                break;
+            }
+        }
+    }
+}
+
 // 3. Return JSON Response
 http_response_code(200);
 echo json_encode([
