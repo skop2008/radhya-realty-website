@@ -1297,9 +1297,9 @@
        !window.location.hostname || 
        window.location.protocol === 'file:');
     if (isLocal) {
-      return ['https://radhya-crm-ran4.onrender.com', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://crm.radhyarealty.com'];
+      return ['https://radhya-crm.onrender.com', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://crm.radhyarealty.com'];
     }
-    return ['https://radhya-crm-ran4.onrender.com', 'https://crm.radhyarealty.com', 'http://localhost:3000'];
+    return ['https://radhya-crm.onrender.com', 'https://crm.radhyarealty.com', 'http://localhost:3000'];
   }
 
   // Hydrate on initial load

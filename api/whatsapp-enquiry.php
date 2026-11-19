@@ -129,7 +129,7 @@ $headers = "From: noreply@radhyarealty.com
 // 2b. Forward lead payload to Live CRM Webhook (Render / Custom Domain)
 if (function_exists('curl_init')) {
     $crmEndpoints = [
-        "https://radhya-crm-ran4.onrender.com/api/v1/webhooks/website-ingest",
+        "https://radhya-crm.onrender.com/api/v1/webhooks/website-ingest",
         "https://crm.radhyarealty.com/api/v1/webhooks/website-ingest"
     ];
     $crmPayload = json_encode([
