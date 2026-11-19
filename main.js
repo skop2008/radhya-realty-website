@@ -1177,7 +1177,7 @@
           slide.className = 'prop-slide';
 
           let mediaUrl = m.url || '';
-          if (mediaUrl.startsWith('http://localhost:3000/uploads/') && (window.location.port === '8000' || window.location.protocol === 'file:')) {
+          if (mediaUrl.startsWith('http://localhost:3000/uploads/') && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')) {
             mediaUrl = mediaUrl.replace('http://localhost:3000/', '');
           }
 
@@ -1316,7 +1316,11 @@
         const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
         const res = await fetch(`${base}/api/v1/public/cards?t=` + Date.now(), {
           signal: controller ? controller.signal : undefined,
-          headers: { 'Cache-Control': 'no-cache' }
+          cache: 'no-store',
+          headers: { 
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
         });
         if (timer) clearTimeout(timer);
         if (!res.ok) continue;
@@ -1354,8 +1358,11 @@
       try {
         const localDataUrl = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
           ? `${window.location.origin}/data/cards-registry.json?t=` + Date.now()
-          : 'data/cards-registry.json';
-        const localRes = await fetch(localDataUrl);
+          : 'data/cards-registry.json?t=' + Date.now();
+        const localRes = await fetch(localDataUrl, {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+        });
         if (localRes.ok) {
           const localData = await localRes.json();
           const cards = Array.isArray(localData) ? localData : (localData && localData.cards ? localData.cards : null);
