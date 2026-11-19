@@ -30,9 +30,44 @@
     "dataPrice": 4800000,
     "priceText": "Price: ₹48 Lakhs",
     "shortDesc": "28,000 km, panoramic sunroof, digital widescreen cockpit, pristine dealer service history. Price: ₹48 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:44.858Z",
+    "updatedAt": "2026-11-19T18:53:52.706Z",
     "spaceIndex": 0,
     "spaceTitle": "New & Pre-owned Vehicles"
+  },
+  {
+    "id": "card-loan-sec0-1",
+    "role": "loan",
+    "badge": "Home Loan",
+    "media": [
+      {
+        "alt": "New Home Purchase Financing | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Luxury Villa Loan | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Loan Consultation | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 1,
+    "title": "Prime Residential Home Loan — Up to 90% LTV",
+    "dataDeal": "home-loan",
+    "dataType": "home-loan salaried self-employed",
+    "division": "LOAN",
+    "fullDesc": "End-to-end home loan advisory and sanction support partnering with SBI, HDFC Bank, ICICI Bank, and Axis Bank. Features loan financing up to 90% of agreement value, flexible repayment tenures up to 30 years, zero hidden processing charges, and doorstep document collection.",
+    "createdAt": "2026-11-19T18:22:42.750Z",
+    "priceText": "Lowest interest rates starting from 8",
+    "shortDesc": "Direct tie-ups with leading PSU and private banks. Lowest interest rates starting from 8.35% p.a. Avail up to ₹5 Cr.",
+    "updatedAt": "2026-11-19T18:53:53.213Z",
+    "dataAmount": 7500000,
+    "spaceIndex": 0,
+    "spaceTitle": "Home Loans & Plot Financing"
   },
   {
     "id": "card-insurance-sec0-1",
@@ -65,44 +100,9 @@
     "dataCover": 15000000,
     "priceText": "Sum Insured: ₹1",
     "shortDesc": "Protection against fire, earthquake, storm, terrorism, and structural rebuilding cost coverage. Sum Insured: ₹1.5 Cr.",
-    "updatedAt": "2026-11-19T18:22:47.054Z",
+    "updatedAt": "2026-11-19T18:53:53.024Z",
     "spaceIndex": 0,
     "spaceTitle": "Home & Property Insurance"
-  },
-  {
-    "id": "card-loan-sec0-1",
-    "role": "loan",
-    "badge": "Home Loan",
-    "media": [
-      {
-        "alt": "New Home Purchase Financing | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Luxury Villa Loan | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Loan Consultation | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 1,
-    "title": "Prime Residential Home Loan — Up to 90% LTV",
-    "dataDeal": "home-loan",
-    "dataType": "home-loan salaried self-employed",
-    "division": "LOAN",
-    "fullDesc": "End-to-end home loan advisory and sanction support partnering with SBI, HDFC Bank, ICICI Bank, and Axis Bank. Features loan financing up to 90% of agreement value, flexible repayment tenures up to 30 years, zero hidden processing charges, and doorstep document collection.",
-    "createdAt": "2026-11-19T18:22:42.750Z",
-    "priceText": "Lowest interest rates starting from 8",
-    "shortDesc": "Direct tie-ups with leading PSU and private banks. Lowest interest rates starting from 8.35% p.a. Avail up to ₹5 Cr.",
-    "updatedAt": "2026-11-19T18:22:42.750Z",
-    "dataAmount": 7500000,
-    "spaceIndex": 0,
-    "spaceTitle": "Home Loans & Plot Financing"
   },
   {
     "id": "card-real-estate-sec0-1",
@@ -134,7 +134,7 @@
     "createdAt": "2026-11-19T08:58:35.458Z",
     "priceText": "Preferred for families",
     "shortDesc": "Spacious apartment, 1,250 sq ft, two balconies, covered parking. Preferred for families. Buy: ₹1.45 Cr | Rent: ₹45,000/mo.",
-    "updatedAt": "2026-11-19T18:22:38.405Z",
+    "updatedAt": "2026-11-19T18:53:53.409Z",
     "spaceIndex": 0,
     "spaceTitle": "Residential Sales & Rentals",
     "dataPriceBuy": 14500000,
@@ -170,75 +170,46 @@
     "createdAt": "2026-11-19T18:22:40.688Z",
     "priceText": "Est: ₹25 Lakhs",
     "shortDesc": "Turnkey demolition, re-wiring, plumbing overhaul, and designer woodwork for high-rise residences. Est: ₹25 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:40.688Z",
+    "updatedAt": "2026-11-19T18:53:53.604Z",
     "dataBudget": 2500000,
     "spaceIndex": 0,
     "spaceTitle": "Full Home & Office Renovation"
   },
   {
-    "id": "card-insurance-sec0-2",
-    "role": "insurance",
-    "badge": "Contents Cover",
+    "id": "card-real-estate-sec0-2",
+    "role": "real-estate",
+    "badge": "Residential • 3BHK",
     "media": [
       {
-        "alt": "Home Contents & Audio | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Independent Floor Exterior | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       },
       {
-        "alt": "Precious Valuables Cover | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Dining & Living Area | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Terrace Garden | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       }
     ],
     "order": 2,
-    "title": "Content, Electronic & Jewellery Burglary Protection",
-    "dataDeal": "property",
-    "dataType": "content burglary property",
-    "division": "INSURANCE",
-    "fullDesc": "Extensive protection for everything inside your home. Protect your consumer electronics from electrical voltage surges, luxury furniture from accidental impact, and high-value gold jewellery and silverware from theft or burglary with agreed-value replacement terms.",
-    "createdAt": "2026-11-19T18:22:47.234Z",
-    "dataCover": 3500000,
-    "priceText": "Cover: ₹35 Lakhs",
-    "shortDesc": "Complete cover for imported appliances, fine furniture, art, gold jewellery, and electronic breakdown. Cover: ₹35 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:47.234Z",
+    "title": "3BHK — Sohna Road, Sector 48",
+    "dataDeal": "buy rent",
+    "dataType": "independent-house 3bhk",
+    "division": "REAL_ESTATE",
+    "fullDesc": "Independent floor unit on Sohna Road offering 1,650 sq ft of living space. Features a modular kitchen, servant quarter, two-car covered parking and a large terrace. Surrounded by parks and high-street retail. Available for immediate possession for purchase (₹2.35 Cr) or lease (₹65,000/mo). All documents verified.",
+    "createdAt": "2026-11-19T18:22:38.556Z",
+    "priceText": "Buy: ₹2",
+    "shortDesc": "Independent floor, 1,650 sq ft, modular kitchen, servant quarter and two-car parking. Buy: ₹2.35 Cr | Rent: ₹65,000/mo.",
+    "updatedAt": "2026-11-19T18:53:54.511Z",
     "spaceIndex": 0,
-    "spaceTitle": "Home & Property Insurance"
-  },
-  {
-    "id": "card-renovation-sec0-2",
-    "role": "renovation",
-    "badge": "Commercial • Office",
-    "media": [
-      {
-        "alt": "Office Floor Renovation | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Acoustic Glass Partitions | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Executive Lounge | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 2,
-    "title": "Corporate Floor Revamp — Udyog Vihar",
-    "dataDeal": "full-overhaul",
-    "dataType": "office corporate commercial full-overhaul",
-    "division": "RENOVATION",
-    "fullDesc": "Fast-track office renovation spanning 5,000 sq ft across Udyog Vihar Phase IV. Upgraded central ducted air conditioning, installed acoustic double-glazed meeting rooms, ergonomic benching for 60 staff, modular server room with FM-200 fire suppression, and durable heavy-duty carpet tiles. Budget: ₹45 Lakhs.",
-    "createdAt": "2026-11-19T18:22:40.833Z",
-    "priceText": "Est: ₹45 Lakhs",
-    "shortDesc": "5,000 sq ft corporate layout renovation with acoustic glass cabins, HVAC balancing, and smart access. Est: ₹45 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:40.833Z",
-    "dataBudget": 4500000,
-    "spaceIndex": 0,
-    "spaceTitle": "Full Home & Office Renovation"
+    "spaceTitle": "Residential Sales & Rentals",
+    "dataPriceBuy": 23500000,
+    "dataPriceRent": 65000
   },
   {
     "id": "card-vehicle-sale-purchase-sec0-2",
@@ -271,9 +242,39 @@
     "dataPrice": 3400000,
     "priceText": "8L Diesel 4WD, automatic transmission, pearl white exterior, brand-new Bridgestone tires",
     "shortDesc": "2.8L Diesel 4WD, automatic transmission, pearl white exterior, brand-new Bridgestone tires. Price: ₹34 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:45.027Z",
+    "updatedAt": "2026-11-19T18:53:54.110Z",
     "spaceIndex": 0,
     "spaceTitle": "New & Pre-owned Vehicles"
+  },
+  {
+    "id": "card-insurance-sec0-2",
+    "role": "insurance",
+    "badge": "Contents Cover",
+    "media": [
+      {
+        "alt": "Home Contents & Audio | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Precious Valuables Cover | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 2,
+    "title": "Content, Electronic & Jewellery Burglary Protection",
+    "dataDeal": "property",
+    "dataType": "content burglary property",
+    "division": "INSURANCE",
+    "fullDesc": "Extensive protection for everything inside your home. Protect your consumer electronics from electrical voltage surges, luxury furniture from accidental impact, and high-value gold jewellery and silverware from theft or burglary with agreed-value replacement terms.",
+    "createdAt": "2026-11-19T18:22:47.234Z",
+    "dataCover": 3500000,
+    "priceText": "Cover: ₹35 Lakhs",
+    "shortDesc": "Complete cover for imported appliances, fine furniture, art, gold jewellery, and electronic breakdown. Cover: ₹35 Lakhs.",
+    "updatedAt": "2026-11-19T18:53:53.731Z",
+    "spaceIndex": 0,
+    "spaceTitle": "Home & Property Insurance"
   },
   {
     "id": "card-loan-sec0-2",
@@ -305,46 +306,75 @@
     "createdAt": "2026-11-19T18:22:42.859Z",
     "priceText": "Up to ₹4 Cr",
     "shortDesc": "Single integrated sanction covering residential plot acquisition and phased construction milestones. Up to ₹4 Cr.",
-    "updatedAt": "2026-11-19T18:22:42.859Z",
+    "updatedAt": "2026-11-19T18:53:54.312Z",
     "dataAmount": 5000000,
     "spaceIndex": 0,
     "spaceTitle": "Home Loans & Plot Financing"
   },
   {
-    "id": "card-real-estate-sec0-2",
-    "role": "real-estate",
-    "badge": "Residential • 3BHK",
+    "id": "card-renovation-sec0-2",
+    "role": "renovation",
+    "badge": "Commercial • Office",
     "media": [
       {
-        "alt": "Independent Floor Exterior | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Office Floor Renovation | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       },
       {
-        "alt": "Dining & Living Area | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Acoustic Glass Partitions | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       },
       {
-        "alt": "Terrace Garden | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Executive Lounge | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       }
     ],
     "order": 2,
-    "title": "3BHK — Sohna Road, Sector 48",
-    "dataDeal": "buy rent",
-    "dataType": "independent-house 3bhk",
-    "division": "REAL_ESTATE",
-    "fullDesc": "Independent floor unit on Sohna Road offering 1,650 sq ft of living space. Features a modular kitchen, servant quarter, two-car covered parking and a large terrace. Surrounded by parks and high-street retail. Available for immediate possession for purchase (₹2.35 Cr) or lease (₹65,000/mo). All documents verified.",
-    "createdAt": "2026-11-19T18:22:38.556Z",
-    "priceText": "Buy: ₹2",
-    "shortDesc": "Independent floor, 1,650 sq ft, modular kitchen, servant quarter and two-car parking. Buy: ₹2.35 Cr | Rent: ₹65,000/mo.",
-    "updatedAt": "2026-11-19T18:22:38.556Z",
+    "title": "Corporate Floor Revamp — Udyog Vihar",
+    "dataDeal": "full-overhaul",
+    "dataType": "office corporate commercial full-overhaul",
+    "division": "RENOVATION",
+    "fullDesc": "Fast-track office renovation spanning 5,000 sq ft across Udyog Vihar Phase IV. Upgraded central ducted air conditioning, installed acoustic double-glazed meeting rooms, ergonomic benching for 60 staff, modular server room with FM-200 fire suppression, and durable heavy-duty carpet tiles. Budget: ₹45 Lakhs.",
+    "createdAt": "2026-11-19T18:22:40.833Z",
+    "priceText": "Est: ₹45 Lakhs",
+    "shortDesc": "5,000 sq ft corporate layout renovation with acoustic glass cabins, HVAC balancing, and smart access. Est: ₹45 Lakhs.",
+    "updatedAt": "2026-11-19T18:53:53.927Z",
+    "dataBudget": 4500000,
     "spaceIndex": 0,
-    "spaceTitle": "Residential Sales & Rentals",
-    "dataPriceBuy": 23500000,
-    "dataPriceRent": 65000
+    "spaceTitle": "Full Home & Office Renovation"
+  },
+  {
+    "id": "card-loan-sec0-3",
+    "role": "loan",
+    "badge": "NRI Loan",
+    "media": [
+      {
+        "alt": "Global NRI Financing | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Power of Attorney Desk | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "NRI Home Loan Advisory & Power of Attorney Desk",
+    "dataDeal": "home-loan",
+    "dataType": "nri-loan overseas salaried",
+    "division": "LOAN",
+    "fullDesc": "Dedicated NRI mortgage desk facilitating fast approvals without requiring physical travel to India. We manage foreign salary appraisal, NRE/NRO banking compliance, legal title verification, and consular Power of Attorney (PoA) execution with authorized banking liaisons.",
+    "createdAt": "2026-11-19T18:22:43.047Z",
+    "priceText": "Up to ₹10 Cr",
+    "shortDesc": "Bespoke financing for Non-Resident Indians investing in Delhi-NCR property with overseas income appraisal. Up to ₹10 Cr.",
+    "updatedAt": "2026-11-19T18:53:55.423Z",
+    "dataAmount": 15000000,
+    "spaceIndex": 0,
+    "spaceTitle": "Home Loans & Plot Financing"
   },
   {
     "id": "card-real-estate-sec0-3",
@@ -376,11 +406,76 @@
     "createdAt": "2026-11-19T18:22:38.734Z",
     "priceText": "Gymnasium, pool and 24×7 security",
     "shortDesc": "Compact 520 sq ft studio, ideal for professionals. Gymnasium, pool and 24×7 security. Buy: ₹65 Lakhs | Rent: ₹28,000/mo.",
-    "updatedAt": "2026-11-19T18:22:38.734Z",
+    "updatedAt": "2026-11-19T18:53:54.633Z",
     "spaceIndex": 0,
     "spaceTitle": "Residential Sales & Rentals",
     "dataPriceBuy": 6500000,
     "dataPriceRent": 28000
+  },
+  {
+    "id": "card-renovation-sec0-3",
+    "role": "renovation",
+    "badge": "House • Builder Floor",
+    "media": [
+      {
+        "alt": "Builder Floor Facade | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Expanded Living Floor | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Private Roof Deck | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "Independent Builder Floor Modernisation — Sushant Lok",
+    "dataDeal": "full-overhaul",
+    "dataType": "builder-floor independent-house full-overhaul",
+    "division": "RENOVATION",
+    "fullDesc": "Renovation of a 15-year-old independent builder floor in Sushant Lok. Structural engineers safely removed load-bearing partitions with steel RSJ beams to create a wide-open entertaining lounge. Included weather-sealed UPVC double-glazed windows throughout and thermal roof insulation. Est: ₹35 Lakhs.",
+    "createdAt": "2026-11-19T18:22:40.963Z",
+    "priceText": "Est: ₹35 Lakhs",
+    "shortDesc": "Structural wall strengthening, open-plan kitchen integration, and terrace garden waterproofing. Est: ₹35 Lakhs.",
+    "updatedAt": "2026-11-19T18:53:55.179Z",
+    "dataBudget": 3500000,
+    "spaceIndex": 0,
+    "spaceTitle": "Full Home & Office Renovation"
+  },
+  {
+    "id": "card-insurance-sec0-3",
+    "role": "insurance",
+    "badge": "Landlord Cover",
+    "media": [
+      {
+        "alt": "Rental Property Suite | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Tenant Safety | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "Tenant Liability & Landlord Loss-of-Rent Protection",
+    "dataDeal": "property",
+    "dataType": "landlord rental liability property",
+    "division": "INSURANCE",
+    "fullDesc": "Essential for property investors and NRI landlords. If your rental apartment suffers damage that forces tenants to vacate, this policy compensates your lost monthly rental stream while funding repair work. Also includes third-party personal injury liability indemnity.",
+    "createdAt": "2026-11-19T18:22:47.362Z",
+    "dataCover": 2000000,
+    "priceText": "Cover: ₹20 Lakhs",
+    "shortDesc": "Reimburses loss of rental income during repairs and covers third-party occupier public liability. Cover: ₹20 Lakhs.",
+    "updatedAt": "2026-11-19T18:53:55.306Z",
+    "spaceIndex": 0,
+    "spaceTitle": "Home & Property Insurance"
   },
   {
     "id": "card-vehicle-sale-purchase-sec0-3",
@@ -413,104 +508,9 @@
     "dataPrice": 5200000,
     "priceText": "Price: ₹52 Lakhs",
     "shortDesc": "16,000 km, extended wheelbase legroom, Harman Kardon audio, under BMW factory warranty. Price: ₹52 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:45.450Z",
+    "updatedAt": "2026-11-19T18:53:54.802Z",
     "spaceIndex": 0,
     "spaceTitle": "New & Pre-owned Vehicles"
-  },
-  {
-    "id": "card-renovation-sec0-3",
-    "role": "renovation",
-    "badge": "House • Builder Floor",
-    "media": [
-      {
-        "alt": "Builder Floor Facade | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Expanded Living Floor | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Private Roof Deck | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Independent Builder Floor Modernisation — Sushant Lok",
-    "dataDeal": "full-overhaul",
-    "dataType": "builder-floor independent-house full-overhaul",
-    "division": "RENOVATION",
-    "fullDesc": "Renovation of a 15-year-old independent builder floor in Sushant Lok. Structural engineers safely removed load-bearing partitions with steel RSJ beams to create a wide-open entertaining lounge. Included weather-sealed UPVC double-glazed windows throughout and thermal roof insulation. Est: ₹35 Lakhs.",
-    "createdAt": "2026-11-19T18:22:40.963Z",
-    "priceText": "Est: ₹35 Lakhs",
-    "shortDesc": "Structural wall strengthening, open-plan kitchen integration, and terrace garden waterproofing. Est: ₹35 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:40.963Z",
-    "dataBudget": 3500000,
-    "spaceIndex": 0,
-    "spaceTitle": "Full Home & Office Renovation"
-  },
-  {
-    "id": "card-insurance-sec0-3",
-    "role": "insurance",
-    "badge": "Landlord Cover",
-    "media": [
-      {
-        "alt": "Rental Property Suite | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Tenant Safety | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Tenant Liability & Landlord Loss-of-Rent Protection",
-    "dataDeal": "property",
-    "dataType": "landlord rental liability property",
-    "division": "INSURANCE",
-    "fullDesc": "Essential for property investors and NRI landlords. If your rental apartment suffers damage that forces tenants to vacate, this policy compensates your lost monthly rental stream while funding repair work. Also includes third-party personal injury liability indemnity.",
-    "createdAt": "2026-11-19T18:22:47.362Z",
-    "dataCover": 2000000,
-    "priceText": "Cover: ₹20 Lakhs",
-    "shortDesc": "Reimburses loss of rental income during repairs and covers third-party occupier public liability. Cover: ₹20 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:47.362Z",
-    "spaceIndex": 0,
-    "spaceTitle": "Home & Property Insurance"
-  },
-  {
-    "id": "card-loan-sec0-3",
-    "role": "loan",
-    "badge": "NRI Loan",
-    "media": [
-      {
-        "alt": "Global NRI Financing | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Power of Attorney Desk | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "NRI Home Loan Advisory & Power of Attorney Desk",
-    "dataDeal": "home-loan",
-    "dataType": "nri-loan overseas salaried",
-    "division": "LOAN",
-    "fullDesc": "Dedicated NRI mortgage desk facilitating fast approvals without requiring physical travel to India. We manage foreign salary appraisal, NRE/NRO banking compliance, legal title verification, and consular Power of Attorney (PoA) execution with authorized banking liaisons.",
-    "createdAt": "2026-11-19T18:22:43.047Z",
-    "priceText": "Up to ₹10 Cr",
-    "shortDesc": "Bespoke financing for Non-Resident Indians investing in Delhi-NCR property with overseas income appraisal. Up to ₹10 Cr.",
-    "updatedAt": "2026-11-19T18:22:43.047Z",
-    "dataAmount": 15000000,
-    "spaceIndex": 0,
-    "spaceTitle": "Home Loans & Plot Financing"
   },
   {
     "id": "card-real-estate-sec0-4",
@@ -537,11 +537,68 @@
     "createdAt": "2026-11-19T18:22:49.331Z",
     "priceText": "Buy: ₹55 Lakhs | Rent: ₹22,000/mo.",
     "shortDesc": "680 sq ft modern 1BHK flat near Huda City Centre metro. Modular kitchen, lift, security. Buy: ₹55 Lakhs | Rent: ₹22,000/mo.",
-    "updatedAt": "2026-11-19T18:22:49.331Z",
+    "updatedAt": "2026-11-19T18:53:55.611Z",
     "spaceIndex": 0,
     "spaceTitle": "Residential Sales & Rentals",
     "dataPriceBuy": 5500000,
     "dataPriceRent": 22000
+  },
+  {
+    "id": "card-real-estate-sec0-5",
+    "role": "real-estate",
+    "badge": "Luxury • 4BHK Penthouse",
+    "media": [
+      {
+        "alt": "Sky Penthouse Living | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Penthouse View | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 5,
+    "title": "4BHK Sky Penthouse — Golf Course Road",
+    "dataDeal": "buy rent",
+    "dataType": "apartment flat 4bhk penthouse",
+    "division": "REAL_ESTATE",
+    "fullDesc": "Architectural masterpiece spanning 4,800 sq ft across the top two floors of a landmark condominium on Golf Course Road. Features double-height living foyer, private rooftop splash pool, Italian marble flooring, and concierge desk. Available for outright purchase at ₹8.8 Cr or luxury lease at ₹2.2 Lakh/mo.",
+    "priceText": "Buy: ₹8.8 Cr | Rent: ₹2.2L/mo.",
+    "shortDesc": "4,800 sq ft duplex penthouse with panoramic skyline view, private plunge pool and 3 parking bays. Buy: ₹8.8 Cr | Rent: ₹2.2L/mo.",
+    "spaceIndex": 0,
+    "spaceTitle": "Residential Sales & Rentals",
+    "dataPriceBuy": 88000000,
+    "dataPriceRent": 220000
+  },
+  {
+    "id": "card-real-estate-sec0-6",
+    "role": "real-estate",
+    "badge": "Villa • Independent House",
+    "media": [
+      {
+        "alt": "Villa Exterior | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Villa Lawn & Garden | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 6,
+    "title": "Luxury Independent Villa — Nirvana Country, Sector 50",
+    "dataDeal": "buy",
+    "dataType": "independent-house villa 4bhk",
+    "division": "REAL_ESTATE",
+    "fullDesc": "Independent European-style villa on a 320 sq yd plot in Nirvana Country, Sector 50. Features private front and rear manicured gardens, 4 luxurious en-suite bedrooms, basement lounge, solar water heating, and 3-car driveway. Freehold deed with mutation registered. Offered at ₹6.4 Cr.",
+    "priceText": "Buy: ₹6.4 Cr.",
+    "shortDesc": "320 sq yard private gated villa, landscaped lawn, 4 master suites, home theatre, and servant quarter. Buy: ₹6.4 Cr.",
+    "spaceIndex": 0,
+    "spaceTitle": "Residential Sales & Rentals",
+    "dataPriceBuy": 64000000
   },
   {
     "id": "card-vehicle-sale-purchase-sec1-1",
@@ -569,39 +626,9 @@
     "dataPrice": 4999,
     "priceText": "Fee: ₹4,999",
     "shortDesc": "Engine compression test, transmission health, suspension geometry, and OBD2 electronic scan. Fee: ₹4,999.",
-    "updatedAt": "2026-11-19T18:22:45.557Z",
+    "updatedAt": "2026-11-19T18:53:55.808Z",
     "spaceIndex": 1,
     "spaceTitle": "Inspection & Valuation"
-  },
-  {
-    "id": "card-insurance-sec1-1",
-    "role": "insurance",
-    "badge": "Motor Cover",
-    "media": [
-      {
-        "alt": "Zero-Depreciation Car Protection | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Bumper-to-Bumper Claim | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 1,
-    "title": "Zero-Depreciation Comprehensive Car Insurance",
-    "dataDeal": "motor",
-    "dataType": "zero-dep motor car",
-    "division": "INSURANCE",
-    "fullDesc": "Full financial protection when accidental damage strikes. Standard policies deduct up to 50% on plastic, rubber, and glass parts; our Zero-Depreciation bumper-to-bumper cover guarantees 100% material reimbursement so you pay practically zero out-of-pocket expenses.",
-    "createdAt": "2026-11-19T18:22:47.467Z",
-    "dataCover": 2500000,
-    "priceText": "IDV: ₹25 Lakhs",
-    "shortDesc": "Bumper-to-bumper claim settlements without depreciation deductions on metal, plastic, or fibre parts. IDV: ₹25 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:47.467Z",
-    "spaceIndex": 1,
-    "spaceTitle": "Motor Insurance & Renewals"
   },
   {
     "id": "card-renovation-sec1-1",
@@ -633,10 +660,70 @@
     "createdAt": "2026-11-19T18:22:41.130Z",
     "priceText": "Est: ₹6 Lakhs",
     "shortDesc": "Hafele hardware, PU high-gloss cabinetry, anti-scratch quartz island, and built-in chimney hob. Est: ₹6 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:41.130Z",
+    "updatedAt": "2026-11-19T18:53:56.109Z",
     "dataBudget": 600000,
     "spaceIndex": 1,
     "spaceTitle": "Kitchen & Bathroom Remodelling"
+  },
+  {
+    "id": "card-loan-sec1-1",
+    "role": "loan",
+    "badge": "Mortgage LAP",
+    "media": [
+      {
+        "alt": "Residential Property Mortgage | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Property Equity Release | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 1,
+    "title": "Residential Property Mortgage — High Value Sanctions",
+    "dataDeal": "lap",
+    "dataType": "lap mortgage salaried self-employed business",
+    "division": "LOAN",
+    "fullDesc": "Leverage the market value of your freehold property for business expansion, child education, or capital expenditure. Enjoy substantially lower interest rates compared to unsecured personal loans, comfortable repayment terms up to 15 years, and flexible prepayment terms.",
+    "createdAt": "2026-11-19T18:22:43.330Z",
+    "priceText": "Contact for Price",
+    "shortDesc": "Unlock idle equity in your self-occupied or rented residential home at attractive interest rates up to ₹15 Cr.",
+    "updatedAt": "2026-11-19T18:53:56.799Z",
+    "dataAmount": 10000000,
+    "spaceIndex": 1,
+    "spaceTitle": "Loan Against Property (LAP)"
+  },
+  {
+    "id": "card-insurance-sec1-1",
+    "role": "insurance",
+    "badge": "Motor Cover",
+    "media": [
+      {
+        "alt": "Zero-Depreciation Car Protection | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Bumper-to-Bumper Claim | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 1,
+    "title": "Zero-Depreciation Comprehensive Car Insurance",
+    "dataDeal": "motor",
+    "dataType": "zero-dep motor car",
+    "division": "INSURANCE",
+    "fullDesc": "Full financial protection when accidental damage strikes. Standard policies deduct up to 50% on plastic, rubber, and glass parts; our Zero-Depreciation bumper-to-bumper cover guarantees 100% material reimbursement so you pay practically zero out-of-pocket expenses.",
+    "createdAt": "2026-11-19T18:22:47.467Z",
+    "dataCover": 2500000,
+    "priceText": "IDV: ₹25 Lakhs",
+    "shortDesc": "Bumper-to-bumper claim settlements without depreciation deductions on metal, plastic, or fibre parts. IDV: ₹25 Lakhs.",
+    "updatedAt": "2026-11-19T18:53:55.922Z",
+    "spaceIndex": 1,
+    "spaceTitle": "Motor Insurance & Renewals"
   },
   {
     "id": "card-real-estate-sec1-1",
@@ -688,41 +775,41 @@
     "createdAt": "2026-11-16T20:12:30.910Z",
     "priceText": "Buy: ₹18.50 Cr | Lease: ₹4.80 L/mo.",
     "shortDesc": "400 sq ft shop with high footfall frontage. Ready for fitout, power load upgraded. Buy: ₹3.5 Cr | Rent: ₹1.8L/mo.",
-    "updatedAt": "2026-11-19T18:22:39.055Z",
+    "updatedAt": "2026-11-19T18:53:56.616Z",
     "spaceIndex": 1,
     "spaceTitle": "Commercial Spaces & Plots",
     "dataPriceBuy": 35000000,
     "dataPriceRent": 180000
   },
   {
-    "id": "card-loan-sec1-1",
-    "role": "loan",
-    "badge": "Mortgage LAP",
+    "id": "card-insurance-sec1-2",
+    "role": "insurance",
+    "badge": "Add-on Cover",
     "media": [
       {
-        "alt": "Residential Property Mortgage | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Engine Hydrostatic Lock Cover | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       },
       {
-        "alt": "Property Equity Release | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Return to Invoice Payout | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       }
     ],
-    "order": 1,
-    "title": "Residential Property Mortgage — High Value Sanctions",
-    "dataDeal": "lap",
-    "dataType": "lap mortgage salaried self-employed business",
-    "division": "LOAN",
-    "fullDesc": "Leverage the market value of your freehold property for business expansion, child education, or capital expenditure. Enjoy substantially lower interest rates compared to unsecured personal loans, comfortable repayment terms up to 15 years, and flexible prepayment terms.",
-    "createdAt": "2026-11-19T18:22:43.330Z",
-    "priceText": "Contact for Price",
-    "shortDesc": "Unlock idle equity in your self-occupied or rented residential home at attractive interest rates up to ₹15 Cr.",
-    "updatedAt": "2026-11-19T18:22:43.330Z",
-    "dataAmount": 10000000,
+    "order": 2,
+    "title": "Engine Protect & Return to Invoice (RTI) Add-on",
+    "dataDeal": "motor",
+    "dataType": "engine rti motor car",
+    "division": "INSURANCE",
+    "fullDesc": "Critical add-on coverage for luxury German and Japanese vehicles in monsoon waterlogging. Covers expensive engine block and gearbox replacement from hydrostatic lock. Return to Invoice (RTI) ensures you receive the original showroom invoice price including road tax if stolen or written off.",
+    "createdAt": "2026-11-19T18:22:47.651Z",
+    "dataCover": 3500000,
+    "priceText": "Cover: ₹35 Lakhs",
+    "shortDesc": "Shields against water ingression hydrostatic lock in floods, plus full invoice price refund on total loss. Cover: ₹35 Lakhs.",
+    "updatedAt": "2026-11-19T18:53:57.346Z",
     "spaceIndex": 1,
-    "spaceTitle": "Loan Against Property (LAP)"
+    "spaceTitle": "Motor Insurance & Renewals"
   },
   {
     "id": "card-real-estate-sec1-2",
@@ -754,41 +841,11 @@
     "createdAt": "2026-11-19T18:22:39.236Z",
     "priceText": "Plug-and-play ready",
     "shortDesc": "1,800 sq ft fitted office, 20 workstations, boardroom, pantry. Plug-and-play ready. Buy: ₹5.2 Cr | Rent: ₹2.5L/mo.",
-    "updatedAt": "2026-11-19T18:22:39.236Z",
+    "updatedAt": "2026-11-19T18:53:56.909Z",
     "spaceIndex": 1,
     "spaceTitle": "Commercial Spaces & Plots",
     "dataPriceBuy": 52000000,
     "dataPriceRent": 250000
-  },
-  {
-    "id": "card-loan-sec1-2",
-    "role": "loan",
-    "badge": "Commercial LAP",
-    "media": [
-      {
-        "alt": "Commercial Office Mortgage | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Lease Rental Discounting | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 2,
-    "title": "Commercial LAP & Lease Rental Discounting (LRD)",
-    "dataDeal": "lap",
-    "dataType": "lap commercial lrd business corporate",
-    "division": "LOAN",
-    "fullDesc": "Institutional liquidity structure for owners of commercial properties leased to multinational tenants or blue-chip corporations. Lease Rental Discounting (LRD) enables large upfront capital advances sanctioned against future discounted rental cashflows with minimal balance sheet friction.",
-    "createdAt": "2026-11-19T18:22:43.475Z",
-    "priceText": "Up to ₹25 Cr",
-    "shortDesc": "Monetize corporate offices, retail showrooms, or future long-term rental cash flows with institutional funding. Up to ₹25 Cr.",
-    "updatedAt": "2026-11-19T18:22:43.475Z",
-    "dataAmount": 30000000,
-    "spaceIndex": 1,
-    "spaceTitle": "Loan Against Property (LAP)"
   },
   {
     "id": "card-vehicle-sale-purchase-sec1-2",
@@ -816,39 +873,39 @@
     "dataPrice": 3499,
     "priceText": "Fee: ₹3,499",
     "shortDesc": "Micron-precision digital paint depth verification, apron welding check, and water line flood audit. Fee: ₹3,499.",
-    "updatedAt": "2026-11-19T18:22:45.752Z",
+    "updatedAt": "2026-11-19T18:53:57.227Z",
     "spaceIndex": 1,
     "spaceTitle": "Inspection & Valuation"
   },
   {
-    "id": "card-insurance-sec1-2",
-    "role": "insurance",
-    "badge": "Add-on Cover",
+    "id": "card-loan-sec1-2",
+    "role": "loan",
+    "badge": "Commercial LAP",
     "media": [
       {
-        "alt": "Engine Hydrostatic Lock Cover | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Commercial Office Mortgage | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       },
       {
-        "alt": "Return to Invoice Payout | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Lease Rental Discounting | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       }
     ],
     "order": 2,
-    "title": "Engine Protect & Return to Invoice (RTI) Add-on",
-    "dataDeal": "motor",
-    "dataType": "engine rti motor car",
-    "division": "INSURANCE",
-    "fullDesc": "Critical add-on coverage for luxury German and Japanese vehicles in monsoon waterlogging. Covers expensive engine block and gearbox replacement from hydrostatic lock. Return to Invoice (RTI) ensures you receive the original showroom invoice price including road tax if stolen or written off.",
-    "createdAt": "2026-11-19T18:22:47.651Z",
-    "dataCover": 3500000,
-    "priceText": "Cover: ₹35 Lakhs",
-    "shortDesc": "Shields against water ingression hydrostatic lock in floods, plus full invoice price refund on total loss. Cover: ₹35 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:47.651Z",
+    "title": "Commercial LAP & Lease Rental Discounting (LRD)",
+    "dataDeal": "lap",
+    "dataType": "lap commercial lrd business corporate",
+    "division": "LOAN",
+    "fullDesc": "Institutional liquidity structure for owners of commercial properties leased to multinational tenants or blue-chip corporations. Lease Rental Discounting (LRD) enables large upfront capital advances sanctioned against future discounted rental cashflows with minimal balance sheet friction.",
+    "createdAt": "2026-11-19T18:22:43.475Z",
+    "priceText": "Up to ₹25 Cr",
+    "shortDesc": "Monetize corporate offices, retail showrooms, or future long-term rental cash flows with institutional funding. Up to ₹25 Cr.",
+    "updatedAt": "2026-11-19T18:53:57.111Z",
+    "dataAmount": 30000000,
     "spaceIndex": 1,
-    "spaceTitle": "Motor Insurance & Renewals"
+    "spaceTitle": "Loan Against Property (LAP)"
   },
   {
     "id": "card-renovation-sec1-2",
@@ -880,8 +937,38 @@
     "createdAt": "2026-11-19T18:22:41.264Z",
     "priceText": "Est: ₹4",
     "shortDesc": "Grohe concealed thermostatic diverters, frameless toughened glass cubicle, and anti-skid vitrified tiles. Est: ₹4.5 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:41.264Z",
+    "updatedAt": "2026-11-19T18:53:57.464Z",
     "dataBudget": 450000,
+    "spaceIndex": 1,
+    "spaceTitle": "Kitchen & Bathroom Remodelling"
+  },
+  {
+    "id": "card-renovation-sec1-3",
+    "role": "renovation",
+    "badge": "Dual Kitchen",
+    "media": [
+      {
+        "alt": "Dry Kitchen Layout | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Wet Prep Scullery | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "Dry & Wet Kitchen Layout Split — Villa Residence",
+    "dataDeal": "kitchen-bath",
+    "dataType": "kitchen villa independent-house",
+    "division": "RENOVATION",
+    "fullDesc": "Architectural kitchen split separating high-heat Indian spice cooking from display entertaining. The wet scullery features commercial-grade 304 stainless steel countertops and high-volume extraction, while the dry kitchen boasts breakfast island seating, lacquered glass and wine chiller. Est: ₹12 Lakhs.",
+    "createdAt": "2026-11-19T18:22:41.728Z",
+    "priceText": "Est: ₹12 Lakhs",
+    "shortDesc": "Segregated cooking zones: elegant display kitchen with wine rack plus heavy-cooking stainless utility. Est: ₹12 Lakhs.",
+    "updatedAt": "2026-11-19T18:53:57.807Z",
+    "dataBudget": 1200000,
     "spaceIndex": 1,
     "spaceTitle": "Kitchen & Bathroom Remodelling"
   },
@@ -911,69 +998,9 @@
     "dataCover": 1500000,
     "priceText": "Retain your accrued No Claim Bonus discount and renew in 5 minutes",
     "shortDesc": "Direct portal comparison across 12 insurers. Retain your accrued No Claim Bonus discount and renew in 5 minutes.",
-    "updatedAt": "2026-11-19T18:22:47.756Z",
+    "updatedAt": "2026-11-19T18:53:57.576Z",
     "spaceIndex": 1,
     "spaceTitle": "Motor Insurance & Renewals"
-  },
-  {
-    "id": "card-loan-sec1-3",
-    "role": "loan",
-    "badge": "Overdraft",
-    "media": [
-      {
-        "alt": "Dropline Overdraft | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Credit Line Agreement | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Dropline Overdraft (OD) against Real Estate",
-    "dataDeal": "lap",
-    "dataType": "overdraft-od business self-employed lap",
-    "division": "LOAN",
-    "fullDesc": "A smart revolving credit facility secured by property. Instead of paying interest on the whole sanctioned amount, you only pay interest on the exact funds utilized on a daily basis. Ideal for entrepreneurs and businesses experiencing seasonal cashflow variations.",
-    "createdAt": "2026-11-19T18:22:43.634Z",
-    "priceText": "Deposit surplus to save interest; withdraw anytime as working capital requires",
-    "shortDesc": "Flexible credit line limit. Deposit surplus to save interest; withdraw anytime as working capital requires. Up to ₹5 Cr.",
-    "updatedAt": "2026-11-19T18:22:43.634Z",
-    "dataAmount": 5000000,
-    "spaceIndex": 1,
-    "spaceTitle": "Loan Against Property (LAP)"
-  },
-  {
-    "id": "card-renovation-sec1-3",
-    "role": "renovation",
-    "badge": "Dual Kitchen",
-    "media": [
-      {
-        "alt": "Dry Kitchen Layout | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Wet Prep Scullery | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Dry & Wet Kitchen Layout Split — Villa Residence",
-    "dataDeal": "kitchen-bath",
-    "dataType": "kitchen villa independent-house",
-    "division": "RENOVATION",
-    "fullDesc": "Architectural kitchen split separating high-heat Indian spice cooking from display entertaining. The wet scullery features commercial-grade 304 stainless steel countertops and high-volume extraction, while the dry kitchen boasts breakfast island seating, lacquered glass and wine chiller. Est: ₹12 Lakhs.",
-    "createdAt": "2026-11-19T18:22:41.728Z",
-    "priceText": "Est: ₹12 Lakhs",
-    "shortDesc": "Segregated cooking zones: elegant display kitchen with wine rack plus heavy-cooking stainless utility. Est: ₹12 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:41.728Z",
-    "dataBudget": 1200000,
-    "spaceIndex": 1,
-    "spaceTitle": "Kitchen & Bathroom Remodelling"
   },
   {
     "id": "card-real-estate-sec1-3",
@@ -1000,11 +1027,41 @@
     "createdAt": "2026-11-19T18:22:39.452Z",
     "priceText": "Buy: ₹4",
     "shortDesc": "10,000 sq ft logistics unit, 24 ft clear height, truck dock and yard. Buy: ₹4.2 Cr | Rent: ₹3.2L/mo.",
-    "updatedAt": "2026-11-19T18:22:39.452Z",
+    "updatedAt": "2026-11-19T18:53:58.001Z",
     "spaceIndex": 1,
     "spaceTitle": "Commercial Spaces & Plots",
     "dataPriceBuy": 42000000,
     "dataPriceRent": 320000
+  },
+  {
+    "id": "card-loan-sec1-3",
+    "role": "loan",
+    "badge": "Overdraft",
+    "media": [
+      {
+        "alt": "Dropline Overdraft | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Credit Line Agreement | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "Dropline Overdraft (OD) against Real Estate",
+    "dataDeal": "lap",
+    "dataType": "overdraft-od business self-employed lap",
+    "division": "LOAN",
+    "fullDesc": "A smart revolving credit facility secured by property. Instead of paying interest on the whole sanctioned amount, you only pay interest on the exact funds utilized on a daily basis. Ideal for entrepreneurs and businesses experiencing seasonal cashflow variations.",
+    "createdAt": "2026-11-19T18:22:43.634Z",
+    "priceText": "Deposit surplus to save interest; withdraw anytime as working capital requires",
+    "shortDesc": "Flexible credit line limit. Deposit surplus to save interest; withdraw anytime as working capital requires. Up to ₹5 Cr.",
+    "updatedAt": "2026-11-19T18:53:57.689Z",
+    "dataAmount": 5000000,
+    "spaceIndex": 1,
+    "spaceTitle": "Loan Against Property (LAP)"
   },
   {
     "id": "card-vehicle-sale-purchase-sec1-3",
@@ -1032,7 +1089,7 @@
     "dataPrice": 1000,
     "priceText": "Contact for Price",
     "shortDesc": "Scientific algorithmic valuation based on actual Delhi-NCR dealer transactions, with instant spot payment.",
-    "updatedAt": "2026-11-19T18:22:45.922Z",
+    "updatedAt": "2026-11-19T18:53:58.115Z",
     "spaceIndex": 1,
     "spaceTitle": "Inspection & Valuation"
   },
@@ -1061,7 +1118,7 @@
     "createdAt": "2026-11-19T18:22:39.629Z",
     "priceText": "Wide 18-meter road, clear demarcation, ready for construction",
     "shortDesc": "250 sq yard corner freehold plot facing green belt. Wide 18-meter road, clear demarcation, ready for construction. Buy: ₹3.8 Cr.",
-    "updatedAt": "2026-11-19T18:22:39.629Z",
+    "updatedAt": "2026-11-19T18:53:58.299Z",
     "spaceIndex": 1,
     "spaceTitle": "Commercial Spaces & Plots",
     "dataPriceBuy": 38000000
@@ -1087,7 +1144,7 @@
     "dataPrice": 18500000,
     "priceText": "Buy: ₹1.85 Cr | Rent: ₹50,000/mo.",
     "shortDesc": "Premium verified property listing curated by Radhya Realty with immediate possession and clear paperwork.",
-    "updatedAt": "2026-11-19T18:22:49.163Z",
+    "updatedAt": "2026-11-19T18:53:58.414Z",
     "spaceIndex": 1,
     "spaceTitle": "Commercial Spaces & Plots",
     "dataPriceBuy": 18500000,
@@ -1118,7 +1175,7 @@
     "createdAt": "2026-11-19T18:22:49.465Z",
     "priceText": "Buy: ₹3.5 Cr | Rent: ₹1.8L/mo.",
     "shortDesc": "400 sq ft shop with high footfall frontage. Ready for fitout, power load upgraded. Buy: ₹3.5 Cr | Rent: ₹1.8L/mo.",
-    "updatedAt": "2026-11-19T18:22:49.465Z",
+    "updatedAt": "2026-11-19T18:53:58.617Z",
     "spaceIndex": 1,
     "spaceTitle": "Commercial Spaces & Plots",
     "dataPriceBuy": 35000000,
@@ -1150,7 +1207,7 @@
     "dataPrice": 3500,
     "priceText": "Contact for Price",
     "shortDesc": "Form 29/30 submission, digital biometric slot booking, and Parivahan Vahan update with new smart card delivery.",
-    "updatedAt": "2026-11-19T18:22:46.052Z",
+    "updatedAt": "2026-11-19T18:53:58.808Z",
     "spaceIndex": 2,
     "spaceTitle": "Registration & Transfer Support"
   },
@@ -1179,29 +1236,10 @@
     "createdAt": "2026-11-19T18:22:43.854Z",
     "priceText": "Up to ₹1",
     "shortDesc": "Specialized lending for premium sedans, SUVs, and luxury marques with competitive fixed rates. Up to ₹1.5 Cr.",
-    "updatedAt": "2026-11-19T18:22:43.854Z",
+    "updatedAt": "2026-11-19T18:53:58.922Z",
     "dataAmount": 4000000,
     "spaceIndex": 2,
     "spaceTitle": "Vehicle & Mobility Finance"
-  },
-  {
-    "id": "card-real-estate-sec2-1",
-    "role": "real-estate",
-    "badge": "Valuation",
-    "media": [],
-    "order": 1,
-    "title": "Pre-sale Market Valuation",
-    "dataDeal": "all",
-    "dataType": "valuation documentation service",
-    "division": "REAL_ESTATE",
-    "fullDesc": "Our certified valuers inspect the property, analyse recent comparable transactions and produce a written valuation report within 72 hours. The report is accepted by all leading banks and courts. Useful for listing, loan applications and legal settlements.",
-    "createdAt": "2026-11-19T18:22:39.761Z",
-    "priceText": "Contact for Price",
-    "shortDesc": "Independent certified valuation report to establish fair market price before listing.",
-    "updatedAt": "2026-11-19T18:22:39.761Z",
-    "spaceIndex": 2,
-    "spaceTitle": "Property Valuation & Documentation",
-    "dataPriceBuy": 15000
   },
   {
     "id": "card-renovation-sec2-1",
@@ -1228,7 +1266,7 @@
     "createdAt": "2026-11-19T18:22:41.911Z",
     "priceText": "Fixit PU membrane application, expansion joint sealing, and crystalline pressure grouting",
     "shortDesc": "Dr. Fixit PU membrane application, expansion joint sealing, and crystalline pressure grouting. Est: ₹2.5 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:41.911Z",
+    "updatedAt": "2026-11-19T18:53:59.389Z",
     "dataBudget": 250000,
     "spaceIndex": 2,
     "spaceTitle": "Waterproofing, Flooring & Painting"
@@ -1259,39 +1297,28 @@
     "dataCover": 10000000,
     "priceText": "Cover: ₹1 Cr",
     "shortDesc": "High-value catastrophic health cover with zero room rent capping, pre/post hospitalisation, and global cover. Cover: ₹1 Cr.",
-    "updatedAt": "2026-11-19T18:22:47.953Z",
+    "updatedAt": "2026-11-19T18:53:59.497Z",
     "spaceIndex": 2,
     "spaceTitle": "Health & Life Plans"
   },
   {
-    "id": "card-insurance-sec2-2",
-    "role": "insurance",
-    "badge": "Critical Illness",
-    "media": [
-      {
-        "alt": "Doctor Consultation | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Cardiac Diagnostic Monitor | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 2,
-    "title": "Critical Illness, Cancer & Cardiac Protection Shield",
-    "dataDeal": "health",
-    "dataType": "health critical-illness medical",
-    "division": "INSURANCE",
-    "fullDesc": "Standard health insurance only reimburses hospital bills; this policy disburses a 100% lump-sum tax-free payout directly to your bank account upon diagnosis of major illnesses (heart attack, stroke, cancer, kidney failure). Replaces lost personal income during recovery.",
-    "createdAt": "2026-11-19T18:22:48.128Z",
-    "dataCover": 5000000,
-    "priceText": "Cover: ₹50 Lakhs",
-    "shortDesc": "Lump-sum cash payout upon first diagnosis of 36 critical medical conditions, independent of hospital bills. Cover: ₹50 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:48.128Z",
+    "id": "card-real-estate-sec2-1",
+    "role": "real-estate",
+    "badge": "Valuation",
+    "media": [],
+    "order": 1,
+    "title": "Pre-sale Market Valuation",
+    "dataDeal": "all",
+    "dataType": "valuation documentation service",
+    "division": "REAL_ESTATE",
+    "fullDesc": "Our certified valuers inspect the property, analyse recent comparable transactions and produce a written valuation report within 72 hours. The report is accepted by all leading banks and courts. Useful for listing, loan applications and legal settlements.",
+    "createdAt": "2026-11-19T18:22:39.761Z",
+    "priceText": "Contact for Price",
+    "shortDesc": "Independent certified valuation report to establish fair market price before listing.",
+    "updatedAt": "2026-11-19T18:53:59.110Z",
     "spaceIndex": 2,
-    "spaceTitle": "Health & Life Plans"
+    "spaceTitle": "Property Valuation & Documentation",
+    "dataPriceBuy": 15000
   },
   {
     "id": "card-renovation-sec2-2",
@@ -1323,10 +1350,70 @@
     "createdAt": "2026-11-19T18:22:42.019Z",
     "priceText": "Est: ₹8 Lakhs",
     "shortDesc": "Precision laser-level laying, epoxy joint filling, diamond polishing, and German wooden flooring. Est: ₹8 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:42.019Z",
+    "updatedAt": "2026-11-19T18:54:00.204Z",
     "dataBudget": 800000,
     "spaceIndex": 2,
     "spaceTitle": "Waterproofing, Flooring & Painting"
+  },
+  {
+    "id": "card-loan-sec2-2",
+    "role": "loan",
+    "badge": "Pre-Owned Loan",
+    "media": [
+      {
+        "alt": "Pre-Owned Car Finance | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Vehicle Valuation Inspection | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 2,
+    "title": "Pre-Owned Car Purchase & Refinance Facility",
+    "dataDeal": "vehicle-finance",
+    "dataType": "vehicle-loan pre-owned salaried self-employed",
+    "division": "LOAN",
+    "fullDesc": "Comprehensive finance solutions for verified pre-owned vehicles. Benefit from on-the-spot physical evaluation, up to 85% funding of the certified car valuation, title clearance verification, and end-to-end RTO ownership and hypothecation transfer assistance.",
+    "createdAt": "2026-11-19T18:22:44.032Z",
+    "priceText": "Up to ₹50 Lakhs",
+    "shortDesc": "Fast certified valuation, competitive interest rates, and seamless RTO hypothecation documentation. Up to ₹50 Lakhs.",
+    "updatedAt": "2026-11-19T18:54:00.520Z",
+    "dataAmount": 1500000,
+    "spaceIndex": 2,
+    "spaceTitle": "Vehicle & Mobility Finance"
+  },
+  {
+    "id": "card-insurance-sec2-2",
+    "role": "insurance",
+    "badge": "Critical Illness",
+    "media": [
+      {
+        "alt": "Doctor Consultation | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Cardiac Diagnostic Monitor | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 2,
+    "title": "Critical Illness, Cancer & Cardiac Protection Shield",
+    "dataDeal": "health",
+    "dataType": "health critical-illness medical",
+    "division": "INSURANCE",
+    "fullDesc": "Standard health insurance only reimburses hospital bills; this policy disburses a 100% lump-sum tax-free payout directly to your bank account upon diagnosis of major illnesses (heart attack, stroke, cancer, kidney failure). Replaces lost personal income during recovery.",
+    "createdAt": "2026-11-19T18:22:48.128Z",
+    "dataCover": 5000000,
+    "priceText": "Cover: ₹50 Lakhs",
+    "shortDesc": "Lump-sum cash payout upon first diagnosis of 36 critical medical conditions, independent of hospital bills. Cover: ₹50 Lakhs.",
+    "updatedAt": "2026-11-19T18:54:00.014Z",
+    "spaceIndex": 2,
+    "spaceTitle": "Health & Life Plans"
   },
   {
     "id": "card-vehicle-sale-purchase-sec2-2",
@@ -1354,39 +1441,9 @@
     "dataPrice": 4500,
     "priceText": "Fee: ₹4,500",
     "shortDesc": "Bank Form 35 submission, loan closure NOC verification, and clean hypothecation cancellation. Fee: ₹4,500.",
-    "updatedAt": "2026-11-19T18:22:46.229Z",
+    "updatedAt": "2026-11-19T18:54:00.380Z",
     "spaceIndex": 2,
     "spaceTitle": "Registration & Transfer Support"
-  },
-  {
-    "id": "card-loan-sec2-2",
-    "role": "loan",
-    "badge": "Pre-Owned Loan",
-    "media": [
-      {
-        "alt": "Pre-Owned Car Finance | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Vehicle Valuation Inspection | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 2,
-    "title": "Pre-Owned Car Purchase & Refinance Facility",
-    "dataDeal": "vehicle-finance",
-    "dataType": "vehicle-loan pre-owned salaried self-employed",
-    "division": "LOAN",
-    "fullDesc": "Comprehensive finance solutions for verified pre-owned vehicles. Benefit from on-the-spot physical evaluation, up to 85% funding of the certified car valuation, title clearance verification, and end-to-end RTO ownership and hypothecation transfer assistance.",
-    "createdAt": "2026-11-19T18:22:44.032Z",
-    "priceText": "Up to ₹50 Lakhs",
-    "shortDesc": "Fast certified valuation, competitive interest rates, and seamless RTO hypothecation documentation. Up to ₹50 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:44.032Z",
-    "dataAmount": 1500000,
-    "spaceIndex": 2,
-    "spaceTitle": "Vehicle & Mobility Finance"
   },
   {
     "id": "card-real-estate-sec2-2",
@@ -1402,7 +1459,7 @@
     "createdAt": "2026-11-19T18:22:39.930Z",
     "priceText": "Contact for Price",
     "shortDesc": "Comprehensive 30-year title search, encumbrance check and legal opinion letter.",
-    "updatedAt": "2026-11-19T18:22:39.930Z",
+    "updatedAt": "2026-11-19T18:54:00.710Z",
     "spaceIndex": 2,
     "spaceTitle": "Property Valuation & Documentation",
     "dataPriceBuy": 25000
@@ -1432,70 +1489,10 @@
     "createdAt": "2026-11-19T18:22:42.150Z",
     "priceText": "Est: ₹3",
     "shortDesc": "Zero-VOC Asian Paints Royale Aspira, airless spray finish, Venetian plaster, and anti-fungal coats. Est: ₹3.5 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:42.150Z",
+    "updatedAt": "2026-11-19T18:54:00.908Z",
     "dataBudget": 350000,
     "spaceIndex": 2,
     "spaceTitle": "Waterproofing, Flooring & Painting"
-  },
-  {
-    "id": "card-vehicle-sale-purchase-sec2-3",
-    "role": "vehicle-sale-purchase",
-    "badge": "RTO Support",
-    "media": [
-      {
-        "alt": "Interstate Transport Desk | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "New State Registration | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Out-of-State Re-Registration & Road Tax Refund",
-    "dataDeal": "rto",
-    "dataType": "rto documentation road-tax",
-    "division": "AUTO_MOTO",
-    "fullDesc": "Relocating to or from Delhi-NCR? We facilitate inter-state vehicle re-registration, obtain local police non-involvement clearance, pay pro-rata state road taxes, and draft recovery claims to retrieve your residual one-time road tax from your previous state RTO.",
-    "createdAt": "2026-11-19T18:22:46.364Z",
-    "dataPrice": 8500,
-    "priceText": "Contact for Price",
-    "shortDesc": "State-to-state vehicle transfer, fresh state number assignment, and original RTO road tax refund filing.",
-    "updatedAt": "2026-11-19T18:22:46.364Z",
-    "spaceIndex": 2,
-    "spaceTitle": "Registration & Transfer Support"
-  },
-  {
-    "id": "card-insurance-sec2-3",
-    "role": "insurance",
-    "badge": "Term Life",
-    "media": [
-      {
-        "alt": "Family Financial Security | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Generational Asset Protection | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Pure Term Life Plan with Terminal Illness Cover",
-    "dataDeal": "life",
-    "dataType": "life term-life death-cover",
-    "division": "INSURANCE",
-    "fullDesc": "Pure protection with zero endowment gimmicks. Lock in fixed low premiums till age 85 from insurers with 99%+ claim settlement ratios. Features accelerated terminal illness payouts, waiver of premium on permanent disability, and 100% tax exemption under Section 80C and 10(10D).",
-    "createdAt": "2026-11-19T18:22:48.263Z",
-    "dataCover": 20000000,
-    "priceText": "Cover: ₹2 Cr",
-    "shortDesc": "Guaranteed tax-free financial cushion for dependents, early terminal illness payout, and accidental rider. Cover: ₹2 Cr.",
-    "updatedAt": "2026-11-19T18:22:48.263Z",
-    "spaceIndex": 2,
-    "spaceTitle": "Health & Life Plans"
   },
   {
     "id": "card-real-estate-sec2-3",
@@ -1511,7 +1508,7 @@
     "createdAt": "2026-11-19T18:22:40.061Z",
     "priceText": "Contact for Price",
     "shortDesc": "End-to-end drafting, stamp duty computation and sub-registrar office assistance.",
-    "updatedAt": "2026-11-19T18:22:40.061Z",
+    "updatedAt": "2026-11-19T18:54:01.508Z",
     "spaceIndex": 2,
     "spaceTitle": "Property Valuation & Documentation",
     "dataPriceBuy": 35000
@@ -1541,10 +1538,100 @@
     "createdAt": "2026-11-19T18:22:44.250Z",
     "priceText": "Up to ₹1 Cr",
     "shortDesc": "Tailored credit terms for commercial transport fleets, corporate logistics, and electric vehicles. Up to ₹1 Cr.",
-    "updatedAt": "2026-11-19T18:22:44.250Z",
+    "updatedAt": "2026-11-19T18:54:01.700Z",
     "dataAmount": 2500000,
     "spaceIndex": 2,
     "spaceTitle": "Vehicle & Mobility Finance"
+  },
+  {
+    "id": "card-vehicle-sale-purchase-sec2-3",
+    "role": "vehicle-sale-purchase",
+    "badge": "RTO Support",
+    "media": [
+      {
+        "alt": "Interstate Transport Desk | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "New State Registration | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "Out-of-State Re-Registration & Road Tax Refund",
+    "dataDeal": "rto",
+    "dataType": "rto documentation road-tax",
+    "division": "AUTO_MOTO",
+    "fullDesc": "Relocating to or from Delhi-NCR? We facilitate inter-state vehicle re-registration, obtain local police non-involvement clearance, pay pro-rata state road taxes, and draft recovery claims to retrieve your residual one-time road tax from your previous state RTO.",
+    "createdAt": "2026-11-19T18:22:46.364Z",
+    "dataPrice": 8500,
+    "priceText": "Contact for Price",
+    "shortDesc": "State-to-state vehicle transfer, fresh state number assignment, and original RTO road tax refund filing.",
+    "updatedAt": "2026-11-19T18:54:01.108Z",
+    "spaceIndex": 2,
+    "spaceTitle": "Registration & Transfer Support"
+  },
+  {
+    "id": "card-insurance-sec2-3",
+    "role": "insurance",
+    "badge": "Term Life",
+    "media": [
+      {
+        "alt": "Family Financial Security | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Generational Asset Protection | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "Pure Term Life Plan with Terminal Illness Cover",
+    "dataDeal": "life",
+    "dataType": "life term-life death-cover",
+    "division": "INSURANCE",
+    "fullDesc": "Pure protection with zero endowment gimmicks. Lock in fixed low premiums till age 85 from insurers with 99%+ claim settlement ratios. Features accelerated terminal illness payouts, waiver of premium on permanent disability, and 100% tax exemption under Section 80C and 10(10D).",
+    "createdAt": "2026-11-19T18:22:48.263Z",
+    "dataCover": 20000000,
+    "priceText": "Cover: ₹2 Cr",
+    "shortDesc": "Guaranteed tax-free financial cushion for dependents, early terminal illness payout, and accidental rider. Cover: ₹2 Cr.",
+    "updatedAt": "2026-11-19T18:54:01.311Z",
+    "spaceIndex": 2,
+    "spaceTitle": "Health & Life Plans"
+  },
+  {
+    "id": "card-loan-sec3-1",
+    "role": "loan",
+    "badge": "Balance Transfer",
+    "media": [
+      {
+        "alt": "Home Loan Balance Transfer | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "EMI Reduction Calculator | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 1,
+    "title": "Home Loan Balance Transfer with High Top-Up",
+    "dataDeal": "balance-transfer",
+    "dataType": "balance-transfer home-loan top-up salaried",
+    "division": "LOAN",
+    "fullDesc": "Transfer your existing home loan from non-banking financiers or high-rate lenders to top PSU/private banks with rock-bottom rates. In addition to saving lakhs in total interest outgo, enjoy an unconditional top-up loan facility for home improvement, business liquidity, or investments.",
+    "createdAt": "2026-11-19T18:22:44.426Z",
+    "priceText": "5% and secure an instant high-value liquid top-up loan",
+    "shortDesc": "Reduce existing interest rates by up to 1.5% and secure an instant high-value liquid top-up loan. Up to ₹5 Cr.",
+    "updatedAt": "2026-11-19T18:54:02.519Z",
+    "dataAmount": 6000000,
+    "spaceIndex": 3,
+    "spaceTitle": "Balance Transfer & Debt Optimization"
   },
   {
     "id": "card-insurance-sec3-1",
@@ -1572,28 +1659,9 @@
     "dataCover": 10000,
     "priceText": "We coordinate with insurance surveyors for fair evaluation",
     "shortDesc": "End-to-end guidance when filing motor or property claims. We coordinate with insurance surveyors for fair evaluation.",
-    "updatedAt": "2026-11-19T18:22:48.372Z",
+    "updatedAt": "2026-11-19T18:54:01.813Z",
     "spaceIndex": 3,
     "spaceTitle": "Claims Assistance"
-  },
-  {
-    "id": "card-real-estate-sec3-1",
-    "role": "real-estate",
-    "badge": "Site Visit",
-    "media": [],
-    "order": 1,
-    "title": "Curated Shortlist & Guided Visit",
-    "dataDeal": "buy rent",
-    "dataType": "site-visit consultation service",
-    "division": "REAL_ESTATE",
-    "fullDesc": "Tell us your budget, preferred location and must-have features. Our senior advisor will shortlist up to five properties, arrange access and accompany you on every visit. Detailed notes and photos are shared after each visit so you can compare objectively.",
-    "createdAt": "2026-11-19T18:22:40.234Z",
-    "priceText": "Contact for Price",
-    "shortDesc": "Up to five properties hand-picked by a senior advisor, full guided visit on a chosen date.",
-    "updatedAt": "2026-11-19T18:22:40.234Z",
-    "spaceIndex": 3,
-    "spaceTitle": "Site Visits & Negotiation Support",
-    "dataPriceBuy": 10000
   },
   {
     "id": "card-renovation-sec3-1",
@@ -1620,7 +1688,7 @@
     "createdAt": "2026-11-19T18:22:42.327Z",
     "priceText": "Fee: ₹1 Lakh",
     "shortDesc": "Line-by-line material specifications, approved brand lists, labor breakdowns, and fixed milestone terms. Fee: ₹1 Lakh.",
-    "updatedAt": "2026-11-19T18:22:42.327Z",
+    "updatedAt": "2026-11-19T18:54:02.215Z",
     "dataBudget": 100000,
     "spaceIndex": 3,
     "spaceTitle": "Itemised Quotes & Site Supervision"
@@ -1651,69 +1719,28 @@
     "dataPrice": 1500000,
     "priceText": "Contact for Price",
     "shortDesc": "Up to 85% funding on certified valuation, flexible tenure up to 7 years, and fast-track 48-hour disbursal.",
-    "updatedAt": "2026-11-19T18:22:46.478Z",
+    "updatedAt": "2026-11-19T18:54:02.407Z",
     "spaceIndex": 3,
     "spaceTitle": "Finance & Exchange Assistance"
   },
   {
-    "id": "card-loan-sec3-1",
-    "role": "loan",
-    "badge": "Balance Transfer",
-    "media": [
-      {
-        "alt": "Home Loan Balance Transfer | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "EMI Reduction Calculator | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
+    "id": "card-real-estate-sec3-1",
+    "role": "real-estate",
+    "badge": "Site Visit",
+    "media": [],
     "order": 1,
-    "title": "Home Loan Balance Transfer with High Top-Up",
-    "dataDeal": "balance-transfer",
-    "dataType": "balance-transfer home-loan top-up salaried",
-    "division": "LOAN",
-    "fullDesc": "Transfer your existing home loan from non-banking financiers or high-rate lenders to top PSU/private banks with rock-bottom rates. In addition to saving lakhs in total interest outgo, enjoy an unconditional top-up loan facility for home improvement, business liquidity, or investments.",
-    "createdAt": "2026-11-19T18:22:44.426Z",
-    "priceText": "5% and secure an instant high-value liquid top-up loan",
-    "shortDesc": "Reduce existing interest rates by up to 1.5% and secure an instant high-value liquid top-up loan. Up to ₹5 Cr.",
-    "updatedAt": "2026-11-19T18:22:44.426Z",
-    "dataAmount": 6000000,
+    "title": "Curated Shortlist & Guided Visit",
+    "dataDeal": "buy rent",
+    "dataType": "site-visit consultation service",
+    "division": "REAL_ESTATE",
+    "fullDesc": "Tell us your budget, preferred location and must-have features. Our senior advisor will shortlist up to five properties, arrange access and accompany you on every visit. Detailed notes and photos are shared after each visit so you can compare objectively.",
+    "createdAt": "2026-11-19T18:22:40.234Z",
+    "priceText": "Contact for Price",
+    "shortDesc": "Up to five properties hand-picked by a senior advisor, full guided visit on a chosen date.",
+    "updatedAt": "2026-11-19T18:54:02.009Z",
     "spaceIndex": 3,
-    "spaceTitle": "Balance Transfer & Debt Optimization"
-  },
-  {
-    "id": "card-renovation-sec3-2",
-    "role": "renovation",
-    "badge": "Supervision",
-    "media": [
-      {
-        "alt": "Civil Site Engineer | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Daily Quality Audits | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 2,
-    "title": "Daily Site Supervision with Photo Milestones",
-    "dataDeal": "supervision",
-    "dataType": "supervision inspection engineer",
-    "division": "RENOVATION",
-    "fullDesc": "A qualified civil engineer oversees workmanship, dust management, safety protocols, and MEP alignment every single working day. Clients receive comprehensive daily photo and video logs on WhatsApp, ensuring complete peace of mind even when traveling. Fee: ₹1.5 Lakhs.",
-    "createdAt": "2026-11-19T18:22:42.467Z",
-    "priceText": "Fee: ₹1",
-    "shortDesc": "Dedicated civil engineer stationed on-site, weekly client walkthroughs, and WhatsApp photo logs. Fee: ₹1.5 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:42.467Z",
-    "dataBudget": 150000,
-    "spaceIndex": 3,
-    "spaceTitle": "Itemised Quotes & Site Supervision"
+    "spaceTitle": "Site Visits & Negotiation Support",
+    "dataPriceBuy": 10000
   },
   {
     "id": "card-insurance-sec3-2",
@@ -1741,9 +1768,58 @@
     "dataCover": 10000,
     "priceText": "Contact for Price",
     "shortDesc": "Real-time pre-authorisation facilitation at top network hospitals and OEM authorized collision repair centers.",
-    "updatedAt": "2026-11-19T18:22:48.549Z",
+    "updatedAt": "2026-11-19T18:54:02.821Z",
     "spaceIndex": 3,
     "spaceTitle": "Claims Assistance"
+  },
+  {
+    "id": "card-renovation-sec3-2",
+    "role": "renovation",
+    "badge": "Supervision",
+    "media": [
+      {
+        "alt": "Civil Site Engineer | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Daily Quality Audits | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 2,
+    "title": "Daily Site Supervision with Photo Milestones",
+    "dataDeal": "supervision",
+    "dataType": "supervision inspection engineer",
+    "division": "RENOVATION",
+    "fullDesc": "A qualified civil engineer oversees workmanship, dust management, safety protocols, and MEP alignment every single working day. Clients receive comprehensive daily photo and video logs on WhatsApp, ensuring complete peace of mind even when traveling. Fee: ₹1.5 Lakhs.",
+    "createdAt": "2026-11-19T18:22:42.467Z",
+    "priceText": "Fee: ₹1",
+    "shortDesc": "Dedicated civil engineer stationed on-site, weekly client walkthroughs, and WhatsApp photo logs. Fee: ₹1.5 Lakhs.",
+    "updatedAt": "2026-11-19T18:54:02.705Z",
+    "dataBudget": 150000,
+    "spaceIndex": 3,
+    "spaceTitle": "Itemised Quotes & Site Supervision"
+  },
+  {
+    "id": "card-real-estate-sec3-2",
+    "role": "real-estate",
+    "badge": "Negotiation",
+    "media": [],
+    "order": 2,
+    "title": "Price & Term Negotiation",
+    "dataDeal": "buy rent",
+    "dataType": "negotiation advisory service",
+    "division": "REAL_ESTATE",
+    "fullDesc": "Our negotiators represent your interests end-to-end. We analyse seller motivation, benchmark comparable sales and present a structured offer. Counter-offers are handled professionally to maximise your savings. Final terms are documented in a binding memorandum of understanding.",
+    "createdAt": "2026-11-19T18:22:40.449Z",
+    "priceText": "Contact for Price",
+    "shortDesc": "Experienced negotiators handle offer submission, counter-offers and final price settlement.",
+    "updatedAt": "2026-11-19T18:54:03.363Z",
+    "spaceIndex": 3,
+    "spaceTitle": "Site Visits & Negotiation Support",
+    "dataPriceBuy": 20000
   },
   {
     "id": "card-loan-sec3-2",
@@ -1770,7 +1846,7 @@
     "createdAt": "2026-11-19T18:22:44.569Z",
     "priceText": "Up to ₹10 Cr",
     "shortDesc": "Consolidate multiple high-interest credit lines into one low-EMI long-tenure structured mortgage. Up to ₹10 Cr.",
-    "updatedAt": "2026-11-19T18:22:44.569Z",
+    "updatedAt": "2026-11-19T18:54:03.006Z",
     "dataAmount": 12000000,
     "spaceIndex": 3,
     "spaceTitle": "Balance Transfer & Debt Optimization"
@@ -1801,88 +1877,9 @@
     "dataPrice": 1000000,
     "priceText": "Contact for Price",
     "shortDesc": "Trade in your old hatchback or sedan towards a verified luxury upgrade with guaranteed bonus value.",
-    "updatedAt": "2026-11-19T18:22:46.655Z",
+    "updatedAt": "2026-11-19T18:54:03.121Z",
     "spaceIndex": 3,
     "spaceTitle": "Finance & Exchange Assistance"
-  },
-  {
-    "id": "card-real-estate-sec3-2",
-    "role": "real-estate",
-    "badge": "Negotiation",
-    "media": [],
-    "order": 2,
-    "title": "Price & Term Negotiation",
-    "dataDeal": "buy rent",
-    "dataType": "negotiation advisory service",
-    "division": "REAL_ESTATE",
-    "fullDesc": "Our negotiators represent your interests end-to-end. We analyse seller motivation, benchmark comparable sales and present a structured offer. Counter-offers are handled professionally to maximise your savings. Final terms are documented in a binding memorandum of understanding.",
-    "createdAt": "2026-11-19T18:22:40.449Z",
-    "priceText": "Contact for Price",
-    "shortDesc": "Experienced negotiators handle offer submission, counter-offers and final price settlement.",
-    "updatedAt": "2026-11-19T18:22:40.449Z",
-    "spaceIndex": 3,
-    "spaceTitle": "Site Visits & Negotiation Support",
-    "dataPriceBuy": 20000
-  },
-  {
-    "id": "card-renovation-sec3-3",
-    "role": "renovation",
-    "badge": "Warranty",
-    "media": [
-      {
-        "alt": "Pristine Turnkey Delivery | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Deep Cleaning & Handover | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Turnkey Handover with 12-Month Structural Warranty",
-    "dataDeal": "supervision",
-    "dataType": "supervision warranty turnkey",
-    "division": "RENOVATION",
-    "fullDesc": "Before keys are handed over, our team conducts a thorough 80-point snagging inspection and professional deep cleaning. Every renovation project comes backed by an unconditional 12-month structural and plumbing warranty with 24-hour service turnaround. Pack: ₹2 Lakhs.",
-    "createdAt": "2026-11-19T18:22:42.578Z",
-    "priceText": "Pack: ₹2 Lakhs",
-    "shortDesc": "Deep industrial cleaning, 80-point snagging checklist, and 1-year complimentary maintenance cover. Pack: ₹2 Lakhs.",
-    "updatedAt": "2026-11-19T18:22:42.578Z",
-    "dataBudget": 200000,
-    "spaceIndex": 3,
-    "spaceTitle": "Itemised Quotes & Site Supervision"
-  },
-  {
-    "id": "card-insurance-sec3-3",
-    "role": "insurance",
-    "badge": "Claim Support",
-    "media": [
-      {
-        "alt": "Insurance Ombudsman Desk | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      },
-      {
-        "alt": "Legal Dispute Resolution | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
-        "type": "image"
-      }
-    ],
-    "order": 3,
-    "title": "Disputed & Stalled Insurance Claim Escalation Desk",
-    "dataDeal": "claims",
-    "dataType": "claims escalation legal",
-    "division": "INSURANCE",
-    "fullDesc": "Was your genuine claim wrongfully rejected or underpaid? Our legal consultants review policy wording, identify arbitrary insurer repudiation clauses, draft formal grievance petitions to insurer Grievance Officers, and represent your case before the Insurance Ombudsman.",
-    "createdAt": "2026-11-19T18:22:49.032Z",
-    "dataCover": 10000,
-    "priceText": "Contact for Price",
-    "shortDesc": "Legal dispute representation before IRDAI grievance cells and Insurance Ombudsman for rejected claims.",
-    "updatedAt": "2026-11-19T18:22:49.032Z",
-    "spaceIndex": 3,
-    "spaceTitle": "Claims Assistance"
   },
   {
     "id": "card-loan-sec3-3",
@@ -1909,40 +1906,40 @@
     "createdAt": "2026-11-19T18:22:44.728Z",
     "priceText": "Up to ₹10 Cr",
     "shortDesc": "Fast-track underwriting channel with processing fee concessions and dedicated bank relationship managers. Up to ₹10 Cr.",
-    "updatedAt": "2026-11-19T18:22:44.728Z",
+    "updatedAt": "2026-11-19T18:54:04.021Z",
     "dataAmount": 8000000,
     "spaceIndex": 3,
     "spaceTitle": "Balance Transfer & Debt Optimization"
   },
   {
-    "id": "card-real-estate-sec3-3",
-    "role": "real-estate",
-    "badge": "Site Visit • Video Tour",
+    "id": "card-renovation-sec3-3",
+    "role": "renovation",
+    "badge": "Warranty",
     "media": [
       {
-        "alt": "Inspection Walkthrough | Radhya Realty Burari Delhi",
-        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Pristine Turnkey Delivery | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       },
       {
-        "alt": "4K Detail Photos | Radhya Realty Burari Delhi",
+        "alt": "Deep Cleaning & Handover | Radhya Realty Burari Delhi",
         "url": "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80",
         "type": "image"
       }
     ],
     "order": 3,
-    "title": "NRI / Remote Property Inspection",
-    "dataDeal": "buy rent",
-    "dataType": "site-visit video nri",
-    "division": "REAL_ESTATE",
-    "fullDesc": "Cannot visit in person? Our team conducts a live video-call walkthrough with professional lighting, 4K photography and a written inspection report covering structure, fittings, neighbourhood and connectivity. Shared via a secure link within 48 hours of scheduling.",
-    "createdAt": "2026-11-19T18:22:40.554Z",
-    "priceText": "Contact for Price",
-    "shortDesc": "Video-call walkthrough with live commentary, 4K photos and a written inspection report.",
-    "updatedAt": "2026-11-19T18:22:40.554Z",
+    "title": "Turnkey Handover with 12-Month Structural Warranty",
+    "dataDeal": "supervision",
+    "dataType": "supervision warranty turnkey",
+    "division": "RENOVATION",
+    "fullDesc": "Before keys are handed over, our team conducts a thorough 80-point snagging inspection and professional deep cleaning. Every renovation project comes backed by an unconditional 12-month structural and plumbing warranty with 24-hour service turnaround. Pack: ₹2 Lakhs.",
+    "createdAt": "2026-11-19T18:22:42.578Z",
+    "priceText": "Pack: ₹2 Lakhs",
+    "shortDesc": "Deep industrial cleaning, 80-point snagging checklist, and 1-year complimentary maintenance cover. Pack: ₹2 Lakhs.",
+    "updatedAt": "2026-11-19T18:54:03.776Z",
+    "dataBudget": 200000,
     "spaceIndex": 3,
-    "spaceTitle": "Site Visits & Negotiation Support",
-    "dataPriceBuy": 15000
+    "spaceTitle": "Itemised Quotes & Site Supervision"
   },
   {
     "id": "card-vehicle-sale-purchase-sec3-3",
@@ -1970,8 +1967,68 @@
     "dataPrice": 35000,
     "priceText": "Contact for Price",
     "shortDesc": "Bumper-to-bumper protection with engine shield, key replacement, and return-to-invoice add-ons.",
-    "updatedAt": "2026-11-19T18:22:46.767Z",
+    "updatedAt": "2026-11-19T18:54:04.305Z",
     "spaceIndex": 3,
     "spaceTitle": "Finance & Exchange Assistance"
+  },
+  {
+    "id": "card-real-estate-sec3-3",
+    "role": "real-estate",
+    "badge": "Site Visit • Video Tour",
+    "media": [
+      {
+        "alt": "Inspection Walkthrough | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "4K Detail Photos | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "NRI / Remote Property Inspection",
+    "dataDeal": "buy rent",
+    "dataType": "site-visit video nri",
+    "division": "REAL_ESTATE",
+    "fullDesc": "Cannot visit in person? Our team conducts a live video-call walkthrough with professional lighting, 4K photography and a written inspection report covering structure, fittings, neighbourhood and connectivity. Shared via a secure link within 48 hours of scheduling.",
+    "createdAt": "2026-11-19T18:22:40.554Z",
+    "priceText": "Contact for Price",
+    "shortDesc": "Video-call walkthrough with live commentary, 4K photos and a written inspection report.",
+    "updatedAt": "2026-11-19T18:54:04.134Z",
+    "spaceIndex": 3,
+    "spaceTitle": "Site Visits & Negotiation Support",
+    "dataPriceBuy": 15000
+  },
+  {
+    "id": "card-insurance-sec3-3",
+    "role": "insurance",
+    "badge": "Claim Support",
+    "media": [
+      {
+        "alt": "Insurance Ombudsman Desk | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      },
+      {
+        "alt": "Legal Dispute Resolution | Radhya Realty Burari Delhi",
+        "url": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+        "type": "image"
+      }
+    ],
+    "order": 3,
+    "title": "Disputed & Stalled Insurance Claim Escalation Desk",
+    "dataDeal": "claims",
+    "dataType": "claims escalation legal",
+    "division": "INSURANCE",
+    "fullDesc": "Was your genuine claim wrongfully rejected or underpaid? Our legal consultants review policy wording, identify arbitrary insurer repudiation clauses, draft formal grievance petitions to insurer Grievance Officers, and represent your case before the Insurance Ombudsman.",
+    "createdAt": "2026-11-19T18:22:49.032Z",
+    "dataCover": 10000,
+    "priceText": "Contact for Price",
+    "shortDesc": "Legal dispute representation before IRDAI grievance cells and Insurance Ombudsman for rejected claims.",
+    "updatedAt": "2026-11-19T18:54:03.897Z",
+    "spaceIndex": 3,
+    "spaceTitle": "Claims Assistance"
   }
 ]
