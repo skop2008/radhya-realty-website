@@ -23,9 +23,9 @@ ErrorDocument 404 /404.html
   RewriteEngine On
   RewriteBase /
 
-  # 301 Canonical redirect: www to non-www
-  RewriteCond %{HTTP_HOST} ^www\.radhyarealty\.com$ [NC]
-  RewriteRule ^(.*)$ https://radhyarealty.com/$1 [R=301,L]
+  # 301 Canonical redirect: www to non-www and radhyarealty.com to anubhavbharatgroup.com
+  RewriteCond %{HTTP_HOST} ^(www\.)?radhyarealty\.com$ [NC]
+  RewriteRule ^(.*)$ https://anubhavbharatgroup.com/$1 [R=301,L]
 
   RewriteCond %{HTTP_HOST} ^www\.anubhavbharatgroup\.com$ [NC]
   RewriteRule ^(.*)$ https://anubhavbharatgroup.com/$1 [R=301,L]

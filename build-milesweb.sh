@@ -27,7 +27,7 @@ echo -e "${GOLD}${BOLD}   RADHYA REALTY — MILESWEB PRODUCTION BUILD & PACKAGIN
 echo -e "${GOLD}${BOLD}================================================================${NC}"
 echo -e "${BLUE}Working Directory:${NC} $ROOT_DIR"
 echo -e "${BLUE}Target Host:${NC}       MilesWeb cPanel (Apache / PHP 8.x)"
-echo -e "${BLUE}Production URL:${NC}    https://radhyarealty.com/"
+echo -e "${BLUE}Production URL:${NC}    https://anubhavbharatgroup.com/"
 echo -e "${BLUE}Live CRM Engine:${NC}   https://radhya-crm.onrender.com/"
 echo ""
 

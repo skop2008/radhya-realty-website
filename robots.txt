@@ -27,4 +27,4 @@ Allow: /*.jpg$
 Allow: /*.webp$
 Allow: /*.svg$
 
-Sitemap: https://radhyarealty.com/sitemap.xml
+Sitemap: https://anubhavbharatgroup.com/sitemap.xml
