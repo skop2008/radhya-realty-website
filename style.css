@@ -3003,7 +3003,7 @@ button.open-enquiry-btn:active,
   border-radius: 50%;
 }
 
-/* Website non-intrusive toast (navy/gold glass, zero purple) */
+/* Website non-intrusive toast (navy/gold glass) */
 .radhya-toast {
   position: fixed;
   left: 50%;
@@ -3204,6 +3204,17 @@ button.open-enquiry-btn:active,
   overflow-y: auto;
 }
 
+.prop-modal__close {
+  z-index: 20;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prop-modal,
+  .prop-modal__box {
+    transition: none;
+  }
+}
+
 .radhya-modal__box {
   max-height: 88vh;
   max-height: 88dvh;
@@ -3220,7 +3231,7 @@ button.open-enquiry-btn:active,
   max-width: 100%;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 360px) {
   .contact-list p {
     grid-template-columns: 76px minmax(0, 1fr);
     gap: 0.5rem;
