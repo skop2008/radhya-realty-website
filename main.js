@@ -101,14 +101,67 @@
   });
   window.addEventListener('pageshow', () => document.body.classList.remove('leaving'));
 
-  /* intro */
+  /* intro + unified introDone promise & early deep-link redirects */
   const hdr = document.getElementById('hdr');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const searchParams = new URLSearchParams(window.location.search);
+  const rawCardParam = searchParams.get('card');
+  const hasCardParam = rawCardParam !== null;
+  const CARD_ID_RE = /^[A-Za-z0-9_-]{1,100}$/;
+  const validCardId = hasCardParam && CARD_ID_RE.test(rawCardParam) ? rawCardParam : null;
+  const invalidCardParam = hasCardParam && !validCardId;
+  const currentFile = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+
+  const deepLinkState = {
+    rawCardParam,
+    hasCardParam,
+    validCardId,
+    invalidCardParam,
+    currentFile,
+    reduced,
+    introPlayed: false,
+    timings: {
+      introStart: null,
+      introEnd: null,
+      bannerVisible: null,
+      cardsLoaded: null,
+      modalOpen: null
+    }
+  };
+  window.__radhyaDeepLinkState = deepLinkState;
+
+  let resolveIntroDone;
+  window.__radhyaIntroDone = new Promise(resolve => {
+    resolveIntroDone = resolve;
+  });
+  let introSettled = false;
+  function settleIntroDone(played) {
+    if (introSettled) return;
+    introSettled = true;
+    deepLinkState.introPlayed = !!played;
+    if (deepLinkState.timings.introEnd === null) {
+      deepLinkState.timings.introEnd = performance.now();
+    }
+    resolveIntroDone();
+  }
+
+  // Local server alias redirect: auto-moto.html?card=... -> vehicle-sale-purchase.html?card=...
+  if (currentFile === 'auto-moto.html' && hasCardParam) {
+    window.location.replace('vehicle-sale-purchase.html' + window.location.search + window.location.hash);
+    return;
+  }
+
   let seen = false;
   try { seen = sessionStorage.getItem('rr_intro') === '1'; } catch (_) {}
 
-  if (page !== 'home' || seen || reduced || !Element.prototype.animate) {
+  // On index.html?card=<valid>, skip index intro completely so it plays ONCE on the target role page
+  const skipForIndexDeepLink = (page === 'home' && !!validCardId);
+  const shouldPlayIntro = !skipForIndexDeepLink && !seen && !reduced && !!Element.prototype.animate && (page === 'home' || (page === 'role' && hasCardParam));
+
+  if (!shouldPlayIntro) {
     requestAnimationFrame(() => document.body.classList.add('ready'));
+    deepLinkState.timings.introStart = performance.now();
+    settleIntroDone(false);
     return;
   }
 
@@ -124,6 +177,7 @@
                   + `<div class="logo">${logo(true)}</div>`;
   document.body.appendChild(intro);
   document.body.classList.add('ready');
+  deepLinkState.timings.introStart = performance.now();
 
   const chips = [...intro.querySelectorAll('.chip')];
   const logoEl = intro.querySelector('.logo');
@@ -137,6 +191,16 @@
     const dy = (row - (half - 1) / 2) * Math.min(innerHeight * 0.2, 150);
     return `${base} translate(${dx}px,${dy}px)`;
   };
+
+  function cleanupIntroAndResolve() {
+    if (intro.parentNode) intro.remove();
+    hdr.classList.remove('hidden');
+    document.documentElement.style.overflow = '';
+    settleIntroDone(true);
+  }
+
+  // Safety fallback timer (intro total ~5110ms + 700ms buffer) so introDone can NEVER hang
+  const introFallbackTimer = setTimeout(cleanupIntroAndResolve, 5800);
 
   (async () => {
     await logoEl.animate(
@@ -167,9 +231,12 @@
        { transform:`${base} translate(${dx}px,${dy}px) scale(${s})`, opacity:0.0 }],
       { duration:900, easing:ease, fill:'forwards' }).finished;
 
-    intro.remove();
-    document.documentElement.style.overflow = '';
-  })().catch(() => { intro.remove(); hdr.classList.remove('hidden'); document.documentElement.style.overflow = ''; });
+    clearTimeout(introFallbackTimer);
+    cleanupIntroAndResolve();
+  })().catch(() => {
+    clearTimeout(introFallbackTimer);
+    cleanupIntroAndResolve();
+  });
 })();
 (function () {
   const header = document.querySelector('.site-header');
@@ -1006,18 +1073,46 @@
     const mDesc    = modal.querySelector('.prop-modal__desc');
     const mFig     = modal.querySelector('.prop-modal__fig');
 
+    function cleanCardParamFromUrl() {
+      try {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('card')) {
+          url.searchParams.delete('card');
+          const nextSearch = url.searchParams.toString();
+          const cleanHref = url.pathname + (nextSearch ? '?' + nextSearch : '') + url.hash;
+          window.history.replaceState(null, '', cleanHref);
+        }
+      } catch (_) {}
+    }
+    window.__radhyaCleanCardParam = cleanCardParamFromUrl;
+
     function openModal(card) {
       const btn = card.querySelector('.prop-card__more');
       mTag.textContent   = (btn && btn.dataset.tag)   || card.querySelector('.prop-tag')?.textContent || '';
       mTitle.textContent = (btn && btn.dataset.title) || card.querySelector('h4')?.textContent || '';
-      mDesc.textContent  = (btn && btn.dataset.desc)  || card.querySelector('p')?.textContent || '';
+      mDesc.textContent  = (btn && btn.dataset.desc)  || card.querySelector('p:not(.prop-card__price)')?.textContent || '';
+
+      const priceVal = (btn && btn.dataset.price) || card.querySelector('.prop-card__price')?.textContent || card.dataset.price || '';
+      let mPrice = modal.querySelector('.prop-modal__price');
+      if (priceVal) {
+        if (!mPrice) {
+          mPrice = document.createElement('p');
+          mPrice.className = 'prop-modal__price';
+          mTitle.insertAdjacentElement('afterend', mPrice);
+        }
+        mPrice.textContent = priceVal;
+        mPrice.style.display = '';
+      } else if (mPrice) {
+        mPrice.textContent = '';
+        mPrice.style.display = 'none';
+      }
 
       const cta = modal.querySelector('.prop-modal__cta');
       if (cta) {
         const pageRole = document.body.dataset.role || '';
         cta.dataset.division = (btn && btn.dataset.division) || card.dataset.division || mapRoleToDivision(pageRole);
         cta.dataset.title = mTitle.textContent;
-        cta.dataset.price = (btn && btn.dataset.price) || card.dataset.price || card.querySelector('.prop-card__price')?.textContent || '';
+        cta.dataset.price = priceVal;
         cta.dataset.cardId = card.dataset.cardId || (btn && btn.dataset.cardId) || '';
       }
       
@@ -1056,12 +1151,17 @@
       }
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
+      if (closeBtn) {
+        setTimeout(() => { try { closeBtn.focus({ preventScroll: true }); } catch (_) {} }, 30);
+      }
     }
+    window.__radhyaOpenPropModal = openModal;
 
     function closeModal() {
       modal.classList.remove('open');
       document.body.style.overflow = '';
       mFig.querySelectorAll('video').forEach(v => v.pause());
+      cleanCardParamFromUrl();
     }
 
     document.addEventListener('click', e => {
@@ -1310,51 +1410,61 @@
   // Hydrate on initial load
   rebindInteractiveCards();
 
-  // Background fetch & live sync from CMS REST API
-  async function syncFromCmsApi() {
-    if (typeof fetch === 'undefined') return;
+  // Background fetch & live sync from CMS REST API (supports deep-link 60s timeout + 1 retry)
+  async function syncFromCmsApi(opts = {}) {
+    if (typeof fetch === 'undefined') return { ok: false, apiFailed: true };
+    const isDeepLink = !!opts.deepLink;
     const urls = getCrmBaseUrls();
+    const maxAttempts = isDeepLink ? 2 : 1;
     let syncSucceeded = false;
-    for (const base of urls) {
-      try {
-        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
-        const res = await fetch(`${base}/api/v1/public/cards?t=` + Date.now(), {
-          signal: controller ? controller.signal : undefined,
-          cache: 'no-store',
-          headers: { 
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
-          }
-        });
-        if (timer) clearTimeout(timer);
-        if (!res.ok) continue;
-        const data = await res.json();
-        if (data && data.cards && Array.isArray(data.cards) && data.cards.length > 0) {
-          window.__radhyaCardsRegistry = data.cards;
-          // Rebind immediately with in-memory cards
-          rebindInteractiveCards(data.cards);
 
-          // Safely cache to localStorage without crashing if quota limit reached
-          try {
-            const serialized = JSON.stringify(data.cards);
-            if (serialized.length < 3500000) {
-              localStorage.setItem('radhya_cms_cards_registry_v1', serialized);
-            } else {
-              const compact = data.cards.map(c => ({
-                ...c,
-                media: (c.media || []).map(m => m.url && m.url.length > 50000 ? { ...m, url: '' } : m)
-              }));
-              localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(compact));
+    for (let attempt = 0; attempt < maxAttempts && !syncSucceeded; attempt++) {
+      for (const base of urls) {
+        try {
+          const isLocalHost = base.includes('localhost') || base.includes('127.0.0.1');
+          const timeoutMs = isDeepLink ? (isLocalHost ? 5000 : 60000) : 3500;
+          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+          const res = await fetch(`${base}/api/v1/public/cards?t=` + Date.now(), {
+            signal: controller ? controller.signal : undefined,
+            cache: 'no-store',
+            headers: { 
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache'
             }
-          } catch (e) {
-            console.warn('LocalStorage quota bypass: keeping full card registry in memory.');
+          });
+          if (timer) clearTimeout(timer);
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (data && data.cards && Array.isArray(data.cards) && data.cards.length > 0) {
+            window.__radhyaCardsRegistry = data.cards;
+            // Rebind immediately with in-memory cards
+            rebindInteractiveCards(data.cards);
+
+            // Safely cache to localStorage without crashing if quota limit reached
+            try {
+              const serialized = JSON.stringify(data.cards);
+              if (serialized.length < 3500000) {
+                localStorage.setItem('radhya_cms_cards_registry_v1', serialized);
+              } else {
+                const compact = data.cards.map(c => ({
+                  ...c,
+                  media: (c.media || []).map(m => m.url && m.url.length > 50000 ? { ...m, url: '' } : m)
+                }));
+                localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(compact));
+              }
+            } catch (e) {
+              console.warn('LocalStorage quota bypass: keeping full card registry in memory.');
+            }
+            syncSucceeded = true;
+            break; // successfully fetched from active host
           }
-          syncSucceeded = true;
-          break; // successfully fetched from active host
+        } catch (e) {
+          // try next endpoint in list
         }
-      } catch (e) {
-        // try next endpoint in list
+      }
+      if (!syncSucceeded && attempt + 1 < maxAttempts) {
+        await new Promise(r => setTimeout(r, 1200));
       }
     }
 
@@ -1381,12 +1491,19 @@
         }
       } catch (e) {}
     }
+
+    if (window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.timings.cardsLoaded === null) {
+      window.__radhyaDeepLinkState.timings.cardsLoaded = performance.now();
+    }
+    return { ok: syncSucceeded, apiFailed: !syncSucceeded };
   }
 
-  syncFromCmsApi();
+  const initialCardsLoadedPromise = syncFromCmsApi({
+    deepLink: !!(window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.validCardId)
+  });
   // Poll periodically and refresh on tab focus / visibility
-  setInterval(syncFromCmsApi, 15000);
-  window.addEventListener('focus', syncFromCmsApi);
+  setInterval(() => syncFromCmsApi(), 15000);
+  window.addEventListener('focus', () => syncFromCmsApi());
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) syncFromCmsApi();
   });
@@ -2011,7 +2128,11 @@
     function showBanner() {
       let banner = document.getElementById('radhyaCookieBanner');
       if (banner) {
+        banner.hidden = false;
         banner.style.display = 'flex';
+        if (window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.timings.bannerVisible === null) {
+          window.__radhyaDeepLinkState.timings.bannerVisible = performance.now();
+        }
         return;
       }
 
@@ -2019,7 +2140,7 @@
       banner.id = 'radhyaCookieBanner';
       banner.setAttribute('role', 'region');
       banner.setAttribute('aria-label', 'Cookie Consent Notice');
-      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#0a1730;border-top:1px solid rgba(201,162,75,0.35);box-shadow:0 -8px 24px rgba(0,0,0,0.45);padding:14px 20px;font-family:\'Manrope\',-apple-system,sans-serif;color:#f2f4f8;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;';
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:150;background:#0a1730;border-top:1px solid rgba(201,162,75,0.35);box-shadow:0 -8px 24px rgba(0,0,0,0.45);padding:14px 20px;font-family:\'Manrope\',-apple-system,sans-serif;color:#f2f4f8;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;';
 
       banner.innerHTML = `
         <div style="flex:1 1 320px;max-width:760px;">
@@ -2042,6 +2163,9 @@
       `;
 
       document.body.appendChild(banner);
+      if (window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.timings.bannerVisible === null) {
+        window.__radhyaDeepLinkState.timings.bannerVisible = performance.now();
+      }
 
       document.getElementById('btnAcceptAllCookies')?.addEventListener('click', () => {
         try {
@@ -2051,6 +2175,7 @@
             timestamp: new Date().toISOString()
           }));
         } catch (e) {}
+        banner.hidden = true;
         banner.style.display = 'none';
       });
 
@@ -2062,6 +2187,7 @@
             timestamp: new Date().toISOString()
           }));
         } catch (e) {}
+        banner.hidden = true;
         banner.style.display = 'none';
       });
     }
@@ -2086,17 +2212,192 @@
     // Public method to reopen settings
     window.openRadhyaCookieSettings = showBanner;
 
-    // Check existing consent
-    try {
-      const existing = localStorage.getItem(COOKIE_STORAGE_KEY);
+    // Check existing consent — NEVER show banner before introDone resolves
+    const dls = window.__radhyaDeepLinkState;
+    const isIndexDeepLinkRedirect = document.body?.dataset?.page === 'home' && !!(dls && dls.validCardId);
+    if (!isIndexDeepLinkRedirect) {
+      let existing = null;
+      try { existing = localStorage.getItem(COOKIE_STORAGE_KEY); } catch (e) {}
       if (!existing) {
-        showBanner();
+        Promise.resolve(window.__radhyaIntroDone).then(() => {
+          let stillEmpty = true;
+          try { stillEmpty = !localStorage.getItem(COOKIE_STORAGE_KEY); } catch (e) {}
+          if (stillEmpty) showBanner();
+        });
       }
-    } catch (e) {
-      showBanner();
     }
 
     attachFooterSettingsTrigger();
+  }
+
+  // =========================================================================
+  // TASK 2: DEEP-LINK CONTROLLER (INTRO -> COOKIES -> CARD MODAL)
+  // =========================================================================
+  function showDeepLinkLoader(show) {
+    let el = document.getElementById('radhyaDeepLinkLoader');
+    if (show) {
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'radhyaDeepLinkLoader';
+        el.className = 'radhya-deeplink-loader';
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
+        el.innerHTML = '<span class="radhya-deeplink-spinner" aria-hidden="true"></span><span>Loading listing...</span>';
+        document.body.appendChild(el);
+      }
+      el.hidden = false;
+    } else if (el) {
+      el.hidden = true;
+      el.remove();
+    }
+  }
+
+  function cleanCardParamFallback() {
+    if (typeof window.__radhyaCleanCardParam === 'function') {
+      window.__radhyaCleanCardParam();
+      return;
+    }
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has('card')) {
+        url.searchParams.delete('card');
+        const nextSearch = url.searchParams.toString();
+        window.history.replaceState(null, '', url.pathname + (nextSearch ? '?' + nextSearch : '') + url.hash);
+      }
+    } catch (_) {}
+  }
+
+  function inferRolePageFromCardId(cardId) {
+    const id = (cardId || '').toLowerCase();
+    if (id.includes('real-estate')) return 'real-estate.html';
+    if (id.includes('renovation')) return 'renovation.html';
+    if (id.includes('loan')) return 'loan.html';
+    if (id.includes('vehicle-sale-purchase') || id.includes('auto-moto')) return 'vehicle-sale-purchase.html';
+    if (id.includes('insurance')) return 'insurance.html';
+    return null;
+  }
+
+  async function initDeepLinkFlow() {
+    const dls = window.__radhyaDeepLinkState;
+    if (!dls || !dls.hasCardParam) return;
+
+    const pageType = document.body?.dataset?.page || '';
+
+    // Invalid ?card= parameter (security sanitized): wait for intro, show toast, clean URL
+    if (dls.invalidCardParam) {
+      await Promise.resolve(window.__radhyaIntroDone);
+      showWebsiteToast('This listing is no longer available', 3000);
+      cleanCardParamFallback();
+      return;
+    }
+
+    const targetId = dls.validCardId;
+    if (!targetId) return;
+
+    // index.html?card=<id>: do NOT play index intro; fetch cards, resolve role page, location.replace
+    if (pageType === 'home') {
+      const loaderTimer = setTimeout(() => showDeepLinkLoader(true), 350);
+      const syncResult = await initialCardsLoadedPromise;
+      clearTimeout(loaderTimer);
+      showDeepLinkLoader(false);
+
+      const registry = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+      const found = registry.find(c => c && c.id === targetId);
+      if (found) {
+        const targetPage = resolveCardRolePage(found);
+        window.location.replace(targetPage + window.location.search + window.location.hash);
+        return;
+      }
+      if (syncResult && syncResult.apiFailed) {
+        const inferred = inferRolePageFromCardId(targetId);
+        if (inferred) {
+          window.location.replace(inferred + window.location.search + window.location.hash);
+          return;
+        }
+        showWebsiteToast("Couldn't load the latest listings", 3500);
+        return;
+      }
+      showWebsiteToast('This listing is no longer available', 3000);
+      cleanCardParamFallback();
+      return;
+    }
+
+    // Role pages: await BOTH introDone AND cardsLoaded
+    let cardsSettled = false;
+    initialCardsLoadedPromise.finally(() => { cardsSettled = true; });
+
+    await Promise.resolve(window.__radhyaIntroDone);
+    if (!cardsSettled) {
+      showDeepLinkLoader(true);
+    }
+    const syncResult = await initialCardsLoadedPromise;
+    showDeepLinkLoader(false);
+
+    // Check if card exists in registry on a DIFFERENT role page -> redirect cleanly
+    const registry = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+    const registryCard = registry.find(c => c && c.id === targetId);
+    if (registryCard) {
+      const correctRolePage = resolveCardRolePage(registryCard);
+      const currFile = (window.location.pathname.split('/').pop() || '').toLowerCase();
+      if (correctRolePage && currFile && correctRolePage.toLowerCase() !== currFile) {
+        window.location.replace(correctRolePage + window.location.search + window.location.hash);
+        return;
+      }
+    }
+
+    // Match exact card by ID using CSS.escape (never unescaped selector or innerHTML)
+    const escapedId = (typeof CSS !== 'undefined' && typeof CSS.escape === 'function')
+      ? CSS.escape(targetId)
+      : targetId.replace(/[^A-Za-z0-9_-]/g, '');
+    const cardEl = document.querySelector(`.prop-card[data-card-id="${escapedId}"]`);
+
+    if (!cardEl) {
+      if (syncResult && syncResult.apiFailed) {
+        showWebsiteToast("Couldn't load the latest listings", 3500);
+      } else {
+        showWebsiteToast('This listing is no longer available', 3000);
+      }
+      cleanCardParamFallback();
+      return;
+    }
+
+    if (syncResult && syncResult.apiFailed) {
+      showWebsiteToast("Couldn't load the latest listings", 3000);
+    }
+
+    // 1. Expand parent accordion dropdown if collapsed
+    const parentSection = cardEl.closest('.service-dropdown-item');
+    if (parentSection) {
+      const sectionGroup = parentSection.closest('.service-sections') || document;
+      sectionGroup.querySelectorAll('.service-dropdown-item.open, .service-dropdown-item.is-open').forEach(el => {
+        if (el !== parentSection) {
+          el.classList.remove('open', 'is-open');
+        }
+      });
+      parentSection.classList.add('open', 'is-open');
+      const cardsBox = parentSection.querySelector('.dropdown-cards');
+      if (cardsBox) {
+        cardsBox.style.removeProperty('display');
+        cardsBox.style.removeProperty('max-height');
+        cardsBox.style.removeProperty('height');
+      }
+      initPropSliders(parentSection);
+    }
+
+    // 2. Scroll card smoothly into center view (respecting prefers-reduced-motion)
+    try {
+      cardEl.scrollIntoView({
+        block: 'center',
+        behavior: dls.reduced ? 'auto' : 'smooth'
+      });
+    } catch (_) {}
+
+    // 3. Yield one micro-frame so cookie banner renders right after introDone, then open existing View details modal
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 30)));
+    if (typeof window.__radhyaOpenPropModal === 'function') {
+      window.__radhyaOpenPropModal(cardEl);
+      dls.timings.modalOpen = performance.now();
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -2104,11 +2405,13 @@
       initTalkToTeamButtons();
       initCookieConsent();
       ensureAllCardShareButtons();
+      initDeepLinkFlow();
     });
   } else {
     initTalkToTeamButtons();
     initCookieConsent();
     ensureAllCardShareButtons();
+    initDeepLinkFlow();
   }
 
   // =========================================================================

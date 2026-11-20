@@ -3035,3 +3035,48 @@ button.open-enquiry-btn:active,
   visibility: visible;
   transform: translate(-50%, 0);
 }
+
+/* Task 2: Modal price readout & deep-link cold-start loader */
+.prop-modal__price {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold-soft);
+  margin: -0.45rem 0 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.radhya-deeplink-loader {
+  position: fixed;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 350;
+  background: rgba(10, 23, 48, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(201, 162, 75, 0.5);
+  border-radius: 999px;
+  padding: 0.65rem 1.2rem;
+  color: var(--gold-soft);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 12px 28px rgba(6, 15, 32, 0.45);
+}
+
+.radhya-deeplink-spinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(227, 200, 131, 0.3);
+  border-top-color: var(--gold);
+  animation: radhyaSpin 0.8s linear infinite;
+}
+
+@keyframes radhyaSpin {
+  to { transform: rotate(360deg); }
+}
