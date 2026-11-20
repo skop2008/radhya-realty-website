@@ -3080,3 +3080,17 @@ button.open-enquiry-btn:active,
 @keyframes radhyaSpin {
   to { transform: rotate(360deg); }
 }
+
+/* Task 3: Fix mobile hero-left -> search bar gap (prevent flex-basis: 520px becoming vertical height in column flex) */
+@media (max-width: 840px) {
+  .role-hero-header {
+    gap: 1.2rem;
+  }
+  .role-hero-left {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+  .role-hero-left .lead:empty {
+    margin: 0;
+  }
+}
