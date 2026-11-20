@@ -24,3 +24,8 @@ GEMINI.local.md
 .gemini/
 radhya-realty-milesweb.zip
 radhya-realty-milesweb.tar.gz
+
+# v3 test harness & proof artifacts
+tests/node_modules/
+baseline/
+proof/
