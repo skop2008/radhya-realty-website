@@ -101,7 +101,8 @@
   });
   window.addEventListener('pageshow', () => document.body.classList.remove('leaving'));
 
-  /* intro + unified introDone promise & early deep-link redirects */
+  /* intro + unified introDone promise & early deep-link redirects (v3: plays on every page load) */
+  document.documentElement.dataset.introState = 'running';
   const hdr = document.getElementById('hdr');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const searchParams = new URLSearchParams(window.location.search);
@@ -112,6 +113,16 @@
   const invalidCardParam = hasCardParam && !validCardId;
   const currentFile = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
+  function inferRolePageEarly(cardId) {
+    const id = String(cardId || '').toLowerCase();
+    if (id.includes('real-estate')) return 'real-estate.html';
+    if (id.includes('renovation')) return 'renovation.html';
+    if (id.includes('loan')) return 'loan.html';
+    if (id.includes('vehicle-sale-purchase') || id.includes('auto-moto')) return 'vehicle-sale-purchase.html';
+    if (id.includes('insurance')) return 'insurance.html';
+    return null;
+  }
+
   const deepLinkState = {
     rawCardParam,
     hasCardParam,
@@ -120,6 +131,7 @@
     currentFile,
     reduced,
     introPlayed: false,
+    deferredIntro: false,
     timings: {
       introStart: null,
       introEnd: null,
@@ -142,101 +154,165 @@
     if (deepLinkState.timings.introEnd === null) {
       deepLinkState.timings.introEnd = performance.now();
     }
+    document.documentElement.dataset.introState = 'done';
+    window.dispatchEvent(new CustomEvent('radhya:intro-end'));
     resolveIntroDone();
   }
 
-  // Local server alias redirect: auto-moto.html?card=... -> vehicle-sale-purchase.html?card=...
+  // Local server alias redirect: auto-moto.html?card=... -> vehicle-sale-purchase.html?card=... (before any intro)
   if (currentFile === 'auto-moto.html' && hasCardParam) {
     window.location.replace('vehicle-sale-purchase.html' + window.location.search + window.location.hash);
     return;
   }
 
-  let seen = false;
-  try { seen = sessionStorage.getItem('rr_intro') === '1'; } catch (_) {}
+  // Wrong role page early redirect before playing intro (so intro plays ONCE on target page)
+  if (page === 'role' && validCardId) {
+    const inferredPage = inferRolePageEarly(validCardId);
+    if (inferredPage && inferredPage.toLowerCase() !== currentFile) {
+      window.location.replace(inferredPage + window.location.search + window.location.hash);
+      return;
+    }
+  }
 
-  // On index.html?card=<valid>, skip index intro completely so it plays ONCE on the target role page
-  const skipForIndexDeepLink = (page === 'home' && !!validCardId);
-  const shouldPlayIntro = !skipForIndexDeepLink && !seen && !reduced && !!Element.prototype.animate && (page === 'home' || (page === 'role' && hasCardParam));
+  let introStarted = false;
+  function runIntroSequence() {
+    if (introStarted || introSettled) return;
+    introStarted = true;
+    document.documentElement.dataset.introState = 'running';
 
-  if (!shouldPlayIntro) {
-    requestAnimationFrame(() => document.body.classList.add('ready'));
+    const hold = document.getElementById('intro-hold');
+    if (hold) hold.remove();
+
+    if (hdr) hdr.classList.add('hidden');
+    document.documentElement.style.overflow = 'hidden';
+
+    const intro = document.createElement('div');
+    intro.id = 'intro';
+
+    // prefers-reduced-motion: run a short fade preserving exact introStart -> introEnd -> banner -> modal order
+    if (reduced || !Element.prototype.animate) {
+      intro.innerHTML = `<div class="logo">${logo(true)}</div>`;
+      intro.style.opacity = '1';
+      intro.style.transition = 'opacity 180ms ease';
+      document.body.appendChild(intro);
+      document.body.classList.add('ready');
+      deepLinkState.timings.introStart = performance.now();
+      window.dispatchEvent(new CustomEvent('radhya:intro-start'));
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          intro.style.opacity = '0';
+          setTimeout(() => {
+            if (intro.parentNode) intro.remove();
+            if (hdr) hdr.classList.remove('hidden');
+            document.documentElement.style.overflow = '';
+            settleIntroDone(true);
+          }, 190);
+        }, 50);
+      });
+      return;
+    }
+
+    const items = [...ROLES.map(r => ({ name:r.name, icon:r.icon })), CONTACT];
+    const half = items.length / 2;
+    intro.innerHTML = items.map(i => `<div class="chip">${svg(i.icon)}<span>${i.name}</span></div>`).join('')
+                    + `<div class="logo">${logo(true)}</div>`;
+    document.body.appendChild(intro);
+    document.body.classList.add('ready');
     deepLinkState.timings.introStart = performance.now();
-    settleIntroDone(false);
+    window.dispatchEvent(new CustomEvent('radhya:intro-start'));
+
+    const chips = [...intro.querySelectorAll('.chip')];
+    const logoEl = intro.querySelector('.logo');
+    const ease = 'cubic-bezier(.22,.8,.24,1)';
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    const base = 'translate(-50%,-50%)';
+
+    const target = i => {
+      const left = i < half, row = left ? i : i - half;
+      const dx = Math.min(innerWidth * 0.36, 520) * (left ? -1 : 1);
+      const dy = (row - (half - 1) / 2) * Math.min(innerHeight * 0.2, 150);
+      return `${base} translate(${dx}px,${dy}px)`;
+    };
+
+    function cleanupIntroAndResolve() {
+      if (intro.parentNode) intro.remove();
+      if (hdr) hdr.classList.remove('hidden');
+      document.documentElement.style.overflow = '';
+      settleIntroDone(true);
+    }
+
+    // Safety fallback timer (intro total ~5110ms + 700ms buffer) so introDone can NEVER hang
+    const introFallbackTimer = setTimeout(cleanupIntroAndResolve, 5800);
+
+    (async () => {
+      await logoEl.animate(
+        [{ opacity:0, transform:`${base} scale(.35)` }, { opacity:1, transform:`${base} scale(1)` }],
+        { duration:1200, easing:ease, fill:'forwards' }).finished;
+
+      await Promise.all(chips.map((c, i) => c.animate(
+        [{ opacity:0, transform:`${base} scale(.4)` }, { opacity:1, transform:`${target(i)} scale(1)` }],
+        { duration:900, delay:(i % half) * 110, easing:ease, fill:'forwards' }).finished));
+
+      await wait(1000);
+
+      await Promise.all(chips.map((c, i) => c.animate(
+        [{ opacity:1, transform:`${target(i)} scale(1)` }, { opacity:0, transform:`${base} scale(.4)` }],
+        { duration:750, delay:(i % half) * 70, easing:ease, fill:'forwards' }).finished));
+
+      /* logo settles into the header brand position */
+      if (hdr) hdr.classList.remove('hidden');
+      const brandEl = document.querySelector('.brand');
+      const dest = brandEl ? brandEl.getBoundingClientRect() : { left: innerWidth / 2, top: 20, width: 120, height: 32 };
+      const src = logoEl.getBoundingClientRect();
+      const s = dest.height / Math.max(1, src.height * 215 / 300);
+      const dx = (dest.left + dest.width / 2) - (src.left + src.width / 2);
+      const dy = (dest.top + dest.height / 2) - (src.top + src.height * 0.36);
+      intro.animate([{ background:'rgba(10,23,48,1)' }, { background:'rgba(10,23,48,0)' }],
+        { duration:900, easing:ease, fill:'forwards' });
+      await logoEl.animate(
+        [{ transform:`${base} translate(0,0) scale(1)`, opacity:1 },
+         { transform:`${base} translate(${dx}px,${dy}px) scale(${s})`, opacity:0.0 }],
+        { duration:900, easing:ease, fill:'forwards' }).finished;
+
+      clearTimeout(introFallbackTimer);
+      cleanupIntroAndResolve();
+    })().catch(() => {
+      clearTimeout(introFallbackTimer);
+      cleanupIntroAndResolve();
+    });
+  }
+  window.__radhyaStartIntroNow = runIntroSequence;
+
+  // On index.html?card=<valid>, defer intro so redirect runs BEFORE any intro plays on index.html
+  if (page === 'home' && !!validCardId) {
+    deepLinkState.deferredIntro = true;
+    const hold = document.createElement('div');
+    hold.id = 'intro-hold';
+    hold.style.cssText = 'position:fixed;inset:0;z-index:100;background:#0a1730;';
+    document.body.appendChild(hold);
+    document.body.classList.add('ready');
     return;
   }
 
-  try { sessionStorage.setItem('rr_intro', '1'); } catch (_) {}
-  hdr.classList.add('hidden');
-  document.documentElement.style.overflow = 'hidden';
-
-  const items = [...ROLES.map(r => ({ name:r.name, icon:r.icon })), CONTACT];
-  const half = items.length / 2;
-  const intro = document.createElement('div');
-  intro.id = 'intro';
-  intro.innerHTML = items.map(i => `<div class="chip">${svg(i.icon)}<span>${i.name}</span></div>`).join('')
-                  + `<div class="logo">${logo(true)}</div>`;
-  document.body.appendChild(intro);
-  document.body.classList.add('ready');
-  deepLinkState.timings.introStart = performance.now();
-
-  const chips = [...intro.querySelectorAll('.chip')];
-  const logoEl = intro.querySelector('.logo');
-  const ease = 'cubic-bezier(.22,.8,.24,1)';
-  const wait = ms => new Promise(r => setTimeout(r, ms));
-  const base = 'translate(-50%,-50%)';
-
-  const target = i => {                        // first half on left, second half on right, equal count
-    const left = i < half, row = left ? i : i - half;
-    const dx = Math.min(innerWidth * 0.36, 520) * (left ? -1 : 1);
-    const dy = (row - (half - 1) / 2) * Math.min(innerHeight * 0.2, 150);
-    return `${base} translate(${dx}px,${dy}px)`;
-  };
-
-  function cleanupIntroAndResolve() {
-    if (intro.parentNode) intro.remove();
-    hdr.classList.remove('hidden');
-    document.documentElement.style.overflow = '';
-    settleIntroDone(true);
+  // On role page with a valid ?card= whose role cannot be inferred AND isn't in static DOM, briefly hold before playing intro to allow wrong-role redirect
+  if (page === 'role' && !!validCardId) {
+    const inferred = inferRolePageEarly(validCardId);
+    const esc = (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') ? CSS.escape(validCardId) : validCardId.replace(/[^A-Za-z0-9_-]/g, '');
+    const inDomNow = !!document.querySelector(`.prop-card[data-card-id="${esc}"]`);
+    if (!inferred && !inDomNow) {
+      deepLinkState.deferredIntro = true;
+      const hold = document.createElement('div');
+      hold.id = 'intro-hold';
+      hold.style.cssText = 'position:fixed;inset:0;z-index:100;background:#0a1730;';
+      document.body.appendChild(hold);
+      document.body.classList.add('ready');
+      return;
+    }
   }
 
-  // Safety fallback timer (intro total ~5110ms + 700ms buffer) so introDone can NEVER hang
-  const introFallbackTimer = setTimeout(cleanupIntroAndResolve, 5800);
-
-  (async () => {
-    await logoEl.animate(
-      [{ opacity:0, transform:`${base} scale(.35)` }, { opacity:1, transform:`${base} scale(1)` }],
-      { duration:1200, easing:ease, fill:'forwards' }).finished;
-
-    await Promise.all(chips.map((c, i) => c.animate(
-      [{ opacity:0, transform:`${base} scale(.4)` }, { opacity:1, transform:`${target(i)} scale(1)` }],
-      { duration:900, delay:(i % half) * 110, easing:ease, fill:'forwards' }).finished));
-
-    await wait(1000);
-
-    await Promise.all(chips.map((c, i) => c.animate(
-      [{ opacity:1, transform:`${target(i)} scale(1)` }, { opacity:0, transform:`${base} scale(.4)` }],
-      { duration:750, delay:(i % half) * 70, easing:ease, fill:'forwards' }).finished));
-
-    /* logo settles into the header brand position */
-    hdr.classList.remove('hidden');
-    const dest = document.querySelector('.brand').getBoundingClientRect();
-    const src = logoEl.getBoundingClientRect();
-    const s = dest.height / (src.height * 215 / 300);
-    const dx = (dest.left + dest.width / 2) - (src.left + src.width / 2);
-    const dy = (dest.top + dest.height / 2) - (src.top + src.height * 0.36);
-    intro.animate([{ background:'rgba(10,23,48,1)' }, { background:'rgba(10,23,48,0)' }],
-      { duration:900, easing:ease, fill:'forwards' });
-    await logoEl.animate(
-      [{ transform:`${base} translate(0,0) scale(1)`, opacity:1 },
-       { transform:`${base} translate(${dx}px,${dy}px) scale(${s})`, opacity:0.0 }],
-      { duration:900, easing:ease, fill:'forwards' }).finished;
-
-    clearTimeout(introFallbackTimer);
-    cleanupIntroAndResolve();
-  })().catch(() => {
-    clearTimeout(introFallbackTimer);
-    cleanupIntroAndResolve();
-  });
+  // Play intro on EVERY page load (home, role, repeat visits, internal navigation, ?card= links)
+  runIntroSequence();
 })();
 (function () {
   const header = document.querySelector('.site-header');
@@ -1056,8 +1132,15 @@
     // Initial run
     syncSliderRange();
     if (budgetSlider) budgetSlider.value = String(getScaleList().length - 1);
-    applyFilters();
-    window.applyPortalFilters = applyFilters;
+    const wrappedApplyFilters = () => {
+      applyFilters();
+      if (typeof window.__radhyaEnsureShareButtons === 'function') {
+        window.__radhyaEnsureShareButtons(document);
+      }
+    };
+    wrappedApplyFilters();
+    window.applyPortalFilters = wrappedApplyFilters;
+    window.__radhyaResetPortalFilters = resetAll;
   }
 
   // Initialize filter engine
@@ -1086,7 +1169,10 @@
     }
     window.__radhyaCleanCardParam = cleanCardParamFromUrl;
 
+    let lastFocusedBeforeModal = null;
+
     function openModal(card) {
+      lastFocusedBeforeModal = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       const btn = card.querySelector('.prop-card__more');
       mTag.textContent   = (btn && btn.dataset.tag)   || card.querySelector('.prop-tag')?.textContent || '';
       mTitle.textContent = (btn && btn.dataset.title) || card.querySelector('h4')?.textContent || '';
@@ -1124,11 +1210,10 @@
         const oldPrev = clone.querySelector('.prop-slider__prev');
         const oldNext = clone.querySelector('.prop-slider__next');
         const oldDots = clone.querySelector('.prop-slider__dots');
-        const oldShare = clone.querySelector('.prop-card__share');
+        clone.querySelectorAll('.card-share-btn, .prop-card__share').forEach(el => el.remove());
         if (oldPrev) oldPrev.remove();
         if (oldNext) oldNext.remove();
         if (oldDots) oldDots.remove();
-        if (oldShare) oldShare.remove();
         const track = clone.querySelector('.prop-slider__track');
         if (track) track.style.transform = 'translateX(0)';
         clone._sliderInitialized = false;
@@ -1152,6 +1237,7 @@
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
       if (closeBtn) {
+        try { closeBtn.focus({ preventScroll: true }); } catch (_) {}
         setTimeout(() => { try { closeBtn.focus({ preventScroll: true }); } catch (_) {} }, 30);
       }
     }
@@ -1162,11 +1248,15 @@
       document.body.style.overflow = '';
       mFig.querySelectorAll('video').forEach(v => v.pause());
       cleanCardParamFromUrl();
+      if (lastFocusedBeforeModal && document.contains(lastFocusedBeforeModal)) {
+        try { lastFocusedBeforeModal.focus({ preventScroll: true }); } catch (_) {}
+      }
+      lastFocusedBeforeModal = null;
     }
 
     document.addEventListener('click', e => {
       // Do not intercept clicks on slider navigation controls, share buttons, or tags inside slider
-      if (e.target.closest('.prop-slider__btn') || e.target.closest('.prop-slider__dots') || e.target.closest('.prop-tag') || e.target.closest('.prop-card__share')) return;
+      if (e.target.closest('.prop-slider__btn') || e.target.closest('.prop-slider__dots') || e.target.closest('.prop-tag') || e.target.closest('.card-share-btn') || e.target.closest('.prop-card__share')) return;
 
       const btn = e.target.closest('.prop-card__more');
       if (btn) {
@@ -1190,7 +1280,32 @@
 
     if (overlay) overlay.addEventListener('click', closeModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+    document.addEventListener('keydown', e => {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const focusables = Array.from(modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+          .filter(el => !el.disabled && el.offsetParent !== null);
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first || !modal.contains(document.activeElement)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last || !modal.contains(document.activeElement)) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    });
   }
 
   /* =========================================================================
@@ -1495,12 +1610,17 @@
     if (window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.timings.cardsLoaded === null) {
       window.__radhyaDeepLinkState.timings.cardsLoaded = performance.now();
     }
+    if (!window.__radhyaCardsReadyResolved) {
+      window.__radhyaCardsReadyResolved = true;
+      window.dispatchEvent(new CustomEvent('radhya:cards-ready'));
+    }
     return { ok: syncSucceeded, apiFailed: !syncSucceeded };
   }
 
   const initialCardsLoadedPromise = syncFromCmsApi({
     deepLink: !!(window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.validCardId)
   });
+  window.__radhyaInitialCardsPromise = initialCardsLoadedPromise;
   // Poll periodically and refresh on tab focus / visibility
   setInterval(() => syncFromCmsApi(), 15000);
   window.addEventListener('focus', () => syncFromCmsApi());
@@ -2212,7 +2332,7 @@
     // Public method to reopen settings
     window.openRadhyaCookieSettings = showBanner;
 
-    // Check existing consent — NEVER show banner before introDone resolves
+    // Check existing consent — NEVER mount or show banner before introDone resolves and introState === "done"
     const dls = window.__radhyaDeepLinkState;
     const isIndexDeepLinkRedirect = document.body?.dataset?.page === 'home' && !!(dls && dls.validCardId);
     if (!isIndexDeepLinkRedirect) {
@@ -2220,6 +2340,7 @@
       try { existing = localStorage.getItem(COOKIE_STORAGE_KEY); } catch (e) {}
       if (!existing) {
         Promise.resolve(window.__radhyaIntroDone).then(() => {
+          if (document.documentElement.dataset.introState !== 'done') return;
           let stillEmpty = true;
           try { stillEmpty = !localStorage.getItem(COOKIE_STORAGE_KEY); } catch (e) {}
           if (stillEmpty) showBanner();
@@ -2314,12 +2435,38 @@
           window.location.replace(inferred + window.location.search + window.location.hash);
           return;
         }
+        if (typeof window.__radhyaStartIntroNow === 'function') window.__radhyaStartIntroNow();
+        await Promise.resolve(window.__radhyaIntroDone);
         showWebsiteToast("Couldn't load the latest listings", 3500);
         return;
       }
+      if (typeof window.__radhyaStartIntroNow === 'function') window.__radhyaStartIntroNow();
+      await Promise.resolve(window.__radhyaIntroDone);
       showWebsiteToast('This listing is no longer available', 3000);
       cleanCardParamFallback();
       return;
+    }
+
+    // Role pages: if intro was deferred to verify card ownership before playing intro, resolve cards first
+    if (dls.deferredIntro) {
+      const loaderTimer = setTimeout(() => showDeepLinkLoader(true), 350);
+      await initialCardsLoadedPromise;
+      clearTimeout(loaderTimer);
+      showDeepLinkLoader(false);
+
+      const registryPre = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+      const preCard = registryPre.find(c => c && c.id === targetId);
+      if (preCard) {
+        const correctRolePage = resolveCardRolePage(preCard);
+        const currFile = (window.location.pathname.split('/').pop() || '').toLowerCase();
+        if (correctRolePage && currFile && correctRolePage.toLowerCase() !== currFile) {
+          window.location.replace(correctRolePage + window.location.search + window.location.hash);
+          return;
+        }
+      }
+      if (typeof window.__radhyaStartIntroNow === 'function') {
+        window.__radhyaStartIntroNow();
+      }
     }
 
     // Role pages: await BOTH introDone AND cardsLoaded
@@ -2365,6 +2512,15 @@
       showWebsiteToast("Couldn't load the latest listings", 3000);
     }
 
+    // 0. Clear any active search/filter hiding the target card
+    const searchInp = document.getElementById('tsfSearchInput');
+    if (cardEl.classList.contains('is-filtered-out') || (searchInp && searchInp.value.trim() !== '')) {
+      if (typeof window.__radhyaResetPortalFilters === 'function') {
+        window.__radhyaResetPortalFilters();
+      }
+      cardEl.classList.remove('is-filtered-out');
+    }
+
     // 1. Expand parent accordion dropdown if collapsed
     const parentSection = cardEl.closest('.service-dropdown-item');
     if (parentSection) {
@@ -2397,6 +2553,7 @@
     if (typeof window.__radhyaOpenPropModal === 'function') {
       window.__radhyaOpenPropModal(cardEl);
       dls.timings.modalOpen = performance.now();
+      window.dispatchEvent(new CustomEvent('radhya:deeplink-opened', { detail: { cardId: targetId } }));
     }
   }
 
@@ -2432,6 +2589,7 @@
     'tours-and-travels': 'real-estate.html',
     'TOURS_AND_TRAVELS': 'real-estate.html'
   };
+  window.__radhyaCardRolePageMap = CARD_ROLE_PAGE_MAP;
 
   function resolveCardRolePage(cardLike) {
     if (cardLike) {
@@ -2522,8 +2680,9 @@
     if (!cardEl) return;
     const moreBtn = cardEl.querySelector('.prop-card__more');
     const title = (moreBtn?.dataset?.title || cardEl.querySelector('h4')?.textContent || 'Radhya Realty Listing').trim();
+    const price = (moreBtn?.dataset?.price || cardEl.querySelector('.prop-card__price')?.textContent || '').trim();
     const url = buildCardShareUrl(cardEl);
-    const text = `${title} — Radhya Realty`;
+    const text = price ? `${title} — ${price} | Radhya Realty` : `${title} | Radhya Realty`;
 
     if (typeof navigator !== 'undefined' && typeof navigator.share === 'function' && window.isSecureContext) {
       try {
@@ -2535,7 +2694,7 @@
     }
 
     await copyToClipboard(url);
-    showWebsiteToast('Link copied', 2000);
+    showWebsiteToast('Product link copied', 2000);
   }
   window.shareCard = shareCard;
 
@@ -2549,32 +2708,75 @@
     const moreBtn = cardEl.querySelector('.prop-card__more');
     const title = (moreBtn?.dataset?.title || cardEl.querySelector('h4')?.textContent || 'listing').trim();
 
-    let btn = fig.querySelector('.prop-card__share');
+    let btn = fig.querySelector('.card-share-btn');
+    if (!btn) {
+      btn = fig.querySelector('.prop-card__share');
+    }
     if (!btn) {
       btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'prop-card__share';
+      btn.className = 'card-share-btn prop-card__share';
       btn.innerHTML = `<span class="prop-card__share-circle" aria-hidden="true">${SHARE_SVG}</span>`;
       fig.appendChild(btn);
+    } else {
+      btn.type = 'button';
+      btn.classList.add('card-share-btn', 'prop-card__share');
     }
     btn.setAttribute('aria-label', `Share ${title}`);
     btn.dataset.cardId = id;
     btn.dataset.shareUrl = buildCardShareUrl(cardEl);
   }
 
-  function ensureAllCardShareButtons() {
-    document.querySelectorAll('.prop-card').forEach(ensureCardShareButton);
+  function ensureAllCardShareButtons(root = document) {
+    if (!root) return;
+    if (root instanceof Element && root.classList.contains('prop-card')) {
+      ensureCardShareButton(root);
+      return;
+    }
+    if (typeof root.querySelectorAll === 'function') {
+      root.querySelectorAll('.prop-card').forEach(ensureCardShareButton);
+    }
   }
   window.__radhyaEnsureShareButtons = ensureAllCardShareButtons;
+  window.ensureShareButtons = ensureAllCardShareButtons;
 
-  // Event delegation for Share buttons (runs in capture or bubble before modal opener)
-  document.addEventListener('click', e => {
-    const shareBtn = e.target.closest('.prop-card__share');
-    if (!shareBtn) return;
-    e.preventDefault();
-    e.stopPropagation();
-    const card = shareBtn.closest('.prop-card');
-    if (card) shareCard(card);
-  }, true);
+  // MutationObserver safety net so dynamically added/re-rendered cards always receive .card-share-btn
+  if (typeof MutationObserver !== 'undefined' && !window.__radhyaShareObserverBound) {
+    window.__radhyaShareObserverBound = true;
+    const attachObserver = () => {
+      const targets = document.querySelectorAll('.service-sections, .dropdown-cards');
+      const obs = new MutationObserver(mutations => {
+        for (const m of mutations) {
+          for (const node of m.addedNodes) {
+            if (!(node instanceof Element)) continue;
+            if (node.classList.contains('prop-card')) {
+              ensureCardShareButton(node);
+            } else if (node.querySelector && node.querySelector('.prop-card')) {
+              ensureAllCardShareButtons(node);
+            }
+          }
+        }
+      });
+      targets.forEach(t => obs.observe(t, { childList: true, subtree: true }));
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attachObserver, { once: true });
+    } else {
+      attachObserver();
+    }
+  }
+
+  // Single delegated click listener for Share buttons (guarded against double binding)
+  if (!window.__radhyaShareClickBound) {
+    window.__radhyaShareClickBound = true;
+    document.addEventListener('click', e => {
+      const shareBtn = e.target.closest('.card-share-btn, .prop-card__share');
+      if (!shareBtn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const card = shareBtn.closest('.prop-card');
+      if (card) shareCard(card);
+    }, true);
+  }
 
 })();

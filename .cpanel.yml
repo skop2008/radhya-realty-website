@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/${USER}/public_html/
-    - /bin/cp -R * ${DEPLOYPATH}
+    - /bin/mkdir -p ${DEPLOYPATH} ${DEPLOYPATH}/api/ ${DEPLOYPATH}/data/ ${DEPLOYPATH}/uploads/ 2>/dev/null || true
+    - /usr/bin/rsync -a --exclude='.git' --exclude='.claude' --exclude='.gemini' --exclude='LOOP_STATE.md' --exclude='tests' --exclude='proof' --exclude='baseline' --exclude='api/enquiries-log.json' --exclude='CLAUDE.md' --exclude='GEMINI.md' --exclude='*.zip' --exclude='*.tar.gz' ./ ${DEPLOYPATH}
     - /bin/cp -f .htaccess ${DEPLOYPATH} 2>/dev/null || true
-    - /bin/mkdir -p ${DEPLOYPATH}/api/ 2>/dev/null || true
     - /bin/cp -f api/.htaccess ${DEPLOYPATH}/api/.htaccess 2>/dev/null || true
