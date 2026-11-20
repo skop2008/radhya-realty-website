@@ -1029,9 +1029,11 @@
         const oldPrev = clone.querySelector('.prop-slider__prev');
         const oldNext = clone.querySelector('.prop-slider__next');
         const oldDots = clone.querySelector('.prop-slider__dots');
+        const oldShare = clone.querySelector('.prop-card__share');
         if (oldPrev) oldPrev.remove();
         if (oldNext) oldNext.remove();
         if (oldDots) oldDots.remove();
+        if (oldShare) oldShare.remove();
         const track = clone.querySelector('.prop-slider__track');
         if (track) track.style.transform = 'translateX(0)';
         clone._sliderInitialized = false;
@@ -1063,8 +1065,8 @@
     }
 
     document.addEventListener('click', e => {
-      // Do not intercept clicks on slider navigation controls or links/buttons inside slider
-      if (e.target.closest('.prop-slider__btn') || e.target.closest('.prop-slider__dots') || e.target.closest('.prop-tag')) return;
+      // Do not intercept clicks on slider navigation controls, share buttons, or tags inside slider
+      if (e.target.closest('.prop-slider__btn') || e.target.closest('.prop-slider__dots') || e.target.closest('.prop-tag') || e.target.closest('.prop-card__share')) return;
 
       const btn = e.target.closest('.prop-card__more');
       if (btn) {
@@ -1265,8 +1267,11 @@
       });
     });
 
-    // Re-initialize sliders
+    // Re-initialize sliders and ensure share buttons on all hydrated cards
     initPropSliders();
+    if (typeof window.__radhyaEnsureShareButtons === 'function') {
+      window.__radhyaEnsureShareButtons();
+    }
 
     // Clean inline styles from any open dropdowns so pure CSS grid handles natural auto-height
     sections.forEach(s => {
@@ -2098,10 +2103,175 @@
     document.addEventListener('DOMContentLoaded', () => {
       initTalkToTeamButtons();
       initCookieConsent();
+      ensureAllCardShareButtons();
     });
   } else {
     initTalkToTeamButtons();
     initCookieConsent();
+    ensureAllCardShareButtons();
   }
+
+  // =========================================================================
+  // TASK 1: PER-CARD SHARE ICON, ROLE-PAGE MAPPING & TOAST HELPER
+  // =========================================================================
+  const CARD_ROLE_PAGE_MAP = {
+    'real-estate': 'real-estate.html',
+    'REAL_ESTATE': 'real-estate.html',
+    'renovation': 'renovation.html',
+    'RENOVATION': 'renovation.html',
+    'loan': 'loan.html',
+    'LOAN': 'loan.html',
+    'vehicle-sale-purchase': 'vehicle-sale-purchase.html',
+    'auto-moto': 'vehicle-sale-purchase.html',
+    'AUTO_MOTO': 'vehicle-sale-purchase.html',
+    'insurance': 'insurance.html',
+    'INSURANCE': 'insurance.html',
+    'tours-and-travels': 'real-estate.html',
+    'TOURS_AND_TRAVELS': 'real-estate.html'
+  };
+
+  function resolveCardRolePage(cardLike) {
+    if (cardLike) {
+      const roleKey = (cardLike.role || cardLike.dataset?.role || '').trim();
+      if (roleKey && CARD_ROLE_PAGE_MAP[roleKey]) return CARD_ROLE_PAGE_MAP[roleKey];
+      if (roleKey && CARD_ROLE_PAGE_MAP[roleKey.toLowerCase()]) return CARD_ROLE_PAGE_MAP[roleKey.toLowerCase()];
+
+      const divKey = (cardLike.division || cardLike.dataset?.division || cardLike.querySelector?.('.prop-card__more')?.dataset?.division || '').trim();
+      if (divKey && CARD_ROLE_PAGE_MAP[divKey]) return CARD_ROLE_PAGE_MAP[divKey];
+      if (divKey && CARD_ROLE_PAGE_MAP[divKey.toUpperCase()]) return CARD_ROLE_PAGE_MAP[divKey.toUpperCase()];
+    }
+    const bodyRole = (document.body?.dataset?.role || '').trim().toLowerCase();
+    if (bodyRole && CARD_ROLE_PAGE_MAP[bodyRole]) return CARD_ROLE_PAGE_MAP[bodyRole];
+    return 'real-estate.html';
+  }
+
+  function slugifyCardPart(str) {
+    return String(str || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 64) || 'listing';
+  }
+
+  function getStableCardId(cardEl) {
+    if (!cardEl) return '';
+    const moreBtn = cardEl.querySelector('.prop-card__more');
+    let id = (cardEl.dataset.cardId || moreBtn?.dataset?.cardId || '').trim();
+    if (!id) {
+      const role = (document.body?.dataset?.role || 'listing').toLowerCase();
+      const title = cardEl.querySelector('h4')?.textContent || moreBtn?.dataset?.title || 'item';
+      id = `card-${role}-${slugifyCardPart(title)}`;
+    }
+    cardEl.dataset.cardId = id;
+    if (moreBtn && !moreBtn.dataset.cardId) moreBtn.dataset.cardId = id;
+    return id;
+  }
+
+  function buildCardShareUrl(cardEl) {
+    const id = getStableCardId(cardEl);
+    const rolePage = resolveCardRolePage(cardEl);
+    return `${window.location.origin}/${rolePage}?card=${encodeURIComponent(id)}`;
+  }
+
+  let toastHideTimer = null;
+  function showWebsiteToast(message, durationMs = 2000) {
+    let toast = document.getElementById('radhyaToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'radhyaToast';
+      toast.className = 'radhya-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    if (toastHideTimer) clearTimeout(toastHideTimer);
+    toastHideTimer = setTimeout(() => {
+      toast.classList.remove('is-visible');
+    }, durationMs);
+  }
+  window.__radhyaShowToast = showWebsiteToast;
+
+  async function copyToClipboard(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (_) {}
+    }
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  async function shareCard(cardEl) {
+    if (!cardEl) return;
+    const moreBtn = cardEl.querySelector('.prop-card__more');
+    const title = (moreBtn?.dataset?.title || cardEl.querySelector('h4')?.textContent || 'Radhya Realty Listing').trim();
+    const url = buildCardShareUrl(cardEl);
+    const text = `${title} — Radhya Realty`;
+
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function' && window.isSecureContext) {
+      try {
+        await navigator.share({ title, text, url });
+        return;
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+      }
+    }
+
+    await copyToClipboard(url);
+    showWebsiteToast('Link copied', 2000);
+  }
+  window.shareCard = shareCard;
+
+  const SHARE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
+
+  function ensureCardShareButton(cardEl) {
+    if (!cardEl) return;
+    const id = getStableCardId(cardEl);
+    const fig = cardEl.querySelector('.prop-card__fig');
+    if (!fig) return;
+    const moreBtn = cardEl.querySelector('.prop-card__more');
+    const title = (moreBtn?.dataset?.title || cardEl.querySelector('h4')?.textContent || 'listing').trim();
+
+    let btn = fig.querySelector('.prop-card__share');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'prop-card__share';
+      btn.innerHTML = `<span class="prop-card__share-circle" aria-hidden="true">${SHARE_SVG}</span>`;
+      fig.appendChild(btn);
+    }
+    btn.setAttribute('aria-label', `Share ${title}`);
+    btn.dataset.cardId = id;
+    btn.dataset.shareUrl = buildCardShareUrl(cardEl);
+  }
+
+  function ensureAllCardShareButtons() {
+    document.querySelectorAll('.prop-card').forEach(ensureCardShareButton);
+  }
+  window.__radhyaEnsureShareButtons = ensureAllCardShareButtons;
+
+  // Event delegation for Share buttons (runs in capture or bubble before modal opener)
+  document.addEventListener('click', e => {
+    const shareBtn = e.target.closest('.prop-card__share');
+    if (!shareBtn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const card = shareBtn.closest('.prop-card');
+    if (card) shareCard(card);
+  }, true);
 
 })();

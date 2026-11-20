@@ -2942,3 +2942,96 @@ button.open-enquiry-btn:active,
     padding-top: 0.75rem;
   }
 }
+
+/* === share + deep-link + spacing fixes === */
+
+/* Task 1: Per-card Share icon button (44x44 tap target, compact 32x32 visual glass circle, zero shift) */
+.prop-card__share {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 12;
+  color: var(--gold-soft);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prop-card__share-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(10, 23, 48, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(201, 162, 75, 0.45);
+  box-shadow: 0 4px 12px rgba(6, 15, 32, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.22s var(--ease), border-color 0.22s var(--ease), transform 0.22s var(--ease), color 0.22s var(--ease);
+}
+
+.prop-card__share-circle svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.prop-card__share:hover .prop-card__share-circle,
+.prop-card__share:focus-visible .prop-card__share-circle {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy-900);
+  transform: scale(1.06);
+}
+
+.prop-card__share:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: -2px;
+  border-radius: 50%;
+}
+
+/* Website non-intrusive toast (navy/gold glass, zero purple) */
+.radhya-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 16px);
+  z-index: 360;
+  background: rgba(10, 23, 48, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--gold-soft);
+  border: 1px solid rgba(201, 162, 75, 0.55);
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 14px 32px rgba(6, 15, 32, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  max-width: calc(100vw - 24px);
+  text-align: center;
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease), visibility 0.22s;
+}
+
+.radhya-toast.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
