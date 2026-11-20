@@ -3,3 +3,6 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/${USER}/public_html/
     - /bin/cp -R * ${DEPLOYPATH}
+    - /bin/cp -f .htaccess ${DEPLOYPATH} 2>/dev/null || true
+    - /bin/mkdir -p ${DEPLOYPATH}/api/ 2>/dev/null || true
+    - /bin/cp -f api/.htaccess ${DEPLOYPATH}/api/.htaccess 2>/dev/null || true
