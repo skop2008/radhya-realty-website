@@ -3245,3 +3245,106 @@ button.open-enquiry-btn:active,
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* === v3 share + deeplink + gap + social fixes === */
+
+/* Defect 1: Eliminate empty #role-lead dead space globally and tighten stacked hero gap <= 16px across <= 1024px */
+.role-hero-left .lead:empty {
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .role-hero-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+  .role-hero-left {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-width: 100%;
+  }
+  .role-hero-left .eyebrow {
+    margin-bottom: 0.75rem;
+  }
+  .top-search-filter-bar {
+    width: 100%;
+    margin-top: 0;
+  }
+  .tsf-bar-inner {
+    width: 100%;
+  }
+  .tsf-search-wrap {
+    flex: 1;
+    width: auto;
+  }
+}
+
+/* Defect 2: Standardize .card-share-btn (44x44 tap target, ~18px visible icon, visible at rest, gold focus-visible ring, zero CLS) */
+.card-share-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 5px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 12;
+  color: var(--gold-soft);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-share-btn .prop-card__share-circle {
+  width: 34px;
+  height: 34px;
+}
+
+.card-share-btn .prop-card__share-circle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.card-share-btn:hover .prop-card__share-circle,
+.card-share-btn:focus-visible .prop-card__share-circle {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy-900);
+  transform: scale(1.06);
+}
+
+.card-share-btn:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: -2px;
+  border-radius: 50%;
+}
+
+/* Defect 4: Zero-flash cookie banner guard until introState === "done" */
+html:not([data-intro-state="done"]) #radhyaCookieBanner {
+  display: none !important;
+}
+
+/* Defect 5: Social icons focus-visible ring & safe-area modal containment */
+.social a:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 2px;
+}
+
+.prop-modal {
+  padding-bottom: max(clamp(16px, 4vw, 48px), env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 480px) {
+  .prop-modal {
+    padding: 10px 10px max(10px, env(safe-area-inset-bottom, 0px));
+  }
+}
