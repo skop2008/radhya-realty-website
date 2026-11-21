@@ -3333,10 +3333,17 @@ html:not([data-intro-state="done"]) #radhyaCookieBanner {
   display: none !important;
 }
 
-/* Defect 5: Social icons focus-visible ring & safe-area modal containment */
+/* Defect 5: Social icons focus-visible ring, reduced-motion header animation guard, & safe-area modal containment */
 .social a:focus-visible {
   outline: 2px solid var(--gold-soft);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header.hidden {
+    animation: none;
+  }
 }
 
 .prop-modal {

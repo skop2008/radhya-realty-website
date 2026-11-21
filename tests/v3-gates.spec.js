@@ -697,6 +697,10 @@ function pixelCompareWithPixelmatch(basePath, currPath, masks = [], shiftInfo = 
         }, opts.preFilterQuery || '');
 
         await page.goto(url, { waitUntil: 'load', timeout: 45000 });
+        if (opts.expectEndPage && !new URL(url).pathname.endsWith('/' + opts.expectEndPage)) {
+          await page.waitForURL(new RegExp('/' + opts.expectEndPage.replace('.', '\\.')), { timeout: 15000 });
+          await page.waitForLoadState('load', { timeout: 15000 }).catch(() => {});
+        }
         await waitForPageReady(page, { timeout: 14000 });
         if (opts.expectModal) {
           await page.waitForSelector('#propModal.open', { timeout: 8000 }).catch(() => {});
@@ -870,6 +874,10 @@ function pixelCompareWithPixelmatch(basePath, currPath, masks = [], shiftInfo = 
         }
 
         await page.goto(url, { waitUntil: 'load', timeout: 45000 });
+        if (opts.expectEndPage && !new URL(url).pathname.endsWith('/' + opts.expectEndPage)) {
+          await page.waitForURL(new RegExp('/' + opts.expectEndPage.replace('.', '\\.')), { timeout: 15000 });
+          await page.waitForLoadState('load', { timeout: 15000 }).catch(() => {});
+        }
         await waitForPageReady(page, { timeout: 14000 });
         if (opts.isDeepLink) {
           await page.waitForSelector('#propModal.open', { timeout: 6000 }).catch(() => {});
