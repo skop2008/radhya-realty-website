@@ -3255,7 +3255,7 @@ button.open-enquiry-btn:active,
 
 @media (min-width: 1280px) {
   .role-hero-header {
-    margin-bottom: 3rem;
+    padding-bottom: 1rem;
   }
 }
 

@@ -1237,10 +1237,18 @@
         }
       }
       modal.classList.add('open');
+      void modal.offsetWidth;
       document.body.style.overflow = 'hidden';
       if (closeBtn) {
-        try { closeBtn.focus({ preventScroll: true }); } catch (_) {}
-        setTimeout(() => { try { closeBtn.focus({ preventScroll: true }); } catch (_) {} }, 30);
+        const focusClose = () => {
+          if (modal.classList.contains('open')) {
+            try { closeBtn.focus({ preventScroll: true }); } catch (_) {}
+          }
+        };
+        focusClose();
+        requestAnimationFrame(focusClose);
+        setTimeout(focusClose, 40);
+        setTimeout(focusClose, 140);
       }
     }
     window.__radhyaOpenPropModal = openModal;
@@ -2509,7 +2517,7 @@
     }
 
     // 0. Clear any active search/filter hiding the target card
-    const searchInp = document.getElementById('tsfSearchInput');
+    const searchInp = document.getElementById('pfcSearchInput') || document.getElementById('tsfSearchInput');
     if (cardEl.classList.contains('is-filtered-out') || (searchInp && searchInp.value.trim() !== '')) {
       if (typeof window.__radhyaResetPortalFilters === 'function') {
         window.__radhyaResetPortalFilters();
