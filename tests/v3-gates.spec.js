@@ -118,7 +118,11 @@ function attachErrorListeners(page, errs) {
   page.on('console', m => {
     if (m.type() === 'error') {
       const txt = m.text();
-      if (!txt.includes('favicon')) errs.push(`console.error: ${txt}`);
+      const locUrl = m.location?.()?.url || '';
+      const isThirdPartyStockMedia =
+        txt.startsWith('Failed to load resource') &&
+        (locUrl.includes('images.unsplash.com') || locUrl.includes('commondatastorage.googleapis.com'));
+      if (!txt.includes('favicon') && !isThirdPartyStockMedia) errs.push(`console.error: ${txt}`);
     }
   });
 }
@@ -849,7 +853,8 @@ function pixelCompareWithPixelmatch(basePath, currPath, masks = [], shiftInfo = 
         });
         function sample() {
           const b = document.getElementById('radhyaCookieBanner');
-          const visible = !!(b && !b.hidden && b.offsetParent !== null && parseFloat(getComputedStyle(b).opacity) > 0 && b.getBoundingClientRect().height > 0);
+          const st = b ? getComputedStyle(b) : null;
+          const visible = !!(b && !b.hidden && st && st.display !== 'none' && st.visibility !== 'hidden' && parseFloat(st.opacity) > 0 && b.getBoundingClientRect().height > 0);
           if (visible) {
             if (window.__g5.bannerFirstVisible === null) window.__g5.bannerFirstVisible = performance.now();
             if (window.__g5.introEnd === null || document.documentElement.dataset.introState !== 'done') {
@@ -906,10 +911,11 @@ function pixelCompareWithPixelmatch(basePath, currPath, masks = [], shiftInfo = 
             if (cta) { cta.scrollIntoView({ block: 'center' }); modalCtaOk = hitCheck(cta); }
             modalCloseOk = modalCloseOk && hitCheck(close);
           }
+          const bSt = b ? getComputedStyle(b) : null;
           return {
             introState: document.documentElement.dataset.introState || null,
             ...g,
-            bannerExistsVisible: !!(b && !b.hidden && b.offsetParent !== null && parseFloat(getComputedStyle(b).opacity) > 0),
+            bannerExistsVisible: !!(b && !b.hidden && bSt && bSt.display !== 'none' && bSt.visibility !== 'hidden' && parseFloat(bSt.opacity) > 0 && b.getBoundingClientRect().height > 0),
             acceptClickable: hitCheck(accept),
             essentialClickable: hitCheck(ess),
             modalCloseOk,

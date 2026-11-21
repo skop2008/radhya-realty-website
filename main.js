@@ -161,6 +161,7 @@
 
   // Local server alias redirect: auto-moto.html?card=... -> vehicle-sale-purchase.html?card=... (before any intro)
   if (currentFile === 'auto-moto.html' && hasCardParam) {
+    window.__radhyaRedirecting = true;
     window.location.replace('vehicle-sale-purchase.html' + window.location.search + window.location.hash);
     return;
   }
@@ -169,6 +170,7 @@
   if (page === 'role' && validCardId) {
     const inferredPage = inferRolePageEarly(validCardId);
     if (inferredPage && inferredPage.toLowerCase() !== currentFile) {
+      window.__radhyaRedirecting = true;
       window.location.replace(inferredPage + window.location.search + window.location.hash);
       return;
     }
@@ -1289,21 +1291,14 @@
       }
       if (e.key === 'Tab') {
         const focusables = Array.from(modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
-          .filter(el => !el.disabled && el.offsetParent !== null);
+          .filter(el => !el.disabled && getComputedStyle(el).display !== 'none' && getComputedStyle(el).visibility !== 'hidden' && el.getBoundingClientRect().height > 0);
         if (focusables.length === 0) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        if (e.shiftKey) {
-          if (document.activeElement === first || !modal.contains(document.activeElement)) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last || !modal.contains(document.activeElement)) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
+        e.preventDefault();
+        const curIdx = focusables.indexOf(document.activeElement);
+        const nextIdx = e.shiftKey
+          ? (curIdx <= 0 ? focusables.length - 1 : curIdx - 1)
+          : (curIdx < 0 || curIdx >= focusables.length - 1 ? 0 : curIdx + 1);
+        focusables[nextIdx].focus();
       }
     });
   }
@@ -1527,6 +1522,7 @@
 
   // Background fetch & live sync from CMS REST API (supports deep-link 60s timeout + 1 retry)
   async function syncFromCmsApi(opts = {}) {
+    if (window.__radhyaRedirecting) return { ok: false, apiFailed: false };
     if (typeof fetch === 'undefined') return { ok: false, apiFailed: true };
     const isDeepLink = !!opts.deepLink;
     const urls = getCrmBaseUrls();
