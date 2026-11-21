@@ -1175,6 +1175,9 @@
 
     function openModal(card) {
       lastFocusedBeforeModal = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      modal._activeCard = card;
+      const cardId = getStableCardId(card);
+      const shareUrl = buildCardShareUrl(card);
       const btn = card.querySelector('.prop-card__more');
       mTag.textContent   = (btn && btn.dataset.tag)   || card.querySelector('.prop-tag')?.textContent || '';
       mTitle.textContent = (btn && btn.dataset.title) || card.querySelector('h4')?.textContent || '';
@@ -1201,7 +1204,31 @@
         cta.dataset.division = (btn && btn.dataset.division) || card.dataset.division || mapRoleToDivision(pageRole);
         cta.dataset.title = mTitle.textContent;
         cta.dataset.price = priceVal;
-        cta.dataset.cardId = card.dataset.cardId || (btn && btn.dataset.cardId) || '';
+        cta.dataset.cardId = cardId;
+
+        /* Place the Share button ONLY inside the product detail modal right beside Enquire Now */
+        let actionsRow = cta.parentElement && cta.parentElement.classList.contains('prop-modal__actions')
+          ? cta.parentElement
+          : null;
+        if (!actionsRow && cta.parentElement) {
+          actionsRow = document.createElement('div');
+          actionsRow.className = 'prop-modal__actions';
+          cta.parentElement.insertBefore(actionsRow, cta);
+          actionsRow.appendChild(cta);
+        }
+        if (actionsRow) {
+          let modalShareBtn = actionsRow.querySelector('.prop-modal__share');
+          if (!modalShareBtn) {
+            modalShareBtn = document.createElement('button');
+            modalShareBtn.type = 'button';
+            modalShareBtn.className = 'prop-modal__share card-share-btn';
+            modalShareBtn.innerHTML = `${SHARE_SVG}<span>Share</span>`;
+            actionsRow.appendChild(modalShareBtn);
+          }
+          modalShareBtn.setAttribute('aria-label', `Share ${mTitle.textContent.trim() || 'listing'}`);
+          modalShareBtn.dataset.cardId = cardId;
+          modalShareBtn.dataset.shareUrl = shareUrl;
+        }
       }
       
       /* media figure */
@@ -1255,6 +1282,7 @@
 
     function closeModal() {
       modal.classList.remove('open');
+      modal._activeCard = null;
       document.body.style.overflow = '';
       mFig.querySelectorAll('video').forEach(v => v.pause());
       cleanCardParamFromUrl();
@@ -2496,6 +2524,9 @@
       }
     }
 
+    // Ensure all cards have stable data-card-id attributes before lookup
+    ensureAllCardShareButtons();
+
     // Match exact card by ID using CSS.escape (never unescaped selector or innerHTML)
     const escapedId = (typeof CSS !== 'undefined' && typeof CSS.escape === 'function')
       ? CSS.escape(targetId)
@@ -2635,7 +2666,10 @@
   function buildCardShareUrl(cardEl) {
     const id = getStableCardId(cardEl);
     const rolePage = resolveCardRolePage(cardEl);
-    return `${window.location.origin}/${rolePage}?card=${encodeURIComponent(id)}`;
+    const origin = (window.location && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+      ? window.location.origin
+      : 'https://anubhavbharatgroup.com';
+    return `${origin}/${rolePage}?card=${encodeURIComponent(id)}`;
   }
 
   let toastHideTimer = null;
@@ -2706,29 +2740,9 @@
 
   function ensureCardShareButton(cardEl) {
     if (!cardEl) return;
-    const id = getStableCardId(cardEl);
-    const fig = cardEl.querySelector('.prop-card__fig');
-    if (!fig) return;
-    const moreBtn = cardEl.querySelector('.prop-card__more');
-    const title = (moreBtn?.dataset?.title || cardEl.querySelector('h4')?.textContent || 'listing').trim();
-
-    let btn = fig.querySelector('.card-share-btn');
-    if (!btn) {
-      btn = fig.querySelector('.prop-card__share');
-    }
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'card-share-btn prop-card__share';
-      btn.innerHTML = `<span class="prop-card__share-circle" aria-hidden="true">${SHARE_SVG}</span>`;
-      fig.appendChild(btn);
-    } else {
-      btn.type = 'button';
-      btn.classList.add('card-share-btn', 'prop-card__share');
-    }
-    btn.setAttribute('aria-label', `Share ${title}`);
-    btn.dataset.cardId = id;
-    btn.dataset.shareUrl = buildCardShareUrl(cardEl);
+    getStableCardId(cardEl);
+    // Share button appears ONLY inside #propModal right beside Enquire Now — remove any card-thumbnail share buttons
+    cardEl.querySelectorAll('.card-share-btn, .prop-card__share').forEach(el => el.remove());
   }
 
   function ensureAllCardShareButtons(root = document) {
@@ -2744,7 +2758,7 @@
   window.__radhyaEnsureShareButtons = ensureAllCardShareButtons;
   window.ensureShareButtons = ensureAllCardShareButtons;
 
-  // MutationObserver safety net so dynamically added/re-rendered cards always receive .card-share-btn
+  // MutationObserver safety net so dynamically added/re-rendered cards receive stable IDs and no card-corner share buttons
   if (typeof MutationObserver !== 'undefined' && !window.__radhyaShareObserverBound) {
     window.__radhyaShareObserverBound = true;
     const attachObserver = () => {
@@ -2770,15 +2784,22 @@
     }
   }
 
-  // Single delegated click listener for Share buttons (guarded against double binding)
+  // Single delegated click listener for the modal Share button (guarded against double binding)
   if (!window.__radhyaShareClickBound) {
     window.__radhyaShareClickBound = true;
     document.addEventListener('click', e => {
-      const shareBtn = e.target.closest('.card-share-btn, .prop-card__share');
+      const shareBtn = e.target.closest('.prop-modal__share, .card-share-btn, .prop-card__share');
       if (!shareBtn) return;
       e.preventDefault();
       e.stopPropagation();
-      const card = shareBtn.closest('.prop-card');
+      const openPropModal = shareBtn.closest('#propModal');
+      let card = (openPropModal && openPropModal._activeCard) || shareBtn.closest('.prop-card');
+      if (!card && shareBtn.dataset.cardId) {
+        const escId = (typeof CSS !== 'undefined' && typeof CSS.escape === 'function')
+          ? CSS.escape(shareBtn.dataset.cardId)
+          : shareBtn.dataset.cardId.replace(/[^A-Za-z0-9_-]/g, '');
+        card = document.querySelector(`.prop-card[data-card-id="${escId}"]`);
+      }
       if (card) shareCard(card);
     }, true);
   }

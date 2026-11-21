@@ -3361,3 +3361,84 @@ html:not([data-intro-state="done"]) #radhyaCookieBanner {
     padding: 10px 10px max(10px, env(safe-area-inset-bottom, 0px));
   }
 }
+
+
+/* Modal Action Row: Enquire Now + Share button side by side (exclusive website Share placement) */
+.prop-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.prop-modal__actions .prop-modal__cta {
+  min-height: 44px;
+}
+
+.prop-modal__share.card-share-btn,
+.prop-modal__share {
+  position: static;
+  top: auto;
+  right: auto;
+  width: auto;
+  height: auto;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.85rem 1.45rem;
+  margin: 0;
+  border-radius: 4px;
+  background: rgba(201, 162, 75, 0.14);
+  border: 1.5px solid var(--gold);
+  color: var(--gold-soft);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  z-index: 1;
+  box-shadow: 0 4px 16px rgba(6, 15, 32, 0.25);
+  transition: background 0.25s var(--ease), color 0.25s var(--ease), transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prop-modal__share svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.prop-modal__share:hover,
+.prop-modal__share:focus-visible {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy-900);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201, 162, 75, 0.4);
+}
+
+.prop-modal__share:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+  .prop-modal__content {
+    padding: 1.35rem 1.25rem 1.75rem;
+  }
+  .prop-modal__actions {
+    gap: 0.6rem;
+  }
+  .prop-modal__actions .prop-modal__cta,
+  .prop-modal__actions .prop-modal__share {
+    flex: 1 1 130px;
+    padding: 0.8rem 1rem !important;
+    font-size: 0.88rem;
+  }
+}
