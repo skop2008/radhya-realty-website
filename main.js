@@ -101,8 +101,12 @@
   });
   window.addEventListener('pageshow', () => document.body.classList.remove('leaving'));
 
-  /* intro + unified introDone promise & early deep-link redirects (v3: plays on every page load) */
-  document.documentElement.dataset.introState = 'running';
+  /* intro + unified introDone promise & early deep-link redirects (plays ONCE per session on whichever link opens first) */
+  const INTRO_SESSION_KEY = 'radhya_intro_seen_v1';
+  let introAlreadySeen = false;
+  try { introAlreadySeen = sessionStorage.getItem(INTRO_SESSION_KEY) === '1'; } catch (_) {}
+
+  document.documentElement.dataset.introState = introAlreadySeen ? 'done' : 'running';
   const hdr = document.getElementById('hdr');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const searchParams = new URLSearchParams(window.location.search);
@@ -151,6 +155,10 @@
     if (introSettled) return;
     introSettled = true;
     deepLinkState.introPlayed = !!played;
+    if (played) {
+      try { sessionStorage.setItem(INTRO_SESSION_KEY, '1'); } catch (_) {}
+      introAlreadySeen = true;
+    }
     if (deepLinkState.timings.introEnd === null) {
       deepLinkState.timings.introEnd = performance.now();
     }
@@ -180,10 +188,20 @@
   function runIntroSequence() {
     if (introStarted || introSettled) return;
     introStarted = true;
-    document.documentElement.dataset.introState = 'running';
 
     const hold = document.getElementById('intro-hold');
     if (hold) hold.remove();
+
+    // Already played once in this session: skip intro and show page immediately
+    if (introAlreadySeen) {
+      if (hdr) hdr.classList.remove('hidden');
+      document.documentElement.style.overflow = '';
+      document.body.classList.add('ready');
+      settleIntroDone(false);
+      return;
+    }
+
+    document.documentElement.dataset.introState = 'running';
 
     if (hdr) hdr.classList.add('hidden');
     document.documentElement.style.overflow = 'hidden';
@@ -286,6 +304,12 @@
   }
   window.__radhyaStartIntroNow = runIntroSequence;
 
+  // If intro already played in this session, skip it immediately on subsequent pages/roles
+  if (introAlreadySeen) {
+    runIntroSequence();
+    return;
+  }
+
   // On index.html?card=<valid>, defer intro so redirect runs BEFORE any intro plays on index.html
   if (page === 'home' && !!validCardId) {
     deepLinkState.deferredIntro = true;
@@ -313,7 +337,7 @@
     }
   }
 
-  // Play intro on EVERY page load (home, role, repeat visits, internal navigation, ?card= links)
+  // First visit in this session: play intro regardless of which link/role/card opened first
   runIntroSequence();
 })();
 (function () {
