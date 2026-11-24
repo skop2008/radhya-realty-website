@@ -1776,28 +1776,49 @@
       }).catch(e => console.warn('PHP enquiry log dispatch notice:', e));
     } catch (phpErr) {}
 
-    // 3. Transmit to backend webhook receiver (attempt custom domain, Render fallback)
+    // 3. Transmit to backend webhook receiver with Render cold-start retry + timeout
     const baseUrls = getCrmBaseUrls();
     let deliveredResult = null;
     for (const base of baseUrls) {
-      try {
-        const crmEndpoint = `${base}/api/v1/webhooks/website-ingest`;
-        const res = await fetch(crmEndpoint, {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'X-Radhya-Webhook-Secret': 'radhya-sec-99532-enterprise-token-2026'
-          },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          deliveredResult = await res.json();
-          console.log('CRM Ingestion Response from ' + base + ':', deliveredResult);
+      const isLocalHost = base.includes('localhost') || base.includes('127.0.0.1');
+      const maxAttempts = isLocalHost ? 1 : 3;
+      const timeoutMs = isLocalHost ? 5000 : 30000;
+      const crmEndpoint = `${base}/api/v1/webhooks/website-ingest`;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        let timer = null;
+        try {
+          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          if (controller) timer = setTimeout(() => controller.abort(), timeoutMs);
+          const res = await fetch(crmEndpoint, {
+            method: 'POST',
+            signal: controller ? controller.signal : undefined,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Radhya-Webhook-Secret': 'radhya-sec-99532-enterprise-token-2026'
+            },
+            body: JSON.stringify(payload)
+          });
+          if (timer) clearTimeout(timer);
+          if (res.ok) {
+            deliveredResult = await res.json();
+            console.log('CRM Ingestion Response from ' + base + ':', deliveredResult);
+            break;
+          }
+          if (attempt < maxAttempts && (res.status === 502 || res.status === 503 || res.status === 504 || res.status === 408)) {
+            await new Promise(r => setTimeout(r, 1500 * attempt));
+            continue;
+          }
           break;
+        } catch (err) {
+          if (timer) clearTimeout(timer);
+          if (attempt < maxAttempts) {
+            await new Promise(r => setTimeout(r, 1500 * attempt));
+            continue;
+          }
         }
-      } catch (err) {
-        // try next endpoint in chain
       }
+      if (deliveredResult) break;
     }
 
     return deliveredResult || { status: 'QUEUED_LOCALLY', message: 'Lead safely recorded to local CRM queue and MilesWeb server.' };
@@ -2314,6 +2335,7 @@
 
       banner = document.createElement('div');
       banner.id = 'radhyaCookieBanner';
+      banner.setAttribute('data-nosnippet', '');
       banner.setAttribute('role', 'region');
       banner.setAttribute('aria-label', 'Cookie Consent Notice');
       banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:150;background:#0a1730;border-top:1px solid rgba(201,162,75,0.35);box-shadow:0 -8px 24px rgba(0,0,0,0.45);padding:14px 20px;font-family:\'Manrope\',-apple-system,sans-serif;color:#f2f4f8;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;';
