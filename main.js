@@ -1368,6 +1368,21 @@
      Hydrates cards from Developer Portal CMS (Memory + REST API + BroadcastChannel + LocalStorage)
      Supports mixed media carousels (Pictures + Videos) and natural CSS Grid auto-expansion
      ========================================================================= */
+  function computeRoleCardsFingerprint(roleCards) {
+    return roleCards.map(c => `${c.id}|${c.spaceIndex}|${c.order ?? ''}|${c.updatedAt ?? ''}|${c.title ?? ''}|${c.priceText ?? ''}|${c.dataDeal ?? ''}|${(c.media || []).length}`).join(';;');
+  }
+
+  function renderCmsLoadingState() {
+    const sections = document.querySelectorAll('.service-dropdown-item');
+    sections.forEach((section, sIdx) => {
+      const container = section.querySelector('.dropdown-cards');
+      if (!container) return;
+      container.innerHTML = sIdx === 0
+        ? '<div class="cms-loading-state" style="grid-column:1/-1;padding:2.2rem 1.2rem;text-align:center;color:#e3c883;font-size:0.95rem;letter-spacing:0.03em;opacity:0.9;">Loading live listings...</div>'
+        : '';
+    });
+  }
+
   function rebindInteractiveCards(cardsFromArg) {
     const pageRole = document.body.dataset.role || '';
     if (!pageRole) return;
@@ -1376,18 +1391,26 @@
     if (pageRole === 'auto-moto') targetRole = 'vehicle-sale-purchase';
 
     let registry = cardsFromArg;
-    if (!Array.isArray(registry) || registry.length === 0) {
-      if (Array.isArray(window.__radhyaCardsRegistry) && window.__radhyaCardsRegistry.length > 0) {
+    let hasAuthoritativeRegistry = Array.isArray(cardsFromArg);
+    if (!hasAuthoritativeRegistry) {
+      if (Array.isArray(window.__radhyaCardsRegistry)) {
         registry = window.__radhyaCardsRegistry;
+        hasAuthoritativeRegistry = true;
       } else {
         try {
           const raw = localStorage.getItem('radhya_cms_cards_registry_v1');
-          if (raw) registry = JSON.parse(raw);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              registry = parsed;
+              hasAuthoritativeRegistry = true;
+            }
+          }
         } catch (e) {}
       }
     }
 
-    if (!Array.isArray(registry) || registry.length === 0) return;
+    if (!hasAuthoritativeRegistry || !Array.isArray(registry)) return;
     window.__radhyaCardsRegistry = registry;
 
     const roleCards = registry.filter(c => {
@@ -1401,7 +1424,15 @@
       return false;
     });
 
-    if (roleCards.length === 0) return;
+    if (roleCards.length === 0 && !window.__radhyaCmsSyncedLive && registry.length === 0) return;
+
+    // Skip redundant DOM rebuilds when background poll returns identical live cards
+    const nextFingerprint = computeRoleCardsFingerprint(roleCards);
+    const hasLoadingPlaceholder = !!document.querySelector('.cms-loading-state');
+    if (!hasLoadingPlaceholder && window.__radhyaCardsFingerprint === nextFingerprint) {
+      return;
+    }
+    window.__radhyaCardsFingerprint = nextFingerprint;
 
     const sections = document.querySelectorAll('.service-dropdown-item');
     sections.forEach((section, sIdx) => {
@@ -1577,23 +1608,43 @@
     return ['https://radhya-crm.onrender.com', 'https://crm.radhyarealty.com'];
   }
 
-  // Hydrate on initial load
-  rebindInteractiveCards();
+  // On initial load: hydrate immediately from cached live cards if present; otherwise show loading state (never flash static dummy cards)
+  (function initCardsSurface() {
+    let hasCachedLive = false;
+    try {
+      const raw = localStorage.getItem('radhya_cms_cards_registry_v1');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          hasCachedLive = true;
+          rebindInteractiveCards(parsed);
+        }
+      }
+    } catch (e) {}
+    if (!hasCachedLive && document.body.dataset.role) {
+      renderCmsLoadingState();
+    }
+  })();
 
-  // Background fetch & live sync from CMS REST API (supports deep-link 60s timeout + 1 retry)
+  // Deduplicate concurrent CMS sync fetches so focus/visibility/interval never pile up against Render
+  let cmsSyncInFlight = null;
+
+  // Background fetch & live sync from CMS REST API (survives Render cold-start without reverting to dummy cards)
   async function syncFromCmsApi(opts = {}) {
     if (window.__radhyaRedirecting) return { ok: false, apiFailed: false };
     if (typeof fetch === 'undefined') return { ok: false, apiFailed: true };
+    if (cmsSyncInFlight && !opts.deepLink) return cmsSyncInFlight;
+    const runSync = (async () => {
     const isDeepLink = !!opts.deepLink;
     const urls = getCrmBaseUrls();
-    const maxAttempts = isDeepLink ? 2 : 1;
+    const maxAttempts = 2;
     let syncSucceeded = false;
 
     for (let attempt = 0; attempt < maxAttempts && !syncSucceeded; attempt++) {
       for (const base of urls) {
         try {
           const isLocalHost = base.includes('localhost') || base.includes('127.0.0.1');
-          const timeoutMs = isDeepLink ? (isLocalHost ? 5000 : 60000) : 3500;
+          const timeoutMs = isLocalHost ? 4000 : (isDeepLink ? 60000 : 25000);
           const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
           const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
           const res = await fetch(`${base}/api/v1/public/cards?t=` + Date.now(), {
@@ -1607,9 +1658,10 @@
           if (timer) clearTimeout(timer);
           if (!res.ok) continue;
           const data = await res.json();
-          if (data && data.cards && Array.isArray(data.cards) && data.cards.length > 0) {
+          if (data && Array.isArray(data.cards)) {
+            window.__radhyaCmsSyncedLive = true;
             window.__radhyaCardsRegistry = data.cards;
-            // Rebind immediately with in-memory cards
+            // Rebind immediately with authoritative live cards (including empty [] if all deleted)
             rebindInteractiveCards(data.cards);
 
             // Safely cache to localStorage without crashing if quota limit reached
@@ -1639,8 +1691,8 @@
       }
     }
 
-    // Fallback: If external CRM is suspended, sleeping, or unreachable, load from website static data
-    if (!syncSucceeded) {
+    // Fallback ONLY on first load when no live/cached cards exist yet; never overwrite live CRM cards with static dummy JSON
+    if (!syncSucceeded && !window.__radhyaCmsSyncedLive && !Array.isArray(window.__radhyaCardsRegistry)) {
       try {
         const localDataUrl = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
           ? `${window.location.origin}/data/cards-registry.json?t=` + Date.now()
@@ -1655,9 +1707,6 @@
           if (Array.isArray(cards) && cards.length > 0) {
             window.__radhyaCardsRegistry = cards;
             rebindInteractiveCards(cards);
-            try {
-              localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(cards));
-            } catch (e) {}
           }
         }
       } catch (e) {}
@@ -1671,6 +1720,13 @@
       window.dispatchEvent(new CustomEvent('radhya:cards-ready'));
     }
     return { ok: syncSucceeded, apiFailed: !syncSucceeded };
+    })();
+    cmsSyncInFlight = runSync;
+    try {
+      return await runSync;
+    } finally {
+      if (cmsSyncInFlight === runSync) cmsSyncInFlight = null;
+    }
   }
 
   const initialCardsLoadedPromise = syncFromCmsApi({
