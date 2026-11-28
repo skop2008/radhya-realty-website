@@ -59,7 +59,7 @@
 <link rel="dns-prefetch" href="https://radhya-realty-crm.vercel.app">
 <script>(function(){try{var h=location.hostname,isL=(h==="localhost"||h==="127.0.0.1"||!h||location.protocol==="file:"),rBase=document.querySelector("link[rel=preconnect][href*=vercel]")?.href.replace(/\/$/,"")||"",p=new URLSearchParams(location.search),cid=p.get("card"),lq="?role=loan&lite=1";function getJson(u,ms){var c=typeof AbortController!=="undefined"?new AbortController():null,t=c?setTimeout(function(){c.abort();},ms):null;return fetch(u,{signal:c?c.signal:undefined,priority:"high",cache:"no-cache"}).then(function(r){if(t)clearTimeout(t);return r.ok?r.json():null;}).catch(function(){if(t)clearTimeout(t);return null;});}function race(q,ms){if(!isL)return getJson(rBase+"/api/v1/public/cards"+q,ms);return getJson("http://localhost:3000/api/v1/public/cards"+q,400).then(function(d){return d&&Array.isArray(d.cards)?d:getJson("data/cards-registry.json",1500).then(function(l){return Array.isArray(l)?{cards:l}:(l&&Array.isArray(l.cards)?l:null);});});}if(cid&&/^[A-Za-z0-9_-]{1,100}$/.test(cid)){window.__radhyaSingleCardPrefetchPromise=isL?getJson("http://localhost:3000/api/v1/public/cards?id="+encodeURIComponent(cid),500):getJson(rBase+"/api/v1/public/cards?id="+encodeURIComponent(cid),45000);}window.__radhyaPrefetchPromise=race(lq,45000);}catch(_){}})();</script>
 <link rel="preload" as="style" href="style.css?v=20261128-0835">
-<link rel="preload" as="script" href="main.js?v=20261128-1215">
+<link rel="preload" as="script" href="main.js?v=20261128-1330">
 
 <!-- Google Fonts & Stylesheet -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
@@ -550,7 +550,7 @@
   </div>
 </div>
 <div id="site-footer"></div>
-<script src="main.js?v=20261128-1215"></script>
+<script src="main.js?v=20261128-1330"></script>
 <script src="liquid-glass.js?v=20261128-0835" defer></script>
 </body>
 </html>

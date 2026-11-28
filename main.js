@@ -3034,10 +3034,19 @@
     document.addEventListener('touchstart', e => { const a = e.target.closest && e.target.closest('#panel a[href], #role-cards a[href]'); if (a) prefetchHref(a); }, { passive: true, capture: true });
   })();
 
-  // Lightweight background sync every 45s (?lite=1 + native ETag 304 = 0 bytes when unchanged)
-  setInterval(() => { if (!document.hidden) syncFromCmsApi(); }, 45000);
+  // Fast background sync every 12s (?lite=1 + native ETag 304 = 0 bytes when unchanged) + instant refresh on tab focus
+  let lastFocusSyncAt = 0;
+  const triggerFastLiveSync = () => {
+    if (document.hidden) return;
+    const now = Date.now();
+    if (now - lastFocusSyncAt < 3000) return;
+    lastFocusSyncAt = now;
+    syncFromCmsApi();
+  };
+  setInterval(() => { if (!document.hidden) syncFromCmsApi(); }, 12000);
+  window.addEventListener('focus', triggerFastLiveSync);
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) syncFromCmsApi();
+    if (!document.hidden) triggerFastLiveSync();
   });
 
   // Live Sync Listeners: BroadcastChannel + localStorage storage event
