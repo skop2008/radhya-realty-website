@@ -111,6 +111,11 @@ cp .htaccess "$STAGE_DIR/"
 cp .cpanel.yml "$STAGE_DIR/"
 
 [ -f favicon.svg ] && cp favicon.svg "$STAGE_DIR/" || true
+[ -f favicon.ico ] && cp favicon.ico "$STAGE_DIR/" || true
+[ -f favicon-48x48.png ] && cp favicon-48x48.png "$STAGE_DIR/" || true
+[ -f favicon-192x192.png ] && cp favicon-192x192.png "$STAGE_DIR/" || true
+[ -f apple-touch-icon.png ] && cp apple-touch-icon.png "$STAGE_DIR/" || true
+[ -f logo-512x512.png ] && cp logo-512x512.png "$STAGE_DIR/" || true
 [ -f manifest.json ] && cp manifest.json "$STAGE_DIR/" || true
 [ -f robots.txt ] && cp robots.txt "$STAGE_DIR/" || true
 [ -f sitemap.xml ] && cp sitemap.xml "$STAGE_DIR/" || true
