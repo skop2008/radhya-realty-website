@@ -28,7 +28,7 @@ echo -e "${GOLD}${BOLD}=========================================================
 echo -e "${BLUE}Working Directory:${NC} $ROOT_DIR"
 echo -e "${BLUE}Target Host:${NC}       MilesWeb cPanel (Apache / PHP 8.x)"
 echo -e "${BLUE}Production URL:${NC}    https://anubhavbharatgroup.com/"
-echo -e "${BLUE}Live CRM Engine:${NC}   https://radhya-crm.onrender.com/"
+echo -e "${BLUE}Live CRM Engine:${NC}   https://radhya-realty-crm.vercel.app/"
 echo ""
 
 # ------------------------------------------------------------------------------
@@ -73,10 +73,10 @@ fi
 echo -e "  ${GREEN}✓ All 17 core institutional files verified.${NC}"
 
 # Check CRM URL in main.js and api/whatsapp-enquiry.php
-if grep -q "https://radhya-crm.onrender.com" main.js && grep -q "https://radhya-crm.onrender.com" api/whatsapp-enquiry.php; then
-  echo -e "  ${GREEN}✓ Live Render CRM bridge verified in main.js & whatsapp-enquiry.php.${NC}"
+if grep -q "https://radhya-realty-crm.vercel.app" main.js && grep -q "https://radhya-realty-crm.vercel.app" api/whatsapp-enquiry.php; then
+  echo -e "  ${GREEN}✓ Live Vercel CRM bridge verified in main.js & whatsapp-enquiry.php.${NC}"
 else
-  echo -e "  ${YELLOW}⚠ Warning: CRM bridge endpoint may not point to https://radhya-crm.onrender.com${NC}"
+  echo -e "  ${YELLOW}⚠ Warning: CRM bridge endpoint may not point to https://radhya-realty-crm.vercel.app${NC}"
 fi
 
 # Security Check: Ensure enquiries-log.json is NEVER packaged

@@ -40,14 +40,14 @@ $division = trim(strip_tags($data["division"] ?? $data["service"] ?? "General Ad
 $item     = trim(strip_tags($data["item"] ?? $data["productInterest"] ?? $data["productOrProperty"] ?? "General Enquiry"));
 $details  = trim(strip_tags($data["details"] ?? $data["message"] ?? "Customer requested consultation via website"));
 $url      = trim(strip_tags($data["url"] ?? $data["sourceWebsite"] ?? "https://radhyarealty.com/"));
+$nowIso   = date("c");
+$nowIst   = gmdate("Y-m-d H:i:s", time() + 19800) . " IST";
 $consentGranted   = !empty($data["consentGranted"]) ? true : false;
 $consentTimestamp = trim(strip_tags($data["consentTimestamp"] ?? $nowIso));
 $consentVersion   = trim(strip_tags($data["consentVersion"] ?? "DPDP-2026-2027-v1"));
 $consentPurpose   = trim(strip_tags($data["consentPurpose"] ?? $division));
 $ip       = $_SERVER["REMOTE_ADDR"] ?? "UNKNOWN";
 $ua       = $_SERVER["HTTP_USER_AGENT"] ?? "UNKNOWN";
-$nowIso   = date("c");
-$nowIst   = gmdate("Y-m-d H:i:s", time() + 19800) . " IST";
 
 // Basic validation
 if (empty($phone)) {
@@ -139,8 +139,7 @@ $headers = "From: noreply@radhyarealty.com
 // 2b. Forward lead payload to Live CRM Webhook (Render / Custom Domain)
 if (function_exists('curl_init')) {
     $crmEndpoints = [
-        "https://radhya-crm.onrender.com/api/v1/webhooks/website-ingest",
-        "https://crm.radhyarealty.com/api/v1/webhooks/website-ingest"
+        "https://radhya-realty-crm.vercel.app/api/v1/webhooks/website-ingest"
     ];
     $crmPayload = json_encode([
         "fullName"        => $name,

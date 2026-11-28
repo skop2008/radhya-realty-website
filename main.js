@@ -1914,16 +1914,18 @@
      Hydrates cards from Developer Portal CMS (Memory + REST API + BroadcastChannel + LocalStorage)
      Supports mixed media carousels (Pictures + Videos) and natural CSS Grid auto-expansion
      ========================================================================= */
-  const CMS_CACHE_KEY = 'radhya_cms_cards_registry_v8';
-  // Purge legacy v1..v7 caches so all 66 unique local card photographs render immediately
+  const CMS_CACHE_KEY = 'radhya_cms_cards_registry_v9';
+  // Purge legacy v1..v8 caches so live Vercel CRM edits & deletes sync immediately
   try {
-    ['radhya_cms_cards_registry_v1','radhya_cms_cards_registry_v2','radhya_cms_cards_registry_v3','radhya_cms_cards_registry_v5','radhya_cms_cards_registry_v7'].forEach(k => localStorage.removeItem(k));
+    ['radhya_cms_cards_registry_v1','radhya_cms_cards_registry_v2','radhya_cms_cards_registry_v3','radhya_cms_cards_registry_v5','radhya_cms_cards_registry_v7','radhya_cms_cards_registry_v8'].forEach(k => localStorage.removeItem(k));
     ['real-estate','renovation','loan','vehicle-sale-purchase','insurance','all'].forEach(r => {
       localStorage.removeItem('radhya_cms_role_' + r + '_v4');
       localStorage.removeItem('radhya_cms_role_' + r + '_v5');
       localStorage.removeItem('radhya_cms_role_' + r + '_v7');
+      localStorage.removeItem('radhya_cms_role_' + r + '_v8');
       localStorage.removeItem('radhya_cms_lite_' + r + '_v6');
       localStorage.removeItem('radhya_cms_lite_' + r + '_v7');
+      localStorage.removeItem('radhya_cms_lite_' + r + '_v8');
     });
   } catch (_) {}
 
@@ -2550,9 +2552,9 @@
        !window.location.hostname || 
        window.location.protocol === 'file:');
     if (isLocal) {
-      return ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://radhya-crm.onrender.com'];
+      return ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://radhya-realty-crm.vercel.app'];
     }
-    return ['https://radhya-crm.onrender.com', 'https://crm.radhyarealty.com'];
+    return ['https://radhya-realty-crm.vercel.app'];
   }
 
   function getCookieConsentState() {
@@ -2589,7 +2591,7 @@
   }
 
   function getRoleLocalStorageKey(roleKey) {
-    return roleKey === 'all' ? CMS_CACHE_KEY : ('radhya_cms_role_' + roleKey + '_v8');
+    return roleKey === 'all' ? CMS_CACHE_KEY : ('radhya_cms_role_' + roleKey + '_v9');
   }
 
   function openCatalogIdb() {
@@ -2651,7 +2653,7 @@
   }
 
   function getLiteCacheKey(roleKey) {
-    return 'radhya_cms_lite_' + (roleKey || 'all') + '_v8';
+    return 'radhya_cms_lite_' + (roleKey || 'all') + '_v9';
   }
 
   function cacheLiveCardsRegistry(cards, opts) {
@@ -2752,7 +2754,7 @@
        window.location.protocol === 'file:');
     const urls = getCrmBaseUrls().filter(u => {
       if (u.includes('127.0.0.1')) return false;
-      if (isLocalPage && u.includes('onrender.com') && !window.__RADHYA_CRM_URL) return false;
+      if (isLocalPage && u.includes('radhya-realty-crm.vercel.app') && !window.__RADHYA_CRM_URL) return false;
       return true;
     });
     const list = [];
@@ -2772,7 +2774,7 @@
     const fetchOne = ({ url, isLocalHost, timeoutMs }) => new Promise((resolve, reject) => {
       const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
       const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-      fetch(url, { signal: controller ? controller.signal : undefined })
+      fetch(url, { signal: controller ? controller.signal : undefined, cache: 'no-cache' })
         .then(res => {
           if (timer) clearTimeout(timer);
           if (!res.ok) throw new Error('HTTP ' + res.status);
