@@ -40,6 +40,10 @@ $division = trim(strip_tags($data["division"] ?? $data["service"] ?? "General Ad
 $item     = trim(strip_tags($data["item"] ?? $data["productInterest"] ?? $data["productOrProperty"] ?? "General Enquiry"));
 $details  = trim(strip_tags($data["details"] ?? $data["message"] ?? "Customer requested consultation via website"));
 $url      = trim(strip_tags($data["url"] ?? $data["sourceWebsite"] ?? "https://radhyarealty.com/"));
+$consentGranted   = !empty($data["consentGranted"]) ? true : false;
+$consentTimestamp = trim(strip_tags($data["consentTimestamp"] ?? $nowIso));
+$consentVersion   = trim(strip_tags($data["consentVersion"] ?? "DPDP-2026-2027-v1"));
+$consentPurpose   = trim(strip_tags($data["consentPurpose"] ?? $division));
 $ip       = $_SERVER["REMOTE_ADDR"] ?? "UNKNOWN";
 $ua       = $_SERVER["HTTP_USER_AGENT"] ?? "UNKNOWN";
 $nowIso   = date("c");
@@ -61,17 +65,23 @@ $enquiryId = "enq_" . time() . "_" . bin2hex(random_bytes(3));
 // 1. Log to JSON ledger
 $logFile = __DIR__ . "/enquiries-log.json";
 $logEntry = [
-    "id"         => $enquiryId,
-    "timestamp"  => $nowIso,
-    "ist_time"   => $nowIst,
-    "name"       => $name,
-    "phone"      => $phone,
-    "division"   => $division,
-    "item"       => $item,
-    "details"    => $details,
-    "url"        => $url,
-    "ip"         => $ip,
-    "user_agent" => $ua
+    "id"                => $enquiryId,
+    "timestamp"         => $nowIso,
+    "ist_time"          => $nowIst,
+    "name"              => $name,
+    "phone"             => $phone,
+    "division"          => $division,
+    "item"              => $item,
+    "details"           => $details,
+    "url"               => $url,
+    "dpdp_consent"      => [
+        "granted"       => $consentGranted,
+        "timestamp"     => $consentTimestamp,
+        "version"       => $consentVersion,
+        "purpose"       => $consentPurpose
+    ],
+    "ip"                => $ip,
+    "user_agent"        => $ua
 ];
 
 $entries = [];

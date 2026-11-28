@@ -46,23 +46,54 @@
 
   /* header and footer */
   const header = document.getElementById('site-header');
+  const PANEL_ARROW = '<svg class="panel__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   header.outerHTML = `
   <header class="site-header" id="hdr">
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="panel"><span class="burger"></span><span class="t">Roles</span></button>
     <a class="brand" href="index.html" aria-label="Radhya Realty home">${logo(false)}</a>
     <div class="social">
-      <a href="https://www.facebook.com/1083501174848035?ref=PROFILE_EDIT_xav_ig_profile_page_web" target="_blank" rel="noopener" aria-label="Facebook">${svg(ICONS.fb)}</a>
-      <a href="https://www.instagram.com/radhya_reality?utm_source=qr&cplk=MXNkeDFveTMwNXg4dQ==" target="_blank" rel="noopener" aria-label="Instagram">${svg(ICONS.ig)}</a>
       <a href="https://youtube.com/@radhyareality?si=CPdniRCnz5sPH7Q6" target="_blank" rel="noopener" aria-label="YouTube">${svg(ICONS.yt)}</a>
+      <a href="https://www.instagram.com/radhya_reality?utm_source=qr&cplk=MXNkeDFveTMwNXg4dQ==" target="_blank" rel="noopener" aria-label="Instagram">${svg(ICONS.ig)}</a>
+      <a href="https://www.facebook.com/1083501174848035?ref=PROFILE_EDIT_xav_ig_profile_page_web" target="_blank" rel="noopener" aria-label="Facebook">${svg(ICONS.fb)}</a>
       <a href="https://x.com/Radhya_reality" target="_blank" rel="noopener" aria-label="Twitter">${svg(ICONS.tw)}</a>
     </div>
   </header>
   <nav class="panel" id="panel" aria-label="Business roles">
-    ${ROLES.map(r => `<a href="${r.slug}.html" ${r.slug === current ? 'aria-current="page"' : ''}>${svg(r.icon)}${r.name}</a>`).join('')}
-    <a href="${CONTACT.href}">${svg(CONTACT.icon)}${CONTACT.name}</a>
+    <div class="panel__header">
+      <span class="panel__eyebrow">Anubhav Bharat Group</span>
+      <span class="panel__title">Divisions &amp; Advisory</span>
+    </div>
+    <div class="panel__list">
+      ${ROLES.map(r => `<a href="${r.slug}.html" ${r.slug === current ? 'aria-current="page"' : ''}><span class="panel__icon">${svg(r.icon)}</span><span class="panel__label">${r.name}</span>${PANEL_ARROW}</a>`).join('')}
+      <a href="${CONTACT.href}"><span class="panel__icon">${svg(CONTACT.icon)}</span><span class="panel__label">${CONTACT.name}</span>${PANEL_ARROW}</a>
+    </div>
   </nav>`;
   document.getElementById('site-footer').outerHTML = `
-  <footer><div class="wrap"><span>&copy; ${new Date().getFullYear()} Radhya Realty, Anubhav Bharat Group</span><span style="display:inline-flex;gap:1.5rem;flex-wrap:wrap;align-items:center;"><a href="privacy-policy.html" style="color:inherit;text-decoration:none;transition:color .25s;">Privacy Policy</a><a href="terms.html" style="color:inherit;text-decoration:none;transition:color .25s;">Terms &amp; Conditions</a><span>One solution for all your needs</span></span></div></footer>`;
+  <footer class="site-footer">
+    <div class="wrap footer-wrap">
+      <div class="footer-main">
+        <div class="footer-identity">
+          <div class="footer-brand-row">
+            <span class="footer-brand-name">Radhya Realty</span>
+            <span class="footer-dot" aria-hidden="true">&bull;</span>
+            <span class="footer-group-name">Anubhav Bharat Group</span>
+          </div>
+          <span class="footer-tagline">One solution for all your needs</span>
+        </div>
+        <nav class="footer-pages" aria-label="Legal Documents">
+          <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+          <a href="terms.html" class="footer-link">Terms &amp; Conditions</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; ${new Date().getFullYear()} Radhya Realty, Anubhav Bharat Group. All rights reserved.</span>
+        <div class="footer-controls footer-legal-nav" role="group" aria-label="Privacy &amp; Cookie Controls">
+          <button id="btnOpenCookieSettings" type="button" class="footer-control-btn">Cookie Settings</button>
+          <button id="btnOpenDataRights" type="button" class="footer-control-btn footer-control-btn--accent">Data Rights &amp; Withdraw Consent</button>
+        </div>
+      </div>
+    </div>
+  </footer>`;
 
   /* role cards on home */
   const cards = document.getElementById('role-cards');
@@ -174,8 +205,8 @@
     return;
   }
 
-  // Wrong role page early redirect before playing intro (so intro plays ONCE on target page)
-  if (page === 'role' && validCardId) {
+  // Instant 0ms redirect for index.html?card=<id> or wrong role page when role can be inferred
+  if ((page === 'role' || page === 'home') && validCardId) {
     const inferredPage = inferRolePageEarly(validCardId);
     if (inferredPage && inferredPage.toLowerCase() !== currentFile) {
       window.__radhyaRedirecting = true;
@@ -202,177 +233,477 @@
     }
 
     document.documentElement.dataset.introState = 'running';
+    if (hdr) hdr.classList.remove('hidden');
 
-    if (hdr) hdr.classList.add('hidden');
-    document.documentElement.style.overflow = 'hidden';
+    // Non-reflowing scroll lock during intro (zero scrollbar-width shift / CLS === 0)
+    const preventIntroScroll = e => {
+      if (e.cancelable) e.preventDefault();
+    };
+    const preventIntroKeys = e => {
+      if (e.key === ' ' || e.key === 'PageDown' || e.key === 'PageUp' || e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('wheel', preventIntroScroll, { passive: false });
+    window.addEventListener('touchmove', preventIntroScroll, { passive: false });
+    window.addEventListener('keydown', preventIntroKeys, { passive: false });
+
+    const brandEl = document.querySelector('#hdr .brand') || document.querySelector('.brand');
+    const divNames = ROLES.map(r => r.name);
+    const divMarkup = divNames.map((name, idx) => {
+      const isLast = idx === divNames.length - 1;
+      const isBreakAfter = idx === 2;
+      return `<li class="intro-div-item"><span class="intro-div-label">${name}</span></li>`
+        + (!isLast ? `<li class="intro-div-sep${isBreakAfter ? ' intro-div-sep--break' : ''}" aria-hidden="true"></li>` : '')
+        + (isBreakAfter ? `<li class="intro-div-break" aria-hidden="true"></li>` : '');
+    }).join('');
 
     const intro = document.createElement('div');
     intro.id = 'intro';
+    intro.setAttribute('aria-hidden', 'true');
+    intro.innerHTML = `
+      <div class="intro-curtain"></div>
+      <canvas class="intro-sheen" aria-hidden="true"></canvas>
+      <div class="intro-persp-rig" aria-hidden="true">
+        <div class="intro-grid-plane"></div>
+        <div class="intro-arch-wire">
+          <svg viewBox="0 0 800 420" fill="none" aria-hidden="true">
+            <path class="intro-wire-beam" d="M120 340 L400 72 L680 340"/>
+            <path class="intro-wire-beam intro-wire-beam--inner" d="M195 340 L400 144 L605 340"/>
+            <line class="intro-wire-plumb" x1="400" y1="36" x2="400" y2="376"/>
+            <line class="intro-wire-horizon" x1="76" y1="340" x2="724" y2="340"/>
+          </svg>
+        </div>
+      </div>
+      <div class="intro-frame">
+        <div class="intro-rule-h intro-rule-h--top"></div>
+        <div class="intro-rule-h intro-rule-h--bottom"></div>
+        <div class="intro-rule-v intro-rule-v--left"></div>
+        <div class="intro-rule-v intro-rule-v--right"></div>
+        <div class="intro-corner intro-corner--tl"></div>
+        <div class="intro-corner intro-corner--tr"></div>
+        <div class="intro-corner intro-corner--bl"></div>
+        <div class="intro-corner intro-corner--br"></div>
+        <div class="intro-datum intro-datum--top"></div>
+        <div class="intro-datum intro-datum--bottom"></div>
+        <div class="intro-datum intro-datum--left"></div>
+        <div class="intro-datum intro-datum--right"></div>
+      </div>
+      <div class="intro-stage">
+        <div class="intro-mark-unit">
+          <div class="intro-mark-specular" aria-hidden="true"></div>
+          <svg class="intro-mark-svg" viewBox="0 0 600 215" role="img" aria-label="Radhya Realty">
+            <defs>
+              <clipPath id="rrIntroWordClip">
+                <rect x="0" y="128" width="600" height="87"/>
+              </clipPath>
+              <linearGradient id="rrIntroBrassGrad" x1="180" y1="24" x2="420" y2="195" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#e3c883"/>
+                <stop offset="48%" stop-color="#c9a24b"/>
+                <stop offset="100%" stop-color="#dfbc68"/>
+              </linearGradient>
+            </defs>
+            <path class="intro-roof-echo" d="M205 118 L300 28 L395 118" fill="none" stroke="rgba(227,200,131,0.34)" stroke-width="3" stroke-linecap="square"/>
+            <path class="intro-roof" d="M205 118 L300 28 L395 118" fill="none" stroke="url(#rrIntroBrassGrad)" stroke-width="9" stroke-linecap="square"/>
+            <g fill="#c9a24b">
+              <rect class="intro-pane" x="285" y="68" width="14" height="14"/>
+              <rect class="intro-pane" x="302" y="68" width="14" height="14"/>
+              <rect class="intro-pane" x="285" y="85" width="14" height="14"/>
+              <rect class="intro-pane" x="302" y="85" width="14" height="14"/>
+            </g>
+            <g clip-path="url(#rrIntroWordClip)">
+              <g class="intro-wordmark-rise">
+                <text x="300" y="190" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="600" font-size="56" letter-spacing="7" fill="#c9a24b">RADHYA REALTY</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="intro-sub-lockup">
+          <div class="intro-group-row">
+            <span class="intro-flank intro-flank--left"></span>
+            <span class="intro-mask-line"><span class="intro-group-text">ANUBHAV BHARAT GROUP</span></span>
+            <span class="intro-flank intro-flank--right"></span>
+          </div>
+          <div class="intro-mask-line intro-motto-wrap">
+            <span class="intro-motto-text">ONE SOLUTION FOR ALL YOUR NEEDS</span>
+          </div>
+        </div>
+        <div class="intro-divisions">
+          <div class="intro-div-rule"></div>
+          <ul class="intro-div-list">${divMarkup}</ul>
+        </div>
+      </div>`;
 
-    // prefers-reduced-motion: run a short fade preserving exact introStart -> introEnd -> banner -> modal order
+    // prefers-reduced-motion: gentle <220ms architectural dissolve preserving introStart -> introEnd -> banner order
     if (reduced || !Element.prototype.animate) {
-      intro.innerHTML = `<div class="logo">${logo(true)}</div>`;
-      intro.style.opacity = '1';
-      intro.style.transition = 'opacity 180ms ease';
+      intro.classList.add('intro--reduced');
       document.body.appendChild(intro);
       document.body.classList.add('ready');
       deepLinkState.timings.introStart = performance.now();
       window.dispatchEvent(new CustomEvent('radhya:intro-start'));
 
+      let cleanedReduced = false;
+      const finishReduced = () => {
+        if (cleanedReduced) return;
+        cleanedReduced = true;
+        window.removeEventListener('wheel', preventIntroScroll);
+        window.removeEventListener('touchmove', preventIntroScroll);
+        window.removeEventListener('keydown', preventIntroKeys);
+        const sc = intro.querySelector('.intro-sheen');
+        if (sc) { sc.width = 0; sc.height = 0; sc.remove(); }
+        if (intro.parentNode) intro.remove();
+        document.documentElement.style.overflow = '';
+        settleIntroDone(true);
+      };
+      const reducedSafety = setTimeout(finishReduced, 230);
       requestAnimationFrame(() => {
         setTimeout(() => {
-          intro.style.opacity = '0';
-          setTimeout(() => {
-            if (intro.parentNode) intro.remove();
-            if (hdr) hdr.classList.remove('hidden');
-            document.documentElement.style.overflow = '';
-            settleIntroDone(true);
-          }, 190);
-        }, 50);
+          if (Element.prototype.animate) {
+            const fade = intro.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 135, easing: 'ease-out', fill: 'forwards' });
+            fade.finished.then(() => { clearTimeout(reducedSafety); finishReduced(); }).catch(() => { clearTimeout(reducedSafety); finishReduced(); });
+          } else {
+            intro.style.opacity = '0';
+            setTimeout(() => { clearTimeout(reducedSafety); finishReduced(); }, 135);
+          }
+        }, 20);
       });
       return;
     }
 
-    const items = [...ROLES.map(r => ({ name:r.name, icon:r.icon })), CONTACT];
-    const half = items.length / 2;
-    intro.innerHTML = items.map(i => `<div class="chip">${svg(i.icon)}<span>${i.name}</span></div>`).join('')
-                    + `<div class="logo">${logo(true)}</div>`;
+    if (brandEl) brandEl.style.opacity = '0';
     document.body.appendChild(intro);
     document.body.classList.add('ready');
-    deepLinkState.timings.introStart = performance.now();
+    const introStartPerf = performance.now();
+    deepLinkState.timings.introStart = introStartPerf;
     window.dispatchEvent(new CustomEvent('radhya:intro-start'));
 
-    const chips = [...intro.querySelectorAll('.chip')];
-    const logoEl = intro.querySelector('.logo');
-    const ease = 'cubic-bezier(.22,.8,.24,1)';
-    const wait = ms => new Promise(r => setTimeout(r, ms));
-    const base = 'translate(-50%,-50%)';
+    // Ambient Layer: Compact centered DPR-capped Canvas 2D warm-brass luster (0ms per-frame CPU raster)
+    const sheenCanvas = intro.querySelector('.intro-sheen');
+    let sheenCtx = sheenCanvas ? sheenCanvas.getContext('2d', { alpha: true }) : null;
+    if (sheenCanvas && sheenCtx) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = sheenCanvas.getBoundingClientRect();
+      const cw = Math.max(240, Math.round((rect.width || 600) * 0.5 * dpr));
+      const ch = Math.max(160, Math.round((rect.height || 360) * 0.5 * dpr));
+      sheenCanvas.width = cw;
+      sheenCanvas.height = ch;
+      const rad = sheenCtx.createRadialGradient(cw * 0.5, ch * 0.46, 0, cw * 0.5, ch * 0.46, Math.max(cw, ch) * 0.52);
+      rad.addColorStop(0.0, 'rgba(201, 162, 75, 0.16)');
+      rad.addColorStop(0.42, 'rgba(201, 162, 75, 0.07)');
+      rad.addColorStop(0.78, 'rgba(201, 162, 75, 0.015)');
+      rad.addColorStop(1.0, 'rgba(6, 15, 32, 0)');
+      sheenCtx.fillStyle = rad;
+      sheenCtx.fillRect(0, 0, cw, ch);
+    }
 
-    const target = i => {
-      const left = i < half, row = left ? i : i - half;
-      const dx = Math.min(innerWidth * 0.36, 520) * (left ? -1 : 1);
-      const dy = (row - (half - 1) / 2) * Math.min(innerHeight * 0.2, 150);
-      return `${base} translate(${dx}px,${dy}px)`;
+    const activeAnims = [];
+    const activeTimers = [];
+    const trackAnim = (el, keyframes, opts) => {
+      if (!el) return null;
+      const a = el.animate(keyframes, opts);
+      activeAnims.push(a);
+      return a;
+    };
+    const scheduleAt = (fn, ms) => {
+      const id = setTimeout(fn, ms);
+      activeTimers.push(id);
+      return id;
     };
 
+    let cleaned = false;
     function cleanupIntroAndResolve() {
+      if (cleaned) return;
+      cleaned = true;
+      for (let i = 0; i < activeTimers.length; i++) clearTimeout(activeTimers[i]);
+      activeTimers.length = 0;
+      for (let i = 0; i < activeAnims.length; i++) {
+        try { activeAnims[i].cancel(); } catch (_) {}
+      }
+      activeAnims.length = 0;
+      window.removeEventListener('wheel', preventIntroScroll);
+      window.removeEventListener('touchmove', preventIntroScroll);
+      window.removeEventListener('keydown', preventIntroKeys);
+      if (sheenCanvas) {
+        sheenCanvas.width = 0;
+        sheenCanvas.height = 0;
+        sheenCanvas.remove();
+      }
+      sheenCtx = null;
+      if (brandEl) {
+        brandEl.style.transition = '';
+        brandEl.style.opacity = '';
+      }
       if (intro.parentNode) intro.remove();
+      document.documentElement.classList.remove('intro-lifting');
       if (hdr) hdr.classList.remove('hidden');
       document.documentElement.style.overflow = '';
       settleIntroDone(true);
     }
 
-    // Safety fallback timer (intro total ~5110ms + 700ms buffer) so introDone can NEVER hang
-    const introFallbackTimer = setTimeout(cleanupIntroAndResolve, 5800);
+    // Hard safety fallback timer (~2940ms master timeline + 600ms buffer) so introDone NEVER hangs
+    const introFallbackTimer = setTimeout(cleanupIntroAndResolve, 3550);
+    activeTimers.push(introFallbackTimer);
 
-    (async () => {
-      await logoEl.animate(
-        [{ opacity:0, transform:`${base} scale(.35)` }, { opacity:1, transform:`${base} scale(1)` }],
-        { duration:1200, easing:ease, fill:'forwards' }).finished;
+    const easeOutArch = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    const easeHandoff = 'cubic-bezier(0.65, 0, 0.35, 1)';
 
-      await Promise.all(chips.map((c, i) => c.animate(
-        [{ opacity:0, transform:`${base} scale(.4)` }, { opacity:1, transform:`${target(i)} scale(1)` }],
-        { duration:900, delay:(i % half) * 110, easing:ease, fill:'forwards' }).finished));
+    const curtain = intro.querySelector('.intro-curtain');
+    const perspRig = intro.querySelector('.intro-persp-rig');
+    const gridPlane = intro.querySelector('.intro-grid-plane');
+    const archWire = intro.querySelector('.intro-arch-wire');
+    const wireBeams = intro.querySelectorAll('.intro-wire-beam');
+    const wirePlumb = intro.querySelector('.intro-wire-plumb');
+    const wireHorizon = intro.querySelector('.intro-wire-horizon');
+    const frameEl = intro.querySelector('.intro-frame');
+    const rulesH = intro.querySelectorAll('.intro-rule-h');
+    const rulesV = intro.querySelectorAll('.intro-rule-v');
+    const corners = intro.querySelectorAll('.intro-corner');
+    const datums = intro.querySelectorAll('.intro-datum');
+    const markUnit = intro.querySelector('.intro-mark-unit');
+    const markSpecular = intro.querySelector('.intro-mark-specular');
+    const markSvg = intro.querySelector('.intro-mark-svg');
+    const roofEcho = intro.querySelector('.intro-roof-echo');
+    const roofPath = intro.querySelector('.intro-roof');
+    const panes = intro.querySelectorAll('.intro-pane');
+    const wordmarkRise = intro.querySelector('.intro-wordmark-rise');
+    const subLockup = intro.querySelector('.intro-sub-lockup');
+    const flanks = intro.querySelectorAll('.intro-flank');
+    const groupText = intro.querySelector('.intro-group-text');
+    const mottoText = intro.querySelector('.intro-motto-text');
+    const divisionsWrap = intro.querySelector('.intro-divisions');
+    const divRule = intro.querySelector('.intro-div-rule');
+    const divLabels = intro.querySelectorAll('.intro-div-label');
+    const divSeps = intro.querySelectorAll('.intro-div-sep');
 
-      await wait(1000);
-
-      await Promise.all(chips.map((c, i) => c.animate(
-        [{ opacity:1, transform:`${target(i)} scale(1)` }, { opacity:0, transform:`${base} scale(.4)` }],
-        { duration:750, delay:(i % half) * 70, easing:ease, fill:'forwards' }).finished));
-
-      /* logo settles into the header brand position */
-      if (hdr) hdr.classList.remove('hidden');
-      const brandEl = document.querySelector('.brand');
-      const dest = brandEl ? brandEl.getBoundingClientRect() : { left: innerWidth / 2, top: 20, width: 120, height: 32 };
-      const src = logoEl.getBoundingClientRect();
-      const s = dest.height / Math.max(1, src.height * 215 / 300);
-      const dx = (dest.left + dest.width / 2) - (src.left + src.width / 2);
-      const dy = (dest.top + dest.height / 2) - (src.top + src.height * 0.36);
-      intro.animate([{ background:'rgba(10,23,48,1)' }, { background:'rgba(10,23,48,0)' }],
-        { duration:900, easing:ease, fill:'forwards' });
-      await logoEl.animate(
-        [{ transform:`${base} translate(0,0) scale(1)`, opacity:1 },
-         { transform:`${base} translate(${dx}px,${dy}px) scale(${s})`, opacity:0.0 }],
-        { duration:900, easing:ease, fill:'forwards' }).finished;
-
-      clearTimeout(introFallbackTimer);
-      cleanupIntroAndResolve();
-    })().catch(() => {
-      clearTimeout(introFallbackTimer);
-      cleanupIntroAndResolve();
+    // Beat 1 (0–700ms): 3D Architectural Datum Grid + Brass Wireframe Elevation + Studio Luster
+    if (gridPlane) {
+      trackAnim(gridPlane, [
+        { transform: 'perspective(980px) rotateX(68deg) translate3d(0, 36px, -90px) scale(0.92)', opacity: 0 },
+        { transform: 'perspective(980px) rotateX(62deg) translate3d(0, 0px, 0px) scale(1)', opacity: 0.62, offset: 0.45 },
+        { transform: 'perspective(980px) rotateX(58deg) translate3d(0, -14px, 24px) scale(1.03)', opacity: 0.34 }
+      ], { duration: 2150, delay: 0, easing: easeOutArch, fill: 'forwards' });
+    }
+    if (archWire) {
+      trackAnim(archWire, [
+        { transform: 'perspective(1100px) rotateX(24deg) rotateY(-9deg) translateZ(-64px) scale(0.94)', opacity: 0 },
+        { transform: 'perspective(1100px) rotateX(8deg) rotateY(0deg) translateZ(0px) scale(1)', opacity: 0.85, offset: 0.52 },
+        { transform: 'perspective(1100px) rotateX(0deg) rotateY(0deg) translateZ(18px) scale(1.02)', opacity: 0.28 }
+      ], { duration: 2100, delay: 40, easing: easeOutArch, fill: 'forwards' });
+    }
+    wireBeams.forEach((el, idx) => trackAnim(el, [
+      { strokeDashoffset: '820', opacity: 0 },
+      { strokeDashoffset: '0', opacity: idx === 0 ? 0.55 : 0.34 }
+    ], { duration: 860, delay: 60 + idx * 110, easing: easeOutArch, fill: 'forwards' }));
+    if (wirePlumb) {
+      trackAnim(wirePlumb, [
+        { strokeDashoffset: '360', opacity: 0 },
+        { strokeDashoffset: '0', opacity: 0.38 }
+      ], { duration: 680, delay: 90, easing: easeOutArch, fill: 'forwards' });
+    }
+    if (wireHorizon) {
+      trackAnim(wireHorizon, [
+        { strokeDashoffset: '660', opacity: 0 },
+        { strokeDashoffset: '0', opacity: 0.42 }
+      ], { duration: 720, delay: 140, easing: easeOutArch, fill: 'forwards' });
+    }
+    if (frameEl) {
+      trackAnim(frameEl, [
+        { transform: 'perspective(1200px) translateZ(-28px) scale(0.985)', opacity: 0.4 },
+        { transform: 'perspective(1200px) translateZ(0px) scale(1)', opacity: 1 }
+      ], { duration: 760, delay: 0, easing: easeOutArch, fill: 'forwards' });
+    }
+    rulesH.forEach(el => trackAnim(el,
+      [{ transform: 'scaleX(0)', opacity: 0 }, { transform: 'scaleX(1)', opacity: 1 }],
+      { duration: 640, delay: 0, easing: easeOutArch, fill: 'forwards' }
+    ));
+    rulesV.forEach(el => trackAnim(el,
+      [{ transform: 'scaleY(0)', opacity: 0 }, { transform: 'scaleY(1)', opacity: 1 }],
+      { duration: 600, delay: 60, easing: easeOutArch, fill: 'forwards' }
+    ));
+    corners.forEach((el, i) => trackAnim(el,
+      [{ transform: 'scale(0.92)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }],
+      { duration: 440, delay: 110 + i * 22, easing: easeOutArch, fill: 'forwards' }
+    ));
+    datums.forEach((el, i) => {
+      const isVert = i < 2;
+      const fromT = isVert ? 'translateX(-0.5px) scaleY(0)' : 'translateY(-0.5px) scaleX(0)';
+      const toT = isVert ? 'translateX(-0.5px) scaleY(1)' : 'translateY(-0.5px) scaleX(1)';
+      trackAnim(el,
+        [{ transform: fromT, opacity: 0 }, { transform: toT, opacity: 1 }],
+        { duration: 420, delay: 160 + i * 18, easing: easeOutArch, fill: 'forwards' }
+      );
     });
+    trackAnim(sheenCanvas, [
+      { transform: 'translate3d(-10%, -5%, 0) scale(0.95)', opacity: 0 },
+      { transform: 'translate3d(0%, 0%, 0) scale(1.02)', opacity: 0.95, offset: 0.36 },
+      { transform: 'translate3d(10%, 5%, 0) scale(1)', opacity: 0 }
+    ], { duration: 2200, delay: 20, easing: easeOutArch, fill: 'forwards' });
+
+    // Beat 2 (280–1380ms): 3D Perspective Monogram Tilt -> Orthographic Lock + Brass Specular Sweep
+    if (markUnit) {
+      trackAnim(markUnit, [
+        { transform: 'perspective(960px) rotateX(22deg) rotateY(-8deg) translate3d(0, 18px, -42px) scale(0.94)', opacity: 0 },
+        { transform: 'perspective(960px) rotateX(0deg) rotateY(0deg) translate3d(0, 0px, 0px) scale(1)', opacity: 1 }
+      ], { duration: 880, delay: 260, easing: easeOutArch, fill: 'forwards' });
+    }
+    if (roofEcho) {
+      trackAnim(roofEcho, [
+        { strokeDashoffset: '270', transform: 'translateY(-7px) scale(1.02)', opacity: 0 },
+        { strokeDashoffset: '0', transform: 'translateY(-5px) scale(1.015)', opacity: 0.65, offset: 0.55 },
+        { strokeDashoffset: '0', transform: 'translateY(0px) scale(1)', opacity: 0 }
+      ], { duration: 920, delay: 280, easing: easeOutArch, fill: 'forwards' });
+    }
+    trackAnim(roofPath, [
+      { strokeDashoffset: '270', opacity: 0 },
+      { strokeDashoffset: '245', opacity: 1, offset: 0.08 },
+      { strokeDashoffset: '0', opacity: 1 }
+    ], { duration: 620, delay: 330, easing: easeOutArch, fill: 'forwards' });
+
+    panes.forEach((el, i) => trackAnim(el,
+      [{ transform: 'translateY(8px) scale(0.86)', opacity: 0 }, { transform: 'translateY(0px) scale(1)', opacity: 1 }],
+      { duration: 380, delay: 520 + i * 32, easing: easeOutArch, fill: 'forwards' }
+    ));
+
+    trackAnim(wordmarkRise, [
+      { transform: 'translateY(64px)', opacity: 0 },
+      { transform: 'translateY(0px)', opacity: 1 }
+    ], { duration: 520, delay: 600, easing: easeOutArch, fill: 'forwards' });
+
+    if (markSpecular) {
+      trackAnim(markSpecular, [
+        { transform: 'translate3d(-135%, 0, 0) skewX(-22deg)', opacity: 0 },
+        { transform: 'translate3d(0%, 0, 0) skewX(-22deg)', opacity: 0.88, offset: 0.45 },
+        { transform: 'translate3d(135%, 0, 0) skewX(-22deg)', opacity: 0 }
+      ], { duration: 820, delay: 860, easing: easeOutArch, fill: 'forwards' });
+    }
+
+    flanks.forEach(el => trackAnim(el,
+      [{ transform: 'scaleX(0)', opacity: 0 }, { transform: 'scaleX(1)', opacity: 1 }],
+      { duration: 480, delay: 780, easing: easeOutArch, fill: 'forwards' }
+    ));
+
+    trackAnim(groupText, [
+      { transform: 'translate3d(0, 108%, 0) scaleX(1.04)', opacity: 0 },
+      { transform: 'translate3d(0, 0%, 0) scaleX(1)', opacity: 1 }
+    ], { duration: 500, delay: 770, easing: easeOutArch, fill: 'forwards' });
+
+    trackAnim(mottoText, [
+      { transform: 'translate3d(0, 108%, 0) scaleX(1.035)', opacity: 0 },
+      { transform: 'translate3d(0, 0%, 0) scaleX(1)', opacity: 1 }
+    ], { duration: 480, delay: 890, easing: easeOutArch, fill: 'forwards' });
+
+    // Beat 3 (1040–1700ms): Five-Division Signature Band (45ms micro-cascade)
+    trackAnim(divRule,
+      [{ transform: 'scaleX(0)', opacity: 0 }, { transform: 'scaleX(1)', opacity: 1 }],
+      { duration: 460, delay: 1010, easing: easeOutArch, fill: 'forwards' }
+    );
+    divLabels.forEach((el, i) => trackAnim(el, [
+      { transform: 'translate3d(0, 105%, 0)', opacity: 0 },
+      { transform: 'translate3d(0, 0%, 0)', opacity: 1 }
+    ], { duration: 440, delay: 1040 + i * 45, easing: easeOutArch, fill: 'forwards' }));
+
+    divSeps.forEach((el, i) => trackAnim(el,
+      [{ transform: 'scaleY(0)', opacity: 0 }, { transform: 'scaleY(1)', opacity: 1 }],
+      { duration: 360, delay: 1080 + i * 45, easing: easeOutArch, fill: 'forwards' }
+    ));
+
+    // Pre-sample exact header brand rect at ~1850ms (after fonts & #hdr settled) and schedule Beat 4 on exact 2200ms wall-clock
+    scheduleAt(() => {
+      if (cleaned) return;
+      const nowElapsed = performance.now() - introStartPerf;
+      const beat4Delay = Math.max(0, Math.round(2200 - nowElapsed));
+
+      const brandSvg = (brandEl && brandEl.querySelector('svg')) || brandEl;
+      const src = markSvg ? markSvg.getBoundingClientRect() : null;
+      const dest = brandSvg ? brandSvg.getBoundingClientRect() : null;
+
+      let dx = 0;
+      let dy = -Math.round(window.innerHeight * 0.42);
+      let scale = 0.28;
+      if (src && dest && src.width > 0 && src.height > 0 && dest.width > 0 && dest.height > 0) {
+        scale = dest.height / src.height;
+        dx = (dest.left + dest.width * 0.5) - (src.left + src.width * 0.5);
+        dy = (dest.top + dest.height * 0.5) - (src.top + src.height * 0.5);
+      }
+
+      // Root #intro is already transparent; .intro-curtain handles solid navy occlusion cleanly
+
+      if (perspRig) {
+        trackAnim(perspRig,
+          [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(1.04)' }],
+          { duration: 260, delay: beat4Delay, easing: easeOutArch, fill: 'forwards' }
+        );
+      }
+      trackAnim(frameEl,
+        [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(1.012)' }],
+        { duration: 280, delay: beat4Delay, easing: easeOutArch, fill: 'forwards' }
+      );
+      trackAnim(subLockup,
+        [{ opacity: 1, transform: 'translate3d(0, 0, 0)' }, { opacity: 0, transform: 'translate3d(0, -8px, 0)' }],
+        { duration: 260, delay: beat4Delay, easing: easeOutArch, fill: 'forwards' }
+      );
+      trackAnim(divisionsWrap,
+        [{ opacity: 1, transform: 'translate3d(0, 0, 0)' }, { opacity: 0, transform: 'translate3d(0, -10px, 0)' }],
+        { duration: 260, delay: beat4Delay, easing: easeOutArch, fill: 'forwards' }
+      );
+
+      // Pure GPU compositor curtain lift (translate3d(0, -100%, 0) — 0ms paint/mask raster!)
+      scheduleAt(() => {
+        if (!cleaned) document.documentElement.classList.add('intro-lifting');
+      }, beat4Delay);
+      trackAnim(curtain, [
+        { transform: 'translate3d(0, 0%, 0)' },
+        { transform: 'translate3d(0, -100.5%, 0)' }
+      ], { duration: 660, delay: beat4Delay + 15, easing: easeHandoff, fill: 'forwards' });
+
+      // Precision monogram glide with locked 1:1 dock plateau (offset 0.90 -> 1.0)
+      const handoffAnim = trackAnim(markUnit, [
+        { transform: 'translate3d(0px, 0px, 0) scale(1)', opacity: 1 },
+        { transform: `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`, opacity: 1, offset: 0.90 },
+        { transform: `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`, opacity: 0 }
+      ], { duration: 720, delay: beat4Delay, easing: easeHandoff, fill: 'forwards' });
+
+      if (brandEl) {
+        trackAnim(brandEl,
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: 90, delay: beat4Delay + 625, easing: 'ease-out', fill: 'forwards' }
+        );
+      }
+
+      scheduleAt(() => {
+        if (!cleaned) intro.style.pointerEvents = 'none';
+      }, beat4Delay + 400);
+
+      if (handoffAnim && handoffAnim.finished) {
+        handoffAnim.finished.then(() => {
+          clearTimeout(introFallbackTimer);
+          cleanupIntroAndResolve();
+        }).catch(() => {
+          clearTimeout(introFallbackTimer);
+          cleanupIntroAndResolve();
+        });
+      } else {
+        scheduleAt(() => {
+          clearTimeout(introFallbackTimer);
+          cleanupIntroAndResolve();
+        }, beat4Delay + 740);
+      }
+    }, 1820);
   }
   window.__radhyaStartIntroNow = runIntroSequence;
 
-  // If intro already played in this session, skip it immediately on subsequent pages/roles
+  // Play intro ONCE per session on whichever link opens first (including shared ?card= links); skip on subsequent navigations
   if (introAlreadySeen) {
-    runIntroSequence();
-    return;
-  }
-
-  // On index.html?card=<valid>, defer intro so redirect runs BEFORE any intro plays on index.html
-  if (page === 'home' && !!validCardId) {
-    deepLinkState.deferredIntro = true;
-    const hold = document.createElement('div');
-    hold.id = 'intro-hold';
-    hold.style.cssText = 'position:fixed;inset:0;z-index:100;background:#0a1730;';
-    document.body.appendChild(hold);
+    if (hdr) hdr.classList.remove('hidden');
+    document.documentElement.style.overflow = '';
     document.body.classList.add('ready');
+    settleIntroDone(false);
     return;
   }
 
-  // On role page with a valid ?card= whose role cannot be inferred AND isn't in static DOM, briefly hold before playing intro to allow wrong-role redirect
-  if (page === 'role' && !!validCardId) {
-    const inferred = inferRolePageEarly(validCardId);
-    const esc = (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') ? CSS.escape(validCardId) : validCardId.replace(/[^A-Za-z0-9_-]/g, '');
-    const inDomNow = !!document.querySelector(`.prop-card[data-card-id="${esc}"]`);
-    if (!inferred && !inDomNow) {
-      deepLinkState.deferredIntro = true;
-      const hold = document.createElement('div');
-      hold.id = 'intro-hold';
-      hold.style.cssText = 'position:fixed;inset:0;z-index:100;background:#0a1730;';
-      document.body.appendChild(hold);
-      document.body.classList.add('ready');
-      return;
-    }
-  }
-
-  // First visit in this session: play intro regardless of which link/role/card opened first
+  // First normal visit in this session: play intro
   runIntroSequence();
 })();
-(function () {
-  const header = document.querySelector('.site-header');
-  if (!header) return;
-
-  let lastY = window.scrollY;
-  let ticking = false;
-  const TOP_ZONE = 80; // always expanded near the top of the page
-  const JITTER = 6;    // ignore tiny scroll movements
-
-  function onScroll() {
-    const y = window.scrollY;
-    const diff = y - lastY;
-
-    if (y <= TOP_ZONE) {
-      header.classList.remove('hidden');          // expand at top
-    } else if (diff > JITTER) {
-      header.classList.add('hidden');             // scrolling down: shrink
-    } else if (diff < -JITTER) {
-      header.classList.remove('hidden');          // scrolling up: expand
-    }
-
-    if (Math.abs(diff) > JITTER) lastY = y;
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(onScroll);
-      ticking = true;
-    }
-  }, { passive: true });
-})();
-
 (function () {
   const header = document.querySelector('.site-header');
   if (!header) return;
@@ -940,7 +1271,7 @@
           badge.style.display = isFiltering ? 'inline-block' : 'none';
         }
 
-        // Auto-open sections with matches when filter is active
+        // Auto-open sections with matches when filter is active; restore default open section when cleared
         if (isFiltering) {
           if (sectionMatches > 0) {
             section.classList.add('open');
@@ -950,18 +1281,28 @@
         }
       });
 
-      // Update counter
-      if (counterEl) {
-        if (isFiltering) {
-          counterEl.textContent = `Showing ${totalMatches} of ${totalCards} listings`;
-        } else {
-          counterEl.textContent = `Showing all ${totalCards} listings`;
+      if (!isFiltering) {
+        const anyOpen = Array.from(serviceSections).some(s => s.classList.contains('open') || s.classList.contains('is-open'));
+        if (!anyOpen && serviceSections.length > 0) {
+          serviceSections[0].classList.add('open');
         }
       }
 
-      // Empty state
+      // Update counter dynamically based on live hydrated cards
+      const liveTotalCards = document.querySelectorAll('.prop-card').length;
+      if (counterEl) {
+        if (isFiltering) {
+          counterEl.textContent = `Showing ${totalMatches} of ${liveTotalCards} listings`;
+        } else {
+          counterEl.textContent = liveTotalCards > 0
+            ? `Showing all ${liveTotalCards} live listings`
+            : 'Curated advisory portfolio';
+        }
+      }
+
+      // Show filter empty state ONLY when user actively filtered to 0 matches
       if (emptyState) {
-        emptyState.style.display = totalMatches === 0 ? 'block' : 'none';
+        emptyState.style.display = (isFiltering && totalMatches === 0) ? 'block' : 'none';
       }
 
       // Active filter count for badge
@@ -1229,6 +1570,7 @@
         cta.dataset.title = mTitle.textContent;
         cta.dataset.price = priceVal;
         cta.dataset.cardId = cardId;
+        cta.textContent = (btn && btn.dataset.ctaLabel) || 'Enquire Now';
 
         /* Place the Share button ONLY inside the product detail modal right beside Enquire Now */
         let actionsRow = cta.parentElement && cta.parentElement.classList.contains('prop-modal__actions')
@@ -1255,15 +1597,22 @@
         }
       }
       
-      /* media figure */
+      /* media figure — uncropped full resolution + muted video controls + click-to-fullscreen */
       mFig.innerHTML = '';
+      mFig.classList.remove('has-video');
+      const mediaItems = [];
+      let hasAnyVideo = false;
       const slider = card.querySelector('.prop-slider');
       if (slider) {
         const clone = slider.cloneNode(true);
+        clone.classList.remove('prop-card__fig');
+        clone.classList.add('prop-modal__slider');
+        clone.style.removeProperty('height');
+        clone.style.removeProperty('max-height');
         const oldPrev = clone.querySelector('.prop-slider__prev');
         const oldNext = clone.querySelector('.prop-slider__next');
         const oldDots = clone.querySelector('.prop-slider__dots');
-        clone.querySelectorAll('.card-share-btn, .prop-card__share').forEach(el => el.remove());
+        clone.querySelectorAll('.prop-tag, .card-share-btn, .prop-card__share, .prop-modal__expand-btn').forEach(el => el.remove());
         if (oldPrev) oldPrev.remove();
         if (oldNext) oldNext.remove();
         if (oldDots) oldDots.remove();
@@ -1272,24 +1621,81 @@
         clone._sliderInitialized = false;
         mFig.appendChild(clone);
         initPropSliders(mFig);
-        clone.querySelectorAll('video').forEach(v => {
-          v.muted = true;
-          v.play().catch(() => {});
+
+        const slides = Array.from(clone.querySelectorAll('.prop-slide'));
+        slides.forEach((sl, idx) => {
+          const vid = sl.querySelector('video');
+          const img = sl.querySelector('img');
+          const slideCaption = sl.dataset.caption || sl.querySelector('.prop-slide__caption')?.textContent?.trim() || '';
+          if (vid) {
+            hasAnyVideo = true;
+            vid.muted = true;
+            vid.defaultMuted = true;
+            vid.controls = true;
+            vid.playsInline = true;
+            vid.setAttribute('playsinline', '');
+            vid.setAttribute('controlsList', 'nodownload');
+            mediaItems.push({ type: 'video', src: vid.currentSrc || vid.src, alt: mTitle.textContent, caption: slideCaption });
+            if (idx === 0) {
+              vid.play().catch(() => {});
+            } else {
+              vid.pause();
+            }
+          } else if (img) {
+            mediaItems.push({ type: 'image', src: img.currentSrc || img.src, alt: img.alt || mTitle.textContent, caption: slideCaption });
+            img.style.cursor = 'zoom-in';
+            img.title = 'Click to view full screen';
+            img.addEventListener('click', ev => {
+              ev.stopPropagation();
+              openMediaLightbox(mediaItems, idx);
+            });
+          }
         });
       } else {
         const imgSrc = btn ? btn.dataset.img : '';
         if (imgSrc) {
           const img = document.createElement('img');
           img.src = imgSrc; img.alt = mTitle.textContent;
+          img.style.cursor = 'zoom-in';
+          img.title = 'Click to view full screen';
+          mediaItems.push({ type: 'image', src: imgSrc, alt: mTitle.textContent });
+          img.addEventListener('click', ev => {
+            ev.stopPropagation();
+            openMediaLightbox(mediaItems, 0);
+          });
           mFig.appendChild(img);
         } else {
           const ph = card.querySelector('.ph-icon');
           if (ph) mFig.innerHTML = `<div class="ph-icon">${ph.innerHTML}</div>`;
         }
       }
+      if (hasAnyVideo) mFig.classList.add('has-video');
+
+      if (mediaItems.length > 0) {
+        const expandBtn = document.createElement('button');
+        expandBtn.type = 'button';
+        expandBtn.className = 'prop-modal__expand-btn';
+        expandBtn.setAttribute('aria-label', 'View media in full screen');
+        expandBtn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg><span>Full Screen</span>';
+        expandBtn.addEventListener('click', ev => {
+          ev.stopPropagation();
+          const dots = Array.from(mFig.querySelectorAll('.prop-dot'));
+          const activeIdx = Math.max(0, dots.findIndex(d => d.classList.contains('is-active')));
+          openMediaLightbox(mediaItems, activeIdx);
+        });
+        mFig.appendChild(expandBtn);
+      }
+
       modal.classList.add('open');
       void modal.offsetWidth;
       document.body.style.overflow = 'hidden';
+      if (card.dataset.isLite === 'true' && cardId && typeof window.__radhyaHydrateSingleCardFullMedia === 'function') {
+        window.__radhyaHydrateSingleCardFullMedia(cardId).then(fullCard => {
+          if (!fullCard || !modal.classList.contains('open')) return;
+          const freshEl = document.querySelector(`.prop-card[data-card-id="${cardId.replace(/[^A-Za-z0-9_-]/g, '')}"]`);
+          if (freshEl && freshEl.dataset.isLite !== 'true') openModal(freshEl);
+        }).catch(() => {});
+      }
       if (closeBtn) {
         const focusClose = () => {
           if (modal.classList.contains('open')) {
@@ -1304,7 +1710,147 @@
     }
     window.__radhyaOpenPropModal = openModal;
 
+    /* Minimalistic 60 FPS Fullscreen Media Lightbox (Photos + Muted Video Player) */
+    function openMediaLightbox(items, startIdx = 0) {
+      if (!Array.isArray(items) || items.length === 0) return;
+      // Pause underlying modal videos while viewing fullscreen
+      mFig.querySelectorAll('video').forEach(v => v.pause());
+
+      let lb = document.getElementById('radhyaMediaLightbox');
+      if (!lb) {
+        lb = document.createElement('div');
+        lb.id = 'radhyaMediaLightbox';
+        lb.className = 'radhya-lightbox';
+        lb.setAttribute('role', 'dialog');
+        lb.setAttribute('aria-modal', 'true');
+        lb.setAttribute('aria-label', 'Full screen media viewer');
+        lb.innerHTML = `
+          <div class="radhya-lightbox__overlay"></div>
+          <div class="radhya-lightbox__topbar">
+            <div class="radhya-lightbox__meta">
+              <span class="radhya-lightbox__counter" id="radhyaLbCounter">1 / 1</span>
+              <span class="radhya-lightbox__caption" id="radhyaLbCaption" style="display:none;"></span>
+            </div>
+            <button type="button" class="radhya-lightbox__close" aria-label="Close full screen">&#10005;</button>
+          </div>
+          <div class="radhya-lightbox__stage" id="radhyaLbStage"></div>
+          <button type="button" class="radhya-lightbox__nav radhya-lightbox__prev" aria-label="Previous media">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button type="button" class="radhya-lightbox__nav radhya-lightbox__next" aria-label="Next media">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        `;
+        document.body.appendChild(lb);
+
+        const closeLb = () => {
+          lb.classList.remove('open');
+          lb.querySelectorAll('video').forEach(v => v.pause());
+          setTimeout(() => {
+            if (!lb.classList.contains('open')) {
+              const st = lb.querySelector('#radhyaLbStage');
+              if (st) st.innerHTML = '';
+            }
+          }, 240);
+        };
+        lb._close = closeLb;
+        lb.querySelector('.radhya-lightbox__overlay')?.addEventListener('click', closeLb);
+        lb.querySelector('.radhya-lightbox__close')?.addEventListener('click', closeLb);
+        lb.querySelector('.radhya-lightbox__prev')?.addEventListener('click', e => { e.stopPropagation(); lb._step(-1); });
+        lb.querySelector('.radhya-lightbox__next')?.addEventListener('click', e => { e.stopPropagation(); lb._step(1); });
+
+        // Touch swipe support inside fullscreen lightbox
+        let sx = 0, sy = 0;
+        const stEl = lb.querySelector('#radhyaLbStage');
+        stEl?.addEventListener('touchstart', e => {
+          if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }
+        }, { passive: true });
+        stEl?.addEventListener('touchend', e => {
+          if (!lb.classList.contains('open')) return;
+          const dx = e.changedTouches[0].clientX - sx;
+          const dy = e.changedTouches[0].clientY - sy;
+          if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+            lb._step(dx < 0 ? 1 : -1);
+          }
+        }, { passive: true });
+
+        document.addEventListener('keydown', e => {
+          if (!lb.classList.contains('open')) return;
+          if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); closeLb(); }
+          else if (e.key === 'ArrowLeft') { e.preventDefault(); lb._step(-1); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); lb._step(1); }
+        }, true);
+      }
+
+      lb._items = items;
+      lb._idx = Math.max(0, Math.min(startIdx, items.length - 1));
+
+      const renderSlide = () => {
+        const stage = lb.querySelector('#radhyaLbStage');
+        const counter = lb.querySelector('#radhyaLbCounter');
+        const captionEl = lb.querySelector('#radhyaLbCaption');
+        const prevBtn = lb.querySelector('.radhya-lightbox__prev');
+        const nextBtn = lb.querySelector('.radhya-lightbox__next');
+        const currentItem = lb._items[lb._idx];
+        if (!stage || !currentItem) return;
+
+        stage.querySelectorAll('video').forEach(v => v.pause());
+        stage.innerHTML = '';
+
+        if (currentItem.type === 'video') {
+          const vid = document.createElement('video');
+          vid.src = currentItem.src;
+          vid.controls = true;
+          vid.muted = true;
+          vid.defaultMuted = true;
+          vid.autoplay = true;
+          vid.playsInline = true;
+          vid.setAttribute('playsinline', '');
+          vid.setAttribute('controlsList', 'nodownload');
+          vid.className = 'radhya-lightbox__media';
+          stage.appendChild(vid);
+          vid.play().catch(() => {});
+        } else {
+          const img = document.createElement('img');
+          img.src = currentItem.src;
+          img.alt = currentItem.alt || 'Full screen view';
+          img.className = 'radhya-lightbox__media';
+          stage.appendChild(img);
+        }
+
+        if (counter) counter.textContent = `${lb._idx + 1} / ${lb._items.length}`;
+        if (captionEl) {
+          if (currentItem.caption) {
+            captionEl.textContent = currentItem.caption;
+            captionEl.style.display = 'inline-flex';
+          } else {
+            captionEl.textContent = '';
+            captionEl.style.display = 'none';
+          }
+        }
+        const showNav = lb._items.length > 1;
+        if (prevBtn) prevBtn.style.display = showNav ? 'grid' : 'none';
+        if (nextBtn) nextBtn.style.display = showNav ? 'grid' : 'none';
+      };
+
+      lb._step = delta => {
+        if (!lb._items || lb._items.length <= 1) return;
+        lb._idx = (lb._idx + delta + lb._items.length) % lb._items.length;
+        renderSlide();
+      };
+
+      renderSlide();
+      lb.classList.add('open');
+      void lb.offsetWidth;
+      lb.querySelector('.radhya-lightbox__close')?.focus({ preventScroll: true });
+    }
+    window.openRadhyaMediaLightbox = openMediaLightbox;
+
     function closeModal() {
+      const lb = document.getElementById('radhyaMediaLightbox');
+      if (lb && lb.classList.contains('open') && typeof lb._close === 'function') {
+        lb._close();
+      }
       modal.classList.remove('open');
       modal._activeCard = null;
       document.body.style.overflow = '';
@@ -1368,18 +1914,384 @@
      Hydrates cards from Developer Portal CMS (Memory + REST API + BroadcastChannel + LocalStorage)
      Supports mixed media carousels (Pictures + Videos) and natural CSS Grid auto-expansion
      ========================================================================= */
+  const CMS_CACHE_KEY = 'radhya_cms_cards_registry_v8';
+  // Purge legacy v1..v7 caches so all 66 unique local card photographs render immediately
+  try {
+    ['radhya_cms_cards_registry_v1','radhya_cms_cards_registry_v2','radhya_cms_cards_registry_v3','radhya_cms_cards_registry_v5','radhya_cms_cards_registry_v7'].forEach(k => localStorage.removeItem(k));
+    ['real-estate','renovation','loan','vehicle-sale-purchase','insurance','all'].forEach(r => {
+      localStorage.removeItem('radhya_cms_role_' + r + '_v4');
+      localStorage.removeItem('radhya_cms_role_' + r + '_v5');
+      localStorage.removeItem('radhya_cms_role_' + r + '_v7');
+      localStorage.removeItem('radhya_cms_lite_' + r + '_v6');
+      localStorage.removeItem('radhya_cms_lite_' + r + '_v7');
+    });
+  } catch (_) {}
+
   function computeRoleCardsFingerprint(roleCards) {
-    return roleCards.map(c => `${c.id}|${c.spaceIndex}|${c.order ?? ''}|${c.updatedAt ?? ''}|${c.title ?? ''}|${c.priceText ?? ''}|${c.dataDeal ?? ''}|${(c.media || []).length}`).join(';;');
+    return roleCards.map(c => {
+      const mediaSig = Array.isArray(c.media)
+        ? c.media.map(m => (m && m.url ? `${m.url.length}:${m.url.slice(0, 24)}:${m.url.slice(-16)}` : '')).join(',')
+        : '';
+      return `${c.id}|${c.spaceIndex}|${c.order ?? ''}|${c.updatedAt ?? ''}|${c.title ?? ''}|${c.priceText ?? ''}|${c.dataDeal ?? ''}|${mediaSig}`;
+    }).join(';;');
   }
 
-  function renderCmsLoadingState() {
+  function resolveCardMediaUrl(rawUrl) {
+    const u = String(rawUrl || '').trim();
+    if (!u) return '';
+    if (u.startsWith('data:') || u.startsWith('blob:')) return u;
+    const primaryBase = (getCrmBaseUrls()[0] || '').replace(/\/+$/, '');
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/uploads\//i.test(u)) {
+      const rel = u.replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i, '');
+      const isLocalPage = typeof window !== 'undefined' && window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:');
+      return isLocalPage ? rel.replace(/^\//, '') : (primaryBase ? `${primaryBase}${rel}` : rel);
+    }
+    if (/^https?:\/\//i.test(u)) return u;
+    if (u.startsWith('/uploads/') || u.startsWith('uploads/')) {
+      const cleanPath = u.startsWith('/') ? u : `/${u}`;
+      if (/^\/uploads\/(card-[a-z0-9-]+|(real-estate|renovation|loan|vehicle|insurance)-sec[0-3])\.jpg$/i.test(cleanPath)) {
+        return cleanPath.slice(1);
+      }
+      return primaryBase ? `${primaryBase}${cleanPath}` : cleanPath;
+    }
+    return u;
+  }
+
+  const SECTION_BLUEPRINTS = {
+    'real-estate': [
+      {
+        eyebrow: 'Real Estate • Verified Residential Desk',
+        title: 'Residential Sales & Rentals',
+        desc: 'Explore verified builder floors, DDA/registry flats, and family homes across Burari, Sant Nagar, and Delhi-NCR with clear title checks and direct owner pricing.',
+        landingCta: 'Request Property Shortlist',
+        cardBtn: 'View Property',
+        modalCta: 'Enquire About Property',
+        badgeFallback: 'Verified Property',
+        meta: 'Registry & Title Verified • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Real Estate • Commercial & Land Desk',
+        title: 'Commercial Spaces & Plots',
+        desc: 'High-footfall main-road shops, showroom floors, warehouses, and freehold residential/commercial plots with verified chain of ownership and circle-rate guidance.',
+        landingCta: 'Request Commercial Inventory',
+        cardBtn: 'View Property',
+        modalCta: 'Enquire About Property',
+        badgeFallback: 'Commercial & Plot',
+        meta: 'Freehold & High-Yield Sites • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Real Estate • Legal & Valuation Desk',
+        title: 'Property Valuation & Documentation',
+        desc: 'Sub-registrar sale deed drafting, GPA/registry verification, circle-rate & stamp-duty calculation, mutation support, and bank-ready property valuation reports.',
+        landingCta: 'Book Legal & Valuation Desk',
+        cardBtn: 'View Service',
+        modalCta: 'Book Legal Advisory',
+        badgeFallback: 'Legal & Valuation',
+        meta: 'Zero-Error Paperwork • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Real Estate • Guided Tours & Closing',
+        title: 'Site Visits & Negotiation Support',
+        desc: 'Accompanied on-ground property inspections, locality & builder due-diligence, transparent price negotiation, and end-to-end token-to-registry closing support.',
+        landingCta: 'Schedule Accompanied Site Visit',
+        cardBtn: 'View Service',
+        modalCta: 'Book Site Visit',
+        badgeFallback: 'Advisory Support',
+        meta: '7-Day Guided Inspections • +91 99532 27091'
+      }
+    ],
+    'renovation': [
+      {
+        eyebrow: 'Renovation • Turnkey Civil & Interiors',
+        title: 'Full Home & Office Renovation',
+        desc: 'End-to-end civil remodelling, electrical rewiring, plumbing upgrades, false ceiling, and turnkey interiors delivered on a written BOQ, fixed price, and milestone schedule.',
+        landingCta: 'Request Turnkey Site Estimate',
+        cardBtn: 'View Package',
+        modalCta: 'Request Free Estimate',
+        badgeFallback: 'Turnkey Package',
+        meta: 'Fixed BOQ & Handover Date • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Renovation • Modular & Wet-Area Craft',
+        title: 'Kitchen & Bathroom Remodelling',
+        desc: 'BWP marine-ply modular kitchens, quartz/granite counters, concealed diverter fittings, anti-skid tiling, and leak-proof bathroom transformations built for Indian homes.',
+        landingCta: 'Get Modular Remodel Quote',
+        cardBtn: 'View Package',
+        modalCta: 'Request Free Estimate',
+        badgeFallback: 'Remodel Package',
+        meta: 'Branded Fittings & Warranty • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Renovation • Protection & Surface Finish',
+        title: 'Waterproofing, Flooring & Painting',
+        desc: 'Terrace and bathroom chemical waterproofing, vitrified/Italian marble flooring, damp-wall treatment, and Asian Paints/Berger interior-exterior finishes with clean handover.',
+        landingCta: 'Book Site Inspection & Quote',
+        cardBtn: 'View Package',
+        modalCta: 'Request Free Estimate',
+        badgeFallback: 'Finishing Service',
+        meta: 'Seepage-Free Guarantee • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Renovation • Transparent Billing & PMC',
+        title: 'Itemised Quotes & Site Supervision',
+        desc: 'Line-by-line material & labour BOQs, branded material verification at site, daily engineer supervision, and stage-wise billing with zero hidden contractor markups.',
+        landingCta: 'Request Itemised BOQ Audit',
+        cardBtn: 'View Service',
+        modalCta: 'Book Site Supervision',
+        badgeFallback: 'PMC & Supervision',
+        meta: 'Zero Hidden Overruns • +91 99532 27091'
+      }
+    ],
+    'loan': [
+      {
+        eyebrow: 'Loans • Bank & NBFC Home Finance',
+        title: 'Home Loans & Plot Purchase Finance',
+        desc: 'Compare SBI, HDFC, ICICI, LIC Housing & leading NBFC home loans and plot-plus-construction finance with low ROI, high LTV eligibility, and doorstep file pickup.',
+        landingCta: 'Check Home Loan Eligibility',
+        cardBtn: 'View Loan Plan',
+        modalCta: 'Check Eligibility',
+        badgeFallback: 'Home Loan',
+        meta: 'Fast Bank Sanction Desk • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Loans • High-Value Equity Unlock',
+        title: 'Loan Against Property (LAP)',
+        desc: 'Unlock up to 70% of your residential or commercial property value for business expansion, working capital, or personal milestones with flexible tenure up to 15 years.',
+        landingCta: 'Get LAP Valuation & Quote',
+        cardBtn: 'View Loan Plan',
+        modalCta: 'Check Eligibility',
+        badgeFallback: 'LAP Finance',
+        meta: 'Residential & Commercial LAP • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Loans • MSME & Commercial Growth',
+        title: 'Commercial & Business Loans',
+        desc: 'Structured funding for commercial shop purchase, machinery, working capital OD/CC limits, and MSME expansion with minimal documentation and dedicated bank coordination.',
+        landingCta: 'Speak With Loan Advisor',
+        cardBtn: 'View Loan Plan',
+        modalCta: 'Check Eligibility',
+        badgeFallback: 'Business Finance',
+        meta: 'MSME & Commercial Desk • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Loans • Lower EMI & Auto Finance',
+        title: 'Vehicle Finance & Balance Transfer',
+        desc: 'Reduce your existing home loan or LAP interest rate through quick bank balance transfers with top-up options, alongside competitive new and pre-owned vehicle loans.',
+        landingCta: 'Calculate EMI Savings',
+        cardBtn: 'View Loan Plan',
+        modalCta: 'Request Rate Comparison',
+        badgeFallback: 'BT & Auto Loan',
+        meta: 'Lower ROI & Top-Up Desk • +91 99532 27091'
+      }
+    ],
+    'vehicle-sale-purchase': [
+      {
+        eyebrow: 'Auto-Moto • Verified Cars & Two-Wheelers',
+        title: 'New & Pre-Owned Vehicles',
+        desc: 'Quality-checked pre-owned hatchbacks, sedans, SUVs, and two-wheelers with verified odometer history, clean RC records, and transparent direct-deal pricing.',
+        landingCta: 'Request Vehicle Stocklist',
+        cardBtn: 'View Vehicle',
+        modalCta: 'Book Test Drive / Enquire',
+        badgeFallback: 'Verified Vehicle',
+        meta: 'Clean RC & Service History • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Auto-Moto • Pre-Purchase Diagnostics',
+        title: 'Inspection & Valuation',
+        desc: 'Comprehensive engine, chassis, paint-depth, accidental-history, and fair market valuation checks before you buy or sell any car or two-wheeler in Delhi-NCR.',
+        landingCta: 'Book Vehicle Inspection',
+        cardBtn: 'View Service',
+        modalCta: 'Book Vehicle Inspection',
+        badgeFallback: 'Inspection Desk',
+        meta: 'Multi-Point Check & Fair Value • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Auto-Moto • Delhi-NCR RTO Desk',
+        title: 'Registration & Transfer Support',
+        desc: 'Hassle-free RC ownership transfer (Form 29/30), bank hypothecation termination (Form 35), interstate NOC clearance, and Parivahan status tracking handled end to end.',
+        landingCta: 'Book RTO Transfer Support',
+        cardBtn: 'View Service',
+        modalCta: 'Book RTO Transfer Support',
+        badgeFallback: 'RTO & RC Desk',
+        meta: 'Form 29/30 & Hypothecation • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Auto-Moto • Upgrade & Finance Desk',
+        title: 'Finance & Exchange Assistance',
+        desc: 'Instant valuation and fair trade-in for your current car or bike paired with low-down-payment auto loans and quick bank disbursement on your next upgrade.',
+        landingCta: 'Get Exchange & Finance Quote',
+        cardBtn: 'View Service',
+        modalCta: 'Request Exchange Quote',
+        badgeFallback: 'Exchange & Finance',
+        meta: 'Fast Trade-In & Loan Approval • +91 99532 27091'
+      }
+    ],
+    'insurance': [
+      {
+        eyebrow: 'Insurance • Bharat Griha & Asset Cover',
+        title: 'Home & Property Insurance',
+        desc: 'Protect your home structure, interiors, and commercial shop against fire, earthquake, flood, burglary, and allied perils with plain-English policy comparisons.',
+        landingCta: 'Get Property Cover Quote',
+        cardBtn: 'View Cover',
+        modalCta: 'Get Policy Quote',
+        badgeFallback: 'Property Cover',
+        meta: 'Structure & Contents Protection • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Insurance • Zero-Dep & Instant Renewal',
+        title: 'Motor Insurance & Renewals',
+        desc: 'Comprehensive car, SUV, commercial vehicle, and two-wheeler policies with Zero-Depreciation, engine protect, roadside assistance, and instant NCB protection renewals.',
+        landingCta: 'Get Instant Motor Quote',
+        cardBtn: 'View Cover',
+        modalCta: 'Get Policy Quote',
+        badgeFallback: 'Motor Cover',
+        meta: 'Cashless Garage Network • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Insurance • Family Health & Term Life',
+        title: 'Health & Life Plans',
+        desc: 'Cashless family-floater health insurance, senior citizen plans, super top-ups, and pure term life protection tailored to your family budget and hospital network needs.',
+        landingCta: 'Compare Health & Term Plans',
+        cardBtn: 'View Cover',
+        modalCta: 'Get Policy Quote',
+        badgeFallback: 'Health & Life',
+        meta: 'Unbiased Multi-Insurer Advisory • +91 99532 27091'
+      },
+      {
+        eyebrow: 'Insurance • Dedicated Settlement Support',
+        title: 'Claims Assistance',
+        desc: 'Dedicated handholding for cashless hospitalisation pre-authorisation, motor surveyor coordination, reimbursement documentation, and end-to-end claim settlement follow-ups.',
+        landingCta: 'Connect With Claims Desk',
+        cardBtn: 'View Service',
+        modalCta: 'Request Claims Assistance',
+        badgeFallback: 'Claims Support',
+        meta: 'Priority Claim Advocacy • +91 99532 27091'
+      }
+    ]
+  };
+
+  function getSectionBlueprint(role, sIdx, fallbackTitle) {
+    const normalizedRole = role === 'auto-moto' ? 'vehicle-sale-purchase' : (role || 'real-estate');
+    const list = SECTION_BLUEPRINTS[normalizedRole] || SECTION_BLUEPRINTS['real-estate'];
+    const bp = list[Number(sIdx)] || null;
+    if (bp) return bp;
+    return {
+      eyebrow: 'Radhya Realty • Advisory Desk',
+      title: fallbackTitle || 'Verified Advisory Portfolio',
+      desc: 'Verified offerings for this section are curated directly by our specialists. Connect with us for customised options and transparent pricing.',
+      landingCta: 'Request Consultation',
+      cardBtn: 'View details',
+      modalCta: 'Enquire Now',
+      badgeFallback: 'Verified',
+      meta: 'Direct Desk • +91 99532 27091'
+    };
+  }
+
+  function escapeLandingText(str) {
+    return String(str || '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+
+  function getSectionTitleText(section) {
+    const trigger = section && section.querySelector('.service-trigger');
+    if (!trigger) return 'Verified Advisory Portfolio';
+    const clone = trigger.cloneNode(true);
+    clone.querySelectorAll('svg, .st-match-badge').forEach(el => el.remove());
+    return (clone.textContent || '').replace(/\s+/g, ' ').trim() || 'Verified Advisory Portfolio';
+  }
+
+  const SECTION_LOADING_LABELS = {
+    'real-estate': [
+      'Loading Verified Residential Listings',
+      'Loading Commercial & Plot Inventory',
+      'Loading Legal & Valuation Desk',
+      'Loading Guided Site Visit Services'
+    ],
+    'renovation': [
+      'Loading Turnkey Renovation Packages',
+      'Loading Modular Kitchen & Bath Packages',
+      'Loading Waterproofing & Finishing Desk',
+      'Loading Itemised BOQ & PMC Services'
+    ],
+    'loan': [
+      'Loading Bank & NBFC Home Loan Plans',
+      'Loading Loan Against Property Options',
+      'Loading Commercial & MSME Loan Desk',
+      'Loading Balance Transfer & Auto Finance'
+    ],
+    'vehicle-sale-purchase': [
+      'Loading Verified Vehicle Inventory',
+      'Loading Pre-Purchase Inspection Desk',
+      'Loading Delhi-NCR RTO Transfer Services',
+      'Loading Trade-In & Auto Finance Plans'
+    ],
+    'insurance': [
+      'Loading Property & Asset Cover Plans',
+      'Loading Zero-Dep Motor Cover Options',
+      'Loading Family Health & Term Plans',
+      'Loading Dedicated Claims Support Desk'
+    ]
+  };
+
+  function getSectionLoadingLabel(role, sIdx, fallbackTitle) {
+    const normalizedRole = role === 'auto-moto' ? 'vehicle-sale-purchase' : (role || 'real-estate');
+    const list = SECTION_LOADING_LABELS[normalizedRole];
+    if (list && list[Number(sIdx)]) return list[Number(sIdx)];
+    return 'Loading ' + (fallbackTitle || 'Verified Offerings');
+  }
+
+  function buildSectionLoadingTagHtml(role, sIdx, fallbackTitle) {
+    const label = escapeLandingText(getSectionLoadingLabel(role, sIdx, fallbackTitle));
+    return '<div class="section-loading-tag" data-section-loading="true" role="status" aria-live="polite">'
+      + '<span class="section-loading-tag__dot" aria-hidden="true"></span>'
+      + '<span class="section-loading-tag__label">' + label + '</span>'
+      + '<span class="section-loading-tag__bar" aria-hidden="true"><span class="section-loading-tag__sweep"></span></span>'
+      + '</div>';
+  }
+
+  function clearSectionLoadingTags() {
+    document.querySelectorAll('.section-loading-tag[data-section-loading="true"]').forEach(el => {
+      el.classList.add('is-done');
+      setTimeout(() => { if (el.parentNode) el.remove(); }, 220);
+    });
+  }
+
+  function buildSectionLandingHtml(section, sIdx, showLoadingTag) {
+    const pageRole = document.body.dataset.role || 'real-estate';
+    const fallbackTitle = getSectionTitleText(section);
+    const bp = getSectionBlueprint(pageRole, sIdx, fallbackTitle);
+    const division = mapRoleToDivision(pageRole);
+    const loadingTag = showLoadingTag ? buildSectionLoadingTagHtml(pageRole, sIdx, bp.title || fallbackTitle) : '';
+    return '<div class="section-landing-card" data-section-landing="true">'
+      + '<div class="section-landing-card__top">'
+      + '<span class="section-landing-card__eyebrow">' + escapeLandingText(bp.eyebrow) + '</span>'
+      + loadingTag
+      + '</div>'
+      + '<h4 class="section-landing-card__title">' + escapeLandingText(bp.title || fallbackTitle) + '</h4>'
+      + '<p class="section-landing-card__desc">' + escapeLandingText(bp.desc) + '</p>'
+      + '<div class="section-landing-card__actions">'
+      + '<button type="button" class="section-landing-card__cta" data-enquiry="true" data-division="' + escapeLandingText(division) + '" data-title="' + escapeLandingText(bp.title || fallbackTitle) + '">' + escapeLandingText(bp.landingCta) + '</button>'
+      + '<span class="section-landing-card__meta">' + escapeLandingText(bp.meta) + '</span>'
+      + '</div></div>';
+  }
+
+  function renderSectionLandingStates(showLoadingTag) { 
+    const pageRole = document.body.dataset.role || 'real-estate';
     const sections = document.querySelectorAll('.service-dropdown-item');
     sections.forEach((section, sIdx) => {
       const container = section.querySelector('.dropdown-cards');
       if (!container) return;
-      container.innerHTML = sIdx === 0
-        ? '<div class="cms-loading-state" style="grid-column:1/-1;padding:2.2rem 1.2rem;text-align:center;color:#e3c883;font-size:0.95rem;letter-spacing:0.03em;opacity:0.9;">Loading live listings...</div>'
-        : '';
+      const existingLanding = container.querySelector('.section-landing-card');
+      if (!container.querySelector('.prop-card')) {
+        if (!existingLanding) {
+          container.innerHTML = buildSectionLandingHtml(section, sIdx, !!showLoadingTag);
+        } else if (showLoadingTag && !existingLanding.querySelector('.section-loading-tag')) {
+          const eyebrow = existingLanding.querySelector('.section-landing-card__eyebrow');
+          if (eyebrow) {
+            const fallbackTitle = getSectionTitleText(section);
+            eyebrow.insertAdjacentHTML('afterend', buildSectionLoadingTagHtml(pageRole, sIdx, fallbackTitle));
+          }
+        }
+      }
     });
   }
 
@@ -1398,7 +2310,7 @@
         hasAuthoritativeRegistry = true;
       } else {
         try {
-          const raw = localStorage.getItem('radhya_cms_cards_registry_v1');
+          const raw = localStorage.getItem(CMS_CACHE_KEY);
           if (raw) {
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed)) {
@@ -1424,12 +2336,9 @@
       return false;
     });
 
-    if (roleCards.length === 0 && !window.__radhyaCmsSyncedLive && registry.length === 0) return;
-
     // Skip redundant DOM rebuilds when background poll returns identical live cards
     const nextFingerprint = computeRoleCardsFingerprint(roleCards);
-    const hasLoadingPlaceholder = !!document.querySelector('.cms-loading-state');
-    if (!hasLoadingPlaceholder && window.__radhyaCardsFingerprint === nextFingerprint) {
+    if (window.__radhyaCardsFingerprint === nextFingerprint) {
       return;
     }
     window.__radhyaCardsFingerprint = nextFingerprint;
@@ -1446,15 +2355,21 @@
       container.style.removeProperty('max-height');
       container.style.removeProperty('height');
 
-      // Clear container first so deleted cards are cleanly wiped
+      const sectionBp = getSectionBlueprint(targetRole, sIdx, getSectionTitleText(section));
+
+      // Clear container first so deleted/dummy cards are cleanly wiped
       container.innerHTML = '';
-      if (spaceCards.length === 0) return;
+      if (spaceCards.length === 0) {
+        container.innerHTML = buildSectionLandingHtml(section, sIdx);
+        return;
+      }
 
       // Render cards in order
-      spaceCards.forEach(card => {
+      spaceCards.forEach((card, cardIdx) => {
         const article = document.createElement('article');
         article.className = 'prop-card';
         article.dataset.cardId = card.id;
+        article.dataset.isLite = card._isLite ? 'true' : 'false';
         if (card.dataType) article.dataset.type = card.dataType;
         if (card.dataDeal) article.dataset.deal = card.dataDeal;
         if (card.dataPriceBuy) article.dataset.priceBuy = String(card.dataPriceBuy);
@@ -1471,29 +2386,50 @@
         const track = document.createElement('div');
         track.className = 'prop-slider__track';
 
-        const mediaList = Array.isArray(card.media) && card.media.length > 0 
-          ? card.media 
+        const resolvedMedia = Array.isArray(card.media)
+          ? card.media
+              .map(m => ({ ...m, url: resolveCardMediaUrl(m && m.url) }))
+              .filter(m => Boolean(m.url))
+          : [];
+        const mediaList = resolvedMedia.length > 0
+          ? resolvedMedia
           : [{ type: 'image', url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80', alt: card.title }];
 
-        mediaList.forEach(m => {
+        const getSlideCaption = (rawLabel, cardTitle) => {
+          const txt = String(rawLabel || '').trim();
+          if (!txt) return '';
+          if (cardTitle && txt.toLowerCase() === String(cardTitle).trim().toLowerCase()) return '';
+          if (/\.(jpe?g|png|webp|gif|mp4|webm|mov|heic)$/i.test(txt)) return '';
+          if (/^(img_|dsc_|pxl_|screenshot|whatsapp image|slide\s*\d*)$/i.test(txt)) return '';
+          return txt;
+        };
+
+        mediaList.forEach((m, mIdx) => {
           const slide = document.createElement('div');
           slide.className = 'prop-slide';
 
-          let mediaUrl = m.url || '';
-          if (mediaUrl.startsWith('http://localhost:3000/uploads/') && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')) {
-            mediaUrl = mediaUrl.replace('http://localhost:3000/', '');
-          }
+          const mediaUrl = m.url || '';
+          const captionText = getSlideCaption(m.caption || m.title || m.label || m.alt, card.title);
+          if (captionText) slide.dataset.caption = captionText;
 
           const isVid = m.type === 'video' || (typeof mediaUrl === 'string' && (mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.webm') || mediaUrl.startsWith('data:video/')));
           if (isVid) {
             const vid = document.createElement('video');
             vid.src = mediaUrl;
             vid.muted = true;
+            vid.defaultMuted = true;
             vid.loop = true;
-            vid.autoplay = true;
+            vid.autoplay = mIdx === 0;
+            vid.controls = false;
+            vid.removeAttribute('controls');
+            vid.disablePictureInPicture = true;
+            vid.disableRemotePlayback = true;
+            vid.setAttribute('disablepictureinpicture', '');
+            vid.setAttribute('disableremoteplayback', '');
             vid.playsInline = true;
             vid.setAttribute('playsinline', '');
-            vid.preload = 'metadata';
+            vid.setAttribute('webkit-playsinline', '');
+            vid.preload = 'none';
             vid.onerror = function() {
               const fallbackImg = document.createElement('img');
               fallbackImg.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
@@ -1507,7 +2443,9 @@
             const img = document.createElement('img');
             img.src = mediaUrl;
             img.alt = m.alt || card.title;
-            img.loading = 'lazy';
+            const isPriorityThumb = sIdx === 0 && cardIdx < 4 && mIdx === 0;
+            img.loading = isPriorityThumb ? 'eager' : 'lazy';
+            if (isPriorityThumb) img.fetchPriority = 'high';
             img.decoding = 'async';
             img.onerror = function() {
               if (this.src !== 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80') {
@@ -1516,6 +2454,14 @@
             };
             slide.appendChild(img);
           }
+
+          if (captionText) {
+            const cap = document.createElement('span');
+            cap.className = 'prop-slide__caption';
+            cap.textContent = captionText;
+            slide.appendChild(cap);
+          }
+
           track.appendChild(slide);
         });
 
@@ -1523,7 +2469,7 @@
 
         const tag = document.createElement('span');
         tag.className = 'prop-tag';
-        tag.textContent = card.badge || 'Verified';
+        tag.textContent = card.badge || sectionBp.badgeFallback || 'Verified';
         fig.appendChild(tag);
 
         article.appendChild(fig);
@@ -1554,13 +2500,14 @@
 
         const moreBtn = document.createElement('button');
         moreBtn.className = 'prop-card__more';
-        moreBtn.dataset.tag = card.badge || '';
+        moreBtn.dataset.tag = card.badge || sectionBp.badgeFallback || '';
         moreBtn.dataset.title = card.title;
         moreBtn.dataset.desc = card.fullDesc || card.shortDesc || '';
         if (card.division) moreBtn.dataset.division = card.division;
         if (card.priceText) moreBtn.dataset.price = card.priceText;
         moreBtn.dataset.cardId = card.id;
-        moreBtn.textContent = 'View details';
+        moreBtn.dataset.ctaLabel = sectionBp.modalCta || 'Enquire Now';
+        moreBtn.textContent = sectionBp.cardBtn || 'View details';
         body.appendChild(moreBtn);
 
         article.appendChild(body);
@@ -1608,114 +2555,419 @@
     return ['https://radhya-crm.onrender.com', 'https://crm.radhyarealty.com'];
   }
 
-  // On initial load: hydrate immediately from cached live cards if present; otherwise show loading state (never flash static dummy cards)
-  (function initCardsSurface() {
-    let hasCachedLive = false;
+  function getCookieConsentState() {
     try {
-      const raw = localStorage.getItem('radhya_cms_cards_registry_v1');
+      const raw = localStorage.getItem('radhya_cookie_consent_v1');
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function isOptionalStorageAllowed() {
+    const st = getCookieConsentState();
+    if (st && (st.tier === 'declined' || st.consented === false)) return false;
+    return true;
+  }
+
+  function purgeOptionalLocalStorage() {
+    try {
+      localStorage.removeItem('radhya_cms_cards_registry_v1');
+      localStorage.removeItem('radhya_cms_cards_registry_v2');
+      localStorage.removeItem('radhya_crm_inbound_leads_v1');
+    } catch (_) {}
+  }
+
+  /* High-speed IndexedDB + per-role localStorage public catalog cache (zero personal data, >500MB quota, <15ms hydration) */
+  const CATALOG_IDB_NAME = 'radhya_catalog_idb_v4';
+  const CATALOG_IDB_STORE = 'catalog';
+
+  function getCurrentScopedRole() {
+    const raw = (document.body && document.body.dataset && document.body.dataset.role) || '';
+    if (!raw) return 'all';
+    return raw === 'auto-moto' ? 'vehicle-sale-purchase' : raw.toLowerCase();
+  }
+
+  function getRoleLocalStorageKey(roleKey) {
+    return roleKey === 'all' ? CMS_CACHE_KEY : ('radhya_cms_role_' + roleKey + '_v8');
+  }
+
+  function openCatalogIdb() {
+    return new Promise((resolve) => {
+      if (typeof indexedDB === 'undefined') return resolve(null);
+      try {
+        const req = indexedDB.open(CATALOG_IDB_NAME, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(CATALOG_IDB_STORE)) {
+            db.createObjectStore(CATALOG_IDB_STORE);
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      } catch (_) {
+        resolve(null);
+      }
+    });
+  }
+
+  async function readCatalogFromIdb(key) {
+    const db = await openCatalogIdb();
+    if (!db) return null;
+    return new Promise((resolve) => {
+      try {
+        const tx = db.transaction(CATALOG_IDB_STORE, 'readonly');
+        const req = tx.objectStore(CATALOG_IDB_STORE).get(key);
+        req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : null);
+        req.onerror = () => resolve(null);
+      } catch (_) {
+        resolve(null);
+      }
+    });
+  }
+
+  async function writeCatalogToIdb(entries) {
+    const db = await openCatalogIdb();
+    if (!db) return;
+    try {
+      const tx = db.transaction(CATALOG_IDB_STORE, 'readwrite');
+      const store = tx.objectStore(CATALOG_IDB_STORE);
+      entries.forEach(([k, v]) => { try { store.put(v, k); } catch (_) {} });
+    } catch (_) {}
+  }
+
+  function matchCardsForRole(cards, roleKey) {
+    if (roleKey === 'all') return cards;
+    return cards.filter(c => {
+      const cRole = (c.role || '').toLowerCase();
+      if (cRole === roleKey) return true;
+      if (roleKey === 'vehicle-sale-purchase' && (cRole === 'auto-moto' || cRole === 'vehicle-sale-purchase' || c.division === 'AUTO_MOTO')) return true;
+      if (roleKey === 'real-estate' && c.division === 'REAL_ESTATE') return true;
+      if (roleKey === 'renovation' && c.division === 'RENOVATION') return true;
+      if (roleKey === 'loan' && c.division === 'LOAN') return true;
+      if (roleKey === 'insurance' && c.division === 'INSURANCE') return true;
+      return false;
+    });
+  }
+
+  function getLiteCacheKey(roleKey) {
+    return 'radhya_cms_lite_' + (roleKey || 'all') + '_v8';
+  }
+
+  function cacheLiveCardsRegistry(cards, opts) {
+    if (!Array.isArray(cards)) return;
+    const activeRole = getCurrentScopedRole();
+    const isFullRegistry = !!(opts && opts.isFullRegistry) || activeRole === 'all';
+    const hasLite = cards.some(c => c && c._isLite);
+
+    // Save compact ?lite=1 list in localStorage so every division page paints in 0ms synchronous
+    if (isFullRegistry) {
+      ['real-estate', 'renovation', 'loan', 'vehicle-sale-purchase', 'insurance'].forEach(rk => {
+        const subset = matchCardsForRole(cards, rk);
+        try {
+          const s = JSON.stringify(subset);
+          if (s.length < 2800000) localStorage.setItem(getLiteCacheKey(rk), s);
+        } catch (_) {}
+      });
+    } else {
+      try {
+        const s = JSON.stringify(cards);
+        if (s.length < 2800000) localStorage.setItem(getLiteCacheKey(activeRole), s);
+      } catch (_) {}
+    }
+
+    // Save any full (non-lite) cards individually in IndexedDB (>500MB quota, <10ms read)
+    if (!hasLite) {
+      const idbEntries = [];
+      cards.forEach(c => {
+        if (c && c.id && !c._isLite) idbEntries.push(['full_' + c.id, [c]]);
+      });
+      if (idbEntries.length > 0) writeCatalogToIdb(idbEntries);
+    }
+  }
+
+  // Merge any cached full 6-7 photo + video cards from IndexedDB into a fast list
+  async function mergeFullCardsFromIdb(cards) {
+    if (!Array.isArray(cards) || cards.length === 0) return cards;
+    const upgraded = await Promise.all(cards.map(async (c) => {
+      if (!c || !c.id || !c._isLite) return c;
+      try {
+        const hit = await readCatalogFromIdb('full_' + c.id);
+        const full = hit && hit[0];
+        if (full && full.id === c.id && !full._isLite && (full.updatedAt || '') === (c.updatedAt || '') && Array.isArray(full.media) && full.media.length > 0) {
+          return { ...c, media: full.media, _isLite: false };
+        }
+      } catch (_) {}
+      return c;
+    }));
+    return upgraded;
+  }
+
+  // On initial load: 0ms synchronous localStorage paint + <15ms IndexedDB full-gallery merge
+  (function initCardsSurface() {
+    const activeRole = getCurrentScopedRole();
+    let initialCards = null;
+    try {
+      const raw = localStorage.getItem(getLiteCacheKey(activeRole)) || localStorage.getItem(getRoleLocalStorageKey(activeRole)) || localStorage.getItem(CMS_CACHE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          hasCachedLive = true;
-          rebindInteractiveCards(parsed);
-        }
+        if (Array.isArray(parsed) && parsed.length > 0) initialCards = parsed;
       }
-    } catch (e) {}
-    if (!hasCachedLive && document.body.dataset.role) {
-      renderCmsLoadingState();
+    } catch (_) {}
+
+    if (initialCards) {
+      rebindInteractiveCards(initialCards);
+      clearSectionLoadingTags();
+      mergeFullCardsFromIdb(initialCards).then(upgraded => {
+        if (!window.__radhyaCmsSyncedLive) {
+          rebindInteractiveCards(upgraded);
+        }
+      }).catch(() => {});
+    } else if (document.body.dataset.role) {
+      renderSectionLandingStates(true);
     }
   })();
 
-  // Deduplicate concurrent CMS sync fetches so focus/visibility/interval never pile up against Render
-  let cmsSyncInFlight = null;
+  // Preserve already-hydrated full multi-photo/video media so a fast ?lite=1 refresh NEVER downgrades a full card
+  function mergeCardsPreservingFullMedia(incoming, existing) {
+    if (!Array.isArray(incoming)) return [];
+    if (!Array.isArray(existing) || existing.length === 0) return incoming;
+    const byId = new Map();
+    existing.forEach(c => { if (c && c.id) byId.set(c.id, c); });
+    return incoming.map(inc => {
+      if (!inc || !inc.id || !inc._isLite) return inc;
+      const prev = byId.get(inc.id);
+      if (prev && !prev._isLite && (prev.updatedAt || '') === (inc.updatedAt || '') && Array.isArray(prev.media) && prev.media.length > 0) {
+        return { ...inc, media: prev.media, _isLite: false };
+      }
+      return inc;
+    });
+  }
 
-  // Background fetch & live sync from CMS REST API (survives Render cold-start without reverting to dummy cards)
+  function getActiveCrmEndpoints(pathWithQuery, timeoutRemoteMs) {
+    const isLocalPage = typeof window !== 'undefined' && window.location &&
+      (window.location.hostname === 'localhost' ||
+       window.location.hostname === '127.0.0.1' ||
+       !window.location.hostname ||
+       window.location.protocol === 'file:');
+    const urls = getCrmBaseUrls().filter(u => {
+      if (u.includes('127.0.0.1')) return false;
+      if (isLocalPage && u.includes('onrender.com') && !window.__RADHYA_CRM_URL) return false;
+      return true;
+    });
+    const list = [];
+    for (const base of urls) {
+      const isLocalHost = base.includes('localhost');
+      if (isLocalHost && window.__radhyaLocalCrmDead) continue;
+      list.push({
+        url: `${base}${pathWithQuery}`,
+        isLocalHost,
+        timeoutMs: isLocalHost ? 400 : timeoutRemoteMs
+      });
+    }
+    return list;
+  }
+
+  function fetchJsonFirstValid(endpoints) {
+    const fetchOne = ({ url, isLocalHost, timeoutMs }) => new Promise((resolve, reject) => {
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+      fetch(url, { signal: controller ? controller.signal : undefined })
+        .then(res => {
+          if (timer) clearTimeout(timer);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(data => {
+          if (data && Array.isArray(data.cards)) resolve(data);
+          else reject(new Error('Invalid payload'));
+        })
+        .catch(err => {
+          if (timer) clearTimeout(timer);
+          if (isLocalHost) window.__radhyaLocalCrmDead = true;
+          reject(err);
+        });
+    });
+
+    return new Promise((resolve, reject) => {
+      let pending = endpoints.length;
+      if (pending === 0) return reject(new Error('No endpoints'));
+      let settled = false;
+      endpoints.forEach(ep => {
+        fetchOne(ep).then(data => {
+          if (!settled) { settled = true; resolve(data); }
+        }).catch(() => {
+          pending -= 1;
+          if (pending === 0 && !settled) reject(new Error('All endpoints failed'));
+        });
+      });
+    });
+  }
+
+  // Deduplicated single-card full media hydration (loads all 6-7 photos + video per card, cached in IndexedDB)
+  const singleCardInFlight = new Map();
+  async function hydrateSingleCardFullMedia(cardId) {
+    if (!cardId || typeof fetch === 'undefined') return null;
+    if (singleCardInFlight.has(cardId)) return singleCardInFlight.get(cardId);
+    const task = (async () => {
+      try {
+        const cached = await readCatalogFromIdb('full_' + cardId);
+        if (cached && cached[0] && cached[0].id === cardId && !cached[0]._isLite) {
+          const cur = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+          const existing = cur.find(c => c && c.id === cardId);
+          if (!existing || (existing.updatedAt || '') === (cached[0].updatedAt || '')) {
+            const updated = cur.map(c => (c && c.id === cardId ? { ...cached[0], _isLite: false } : c));
+            if (updated.length > 0) {
+              window.__radhyaCardsRegistry = updated;
+              rebindInteractiveCards(updated);
+            }
+            return cached[0];
+          }
+        }
+      } catch (_) {}
+      try {
+        const eps = getActiveCrmEndpoints(`/api/v1/public/cards?id=${encodeURIComponent(cardId)}`, 45000);
+        const data = await fetchJsonFirstValid(eps);
+        const fullCard = data && Array.isArray(data.cards) ? data.cards.find(c => c && c.id === cardId) : null;
+        if (fullCard) {
+          const cleanFull = { ...fullCard, _isLite: false };
+          writeCatalogToIdb([['full_' + cardId, [cleanFull]]]);
+          const cur = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+          const updated = cur.map(c => (c && c.id === cardId ? cleanFull : c));
+          if (updated.length > 0) {
+            window.__radhyaCardsRegistry = updated;
+            rebindInteractiveCards(updated);
+          }
+          return cleanFull;
+        }
+      } catch (_) {}
+      return null;
+    })().finally(() => {
+      singleCardInFlight.delete(cardId);
+    });
+    singleCardInFlight.set(cardId, task);
+    return task;
+  }
+  window.__radhyaHydrateSingleCardFullMedia = hydrateSingleCardFullMedia;
+
+  // Staggered per-card full gallery/video hydration (concurrency 2, open section first — never chokes Render!)
+  let progressiveHydrationRunId = 0;
+  function hydrateVisibleCardsProgressively(cards) {
+    if (!Array.isArray(cards) || !document.body.dataset.role) return;
+    const liteCards = cards.filter(c => c && c.id && c._isLite);
+    if (liteCards.length === 0) return;
+
+    const myRunId = ++progressiveHydrationRunId;
+    // Prioritize spaceIndex 0 (open section) first, then remaining sections
+    const queue = [...liteCards].sort((a, b) => Number(a.spaceIndex || 0) - Number(b.spaceIndex || 0));
+    let cursor = 0;
+    const CONCURRENCY = 2;
+
+    async function worker() {
+      while (cursor < queue.length && myRunId === progressiveHydrationRunId) {
+        const item = queue[cursor++];
+        if (!item || !item.id) continue;
+        await hydrateSingleCardFullMedia(item.id);
+      }
+    }
+
+    for (let i = 0; i < Math.min(CONCURRENCY, queue.length); i++) {
+      worker();
+    }
+  }
+
+  let cmsSyncInFlight = null;
+  let usedEarlyPrefetch = false;
+  let coldStartRetryCount = 0;
+
+  // Single-Request Fast List + Per-Card Full Media Hydration:
+  // 1) ONE fast ?lite=1 request paints ALL cards immediately (<400ms warm, 45s cold-start safe)
+  // 2) Merges any cached full 6-7 photo + video cards from IndexedDB in <15ms
+  // 3) Hydrates remaining cards individually (?id=<id>, concurrency 2) so all 6-7 pics + videos appear smoothly
   async function syncFromCmsApi(opts = {}) {
     if (window.__radhyaRedirecting) return { ok: false, apiFailed: false };
     if (typeof fetch === 'undefined') return { ok: false, apiFailed: true };
     if (cmsSyncInFlight && !opts.deepLink) return cmsSyncInFlight;
     const runSync = (async () => {
     const isDeepLink = !!opts.deepLink;
-    const urls = getCrmBaseUrls();
-    const maxAttempts = 2;
+    const pageRole = (document.body && document.body.dataset && document.body.dataset.role) || '';
+    const scopedRole = pageRole === 'auto-moto' ? 'vehicle-sale-purchase' : pageRole;
+    const qsParts = [];
+    if (!isDeepLink && scopedRole) qsParts.push('role=' + encodeURIComponent(scopedRole));
+    if (!isDeepLink) qsParts.push('lite=1');
+    const roleQs = qsParts.length ? ('?' + qsParts.join('&')) : '';
     let syncSucceeded = false;
 
-    for (let attempt = 0; attempt < maxAttempts && !syncSucceeded; attempt++) {
-      for (const base of urls) {
-        try {
-          const isLocalHost = base.includes('localhost') || base.includes('127.0.0.1');
-          const timeoutMs = isLocalHost ? 4000 : (isDeepLink ? 60000 : 25000);
-          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-          const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-          const res = await fetch(`${base}/api/v1/public/cards?t=` + Date.now(), {
-            signal: controller ? controller.signal : undefined,
-            cache: 'no-store',
-            headers: { 
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache'
-            }
-          });
-          if (timer) clearTimeout(timer);
-          if (!res.ok) continue;
-          const data = await res.json();
-          if (data && Array.isArray(data.cards)) {
-            window.__radhyaCmsSyncedLive = true;
-            window.__radhyaCardsRegistry = data.cards;
-            // Rebind immediately with authoritative live cards (including empty [] if all deleted)
-            rebindInteractiveCards(data.cards);
+    const processIncoming = async (rawCards) => {
+      if (!Array.isArray(rawCards)) return;
+      const withMem = mergeCardsPreservingFullMedia(rawCards, window.__radhyaCardsRegistry);
+      const withIdb = await mergeFullCardsFromIdb(withMem);
+      window.__radhyaCmsSyncedLive = true;
+      window.__radhyaCardsRegistry = withIdb;
+      rebindInteractiveCards(withIdb);
+      clearSectionLoadingTags();
+      cacheLiveCardsRegistry(withIdb, { isFullRegistry: !scopedRole });
+      if (scopedRole) hydrateVisibleCardsProgressively(withIdb);
+    };
 
-            // Safely cache to localStorage without crashing if quota limit reached
-            try {
-              const serialized = JSON.stringify(data.cards);
-              if (serialized.length < 3500000) {
-                localStorage.setItem('radhya_cms_cards_registry_v1', serialized);
-              } else {
-                const compact = data.cards.map(c => ({
-                  ...c,
-                  media: (c.media || []).map(m => m.url && m.url.length > 50000 ? { ...m, url: '' } : m)
-                }));
-                localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(compact));
-              }
-            } catch (e) {
-              console.warn('LocalStorage quota bypass: keeping full card registry in memory.');
-            }
-            syncSucceeded = true;
-            break; // successfully fetched from active host
-          }
-        } catch (e) {
-          // try next endpoint in list
+    // 1. Consume 0ms <head> single fast ?lite=1 prefetch
+    if (!usedEarlyPrefetch && window.__radhyaPrefetchPromise) {
+      usedEarlyPrefetch = true;
+      try {
+        const prefetched = await window.__radhyaPrefetchPromise;
+        if (prefetched && Array.isArray(prefetched.cards)) {
+          await processIncoming(prefetched.cards);
+          syncSucceeded = true;
         }
-      }
-      if (!syncSucceeded && attempt + 1 < maxAttempts) {
-        await new Promise(r => setTimeout(r, 1200));
-      }
+      } catch (_) {}
     }
 
-    // Fallback ONLY on first load when no live/cached cards exist yet; never overwrite live CRM cards with static dummy JSON
-    if (!syncSucceeded && !window.__radhyaCmsSyncedLive && !Array.isArray(window.__radhyaCardsRegistry)) {
+    // 2. Fallback / refresh fetch (45s cold-start safe, native ETag 304 = 0 bytes when unchanged)
+    if (!syncSucceeded) {
       try {
-        const localDataUrl = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
-          ? `${window.location.origin}/data/cards-registry.json?t=` + Date.now()
-          : 'data/cards-registry.json?t=' + Date.now();
-        const localRes = await fetch(localDataUrl, {
-          cache: 'no-store',
-          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-        });
+        const endpoints = getActiveCrmEndpoints(`/api/v1/public/cards${roleQs}`, 45000);
+        const data = await fetchJsonFirstValid(endpoints);
+        if (data && Array.isArray(data.cards)) {
+          await processIncoming(data.cards);
+          syncSucceeded = true;
+        }
+      } catch (_) {}
+    }
+
+    // 3. Local static JSON fallback (/data/cards-registry.json) when offline or Render CRM is sleeping/CORS-restricted
+    if (!syncSucceeded) {
+      try {
+        const localRes = await fetch('data/cards-registry.json?v=20261128-0925', { cache: 'no-store' });
         if (localRes.ok) {
-          const localData = await localRes.json();
-          const cards = Array.isArray(localData) ? localData : (localData && localData.cards ? localData.cards : null);
-          if (Array.isArray(cards) && cards.length > 0) {
-            window.__radhyaCardsRegistry = cards;
-            rebindInteractiveCards(cards);
+          const localJson = await localRes.json();
+          const localCards = Array.isArray(localJson) ? localJson : (localJson && Array.isArray(localJson.cards) ? localJson.cards : null);
+          if (localCards && localCards.length > 0) {
+            const scopedCards = scopedRole ? matchCardsForRole(localCards, scopedRole) : localCards;
+            await processIncoming(scopedCards);
+            syncSucceeded = true;
           }
         }
-      } catch (e) {}
+      } catch (_) {}
+    }
+
+    if (!syncSucceeded && document.body.dataset.role) {
+      if (coldStartRetryCount < 3) {
+        const delayMs = [3000, 6000, 10000][coldStartRetryCount] || 10000;
+        coldStartRetryCount += 1;
+        setTimeout(() => { if (!document.hidden) syncFromCmsApi(); }, delayMs);
+      } else {
+        renderSectionLandingStates(false);
+        clearSectionLoadingTags();
+      }
+    } else {
+      coldStartRetryCount = 0;
+      clearSectionLoadingTags();
     }
 
     if (window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.timings.cardsLoaded === null) {
       window.__radhyaDeepLinkState.timings.cardsLoaded = performance.now();
     }
-    if (!window.__radhyaCardsReadyResolved) {
+    if (!window.__radhyaCardsReadyResolved && (syncSucceeded || coldStartRetryCount >= 3)) {
       window.__radhyaCardsReadyResolved = true;
       window.dispatchEvent(new CustomEvent('radhya:cards-ready'));
     }
@@ -1733,9 +2985,55 @@
     deepLink: !!(window.__radhyaDeepLinkState && window.__radhyaDeepLinkState.validCardId)
   });
   window.__radhyaInitialCardsPromise = initialCardsLoadedPromise;
-  // Poll periodically and refresh on tab focus / visibility
-  setInterval(() => syncFromCmsApi(), 15000);
-  window.addEventListener('focus', () => syncFromCmsApi());
+
+  /* Background all-division prewarmer: ONE tiny ?lite=1 request for ALL 5 divisions right after initial paint
+     so switching to any division page renders cards in 0ms, then hydrates each card's 6-7 photos + video */
+  function prewarmAllDivisionsInBackground() {
+    if (window.__radhyaRedirecting || typeof fetch === 'undefined') return;
+    const PREWARM_KEY = 'radhya_all_divisions_prewarm_v3_at';
+    try {
+      const lastAt = Number(sessionStorage.getItem(PREWARM_KEY) || 0);
+      if (Date.now() - lastAt < 120000) return;
+      sessionStorage.setItem(PREWARM_KEY, String(Date.now()));
+    } catch (_) {}
+    const runPrewarm = () => {
+      const eps = getActiveCrmEndpoints('/api/v1/public/cards?lite=1', 45000);
+      fetchJsonFirstValid(eps).then(d => {
+        if (d && Array.isArray(d.cards)) {
+          cacheLiveCardsRegistry(d.cards, { isFullRegistry: true });
+        }
+      }).catch(() => {});
+    };
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(runPrewarm, { timeout: 1000 });
+    } else {
+      setTimeout(runPrewarm, 300);
+    }
+  }
+  initialCardsLoadedPromise.then(() => prewarmAllDivisionsInBackground()).catch(() => prewarmAllDivisionsInBackground());
+
+  /* Speculative hover/touch prefetch for instant <1s navigation between division pages */
+  (function initNavLinkPrefetch() {
+    const prefetched = new Set();
+    const prefetchHref = (a) => {
+      if (!a || !a.href) return;
+      try {
+        const u = new URL(a.href, location.href);
+        if (u.origin !== location.origin || u.pathname === location.pathname || prefetched.has(u.href)) return;
+        if (!/\.html$/i.test(u.pathname)) return;
+        prefetched.add(u.href);
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = u.href;
+        document.head.appendChild(link);
+      } catch (_) {}
+    };
+    document.addEventListener('pointerenter', e => { const a = e.target.closest && e.target.closest('#panel a[href], #role-cards a[href]'); if (a) prefetchHref(a); }, true);
+    document.addEventListener('touchstart', e => { const a = e.target.closest && e.target.closest('#panel a[href], #role-cards a[href]'); if (a) prefetchHref(a); }, { passive: true, capture: true });
+  })();
+
+  // Lightweight background sync every 45s (?lite=1 + native ETag 304 = 0 bytes when unchanged)
+  setInterval(() => { if (!document.hidden) syncFromCmsApi(); }, 45000);
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) syncFromCmsApi();
   });
@@ -1749,9 +3047,7 @@
         if (cards && Array.isArray(cards)) {
           window.__radhyaCardsRegistry = cards;
           rebindInteractiveCards(cards);
-          try {
-            localStorage.setItem('radhya_cms_cards_registry_v1', JSON.stringify(cards));
-          } catch (e) {}
+          cacheLiveCardsRegistry(cards);
         } else {
           syncFromCmsApi();
         }
@@ -1760,9 +3056,9 @@
   }
 
   window.addEventListener('storage', (e) => {
-    if (e.key === 'radhya_cms_cards_registry_v1') {
+    if (e.key === CMS_CACHE_KEY) {
       try {
-        const raw = localStorage.getItem('radhya_cms_cards_registry_v1');
+        const raw = localStorage.getItem(CMS_CACHE_KEY);
         if (raw) {
           const cards = JSON.parse(raw);
           rebindInteractiveCards(cards);
@@ -1810,9 +3106,11 @@
         isWebsiteLive: true,
       };
 
-      const existingLeads = JSON.parse(localStorage.getItem('radhya_crm_inbound_leads_v1') || '[]');
-      existingLeads.unshift(leadRecord);
-      localStorage.setItem('radhya_crm_inbound_leads_v1', JSON.stringify(existingLeads.slice(0, 50)));
+      if (isOptionalStorageAllowed()) {
+        const existingLeads = JSON.parse(localStorage.getItem('radhya_crm_inbound_leads_v1') || '[]');
+        existingLeads.unshift(leadRecord);
+        localStorage.setItem('radhya_crm_inbound_leads_v1', JSON.stringify(existingLeads.slice(0, 50)));
+      }
 
       if (typeof BroadcastChannel !== 'undefined') {
         const bridge = new BroadcastChannel('radhya_crm_bridge');
@@ -2100,16 +3398,21 @@
                 <textarea id="radhyaLeadMessage" name="message" rows="3" placeholder="Tell us what you are looking for..."></textarea>
               </div>
 
+              <div class="radhya-consent-box" id="radhyaConsentBox">
+                <label class="radhya-consent-label" for="radhyaLeadConsent">
+                  <input type="checkbox" id="radhyaLeadConsent" name="consent" class="radhya-consent-checkbox" required>
+                  <span class="radhya-consent-text">
+                    <strong>Terms &amp; Conditions &amp; DPDP Rule 3 Consent (2026&ndash;2027) <span class="req">*</span></strong><br>
+                    I confirm I am 18+ (or have verifiable guardian consent), agree to Radhya Realty's <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>, and give specific consent to process my Name, Phone, Email, Locality, Budget &amp; Enquiry strictly for requested advisory fulfillment under India's DPDP Act, 2023 &amp; DPDP Rules, 2025. You may withdraw consent or request erasure anytime via Footer &rarr; <em>Data Rights</em>.
+                  </span>
+                </label>
+              </div>
+
               <div class="radhya-form-error" id="radhyaFormError"></div>
 
               <button type="submit" class="radhya-submit-btn" id="radhyaSubmitBtn">
                 <span class="btn-text">Submit Enquiry</span>
               </button>
-
-              <p class="radhya-privacy-note">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                DPDP Rule 3 Notice: By submitting, you consent to Radhya Realty processing your details for advisory fulfillment in accordance with our <a href="privacy-policy.html" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a> &amp; <a href="terms.html" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;">Terms</a>.
-              </p>
             </form>
           </div>
 
@@ -2244,6 +3547,15 @@
         divisionInput.focus();
         return;
       }
+      const consentInput = form.querySelector('#radhyaLeadConsent');
+      const consentBox = form.querySelector('#radhyaConsentBox');
+      if (consentInput && !consentInput.checked) {
+        if (consentBox) consentBox.classList.add('radhya-field-error');
+        errBox.textContent = 'Please tick the Terms & Conditions checkbox to submit your enquiry';
+        errBox.style.display = 'block';
+        consentInput.focus();
+        return;
+      }
 
       submitBtn.disabled = true;
       submitBtn.querySelector('.btn-text').textContent = 'Submitting your enquiry...';
@@ -2264,7 +3576,11 @@
         interest: interestVal,
         budget: budgetVal,
         dealValue: budgetVal,
-        message: messageVal
+        message: messageVal,
+        consentGranted: true,
+        consentTimestamp: new Date().toISOString(),
+        consentVersion: 'DPDP-2026-2027-v1',
+        consentPurpose: selectedDivisionText
       };
 
       // 1. Submit lead directly to Live CRM ingestion bridge
@@ -2391,6 +3707,7 @@
 
       banner = document.createElement('div');
       banner.id = 'radhyaCookieBanner';
+      banner.className = 'radhya-cookie-banner';
       banner.setAttribute('data-nosnippet', '');
       banner.setAttribute('role', 'region');
       banner.setAttribute('aria-label', 'Cookie Consent Notice');
@@ -2400,18 +3717,21 @@
         <div style="flex:1 1 320px;max-width:760px;">
           <div style="font-weight:700;color:#e3c883;font-size:12px;letter-spacing:0.02em;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
             <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;"></span>
-            DPDP Act 2023 Statutory Privacy &amp; Cookie Notice
+            DPDP Act &amp; Rules (2026&ndash;2027) Statutory Privacy &amp; Cookie Notice
           </div>
           <p style="margin:0;font-size:11.5px;line-height:1.45;color:#cbd5e1;">
-            Radhya Realty (Anubhav Bharat Group) uses strictly essential cookies for secure portal session authentication, inquiry routing, and lawful advisory services in compliance with India's Digital Personal Data Protection Act, 2023. Zero third-party behavioral trackers. Review our <a href="privacy-policy.html" style="color:#c9a24b;text-decoration:underline;">Privacy Policy</a> and <a href="terms.html" style="color:#c9a24b;text-decoration:underline;">Terms</a>.
+            Radhya Realty (Anubhav Bharat Group) uses strictly essential cookies for secure portal session authentication, inquiry routing, and lawful advisory services in compliance with India's Digital Personal Data Protection Act, 2023 &amp; DPDP Rules, 2025 (2026&ndash;2027 Enforcement Framework). Zero third-party behavioral trackers. Review our <a href="privacy-policy.html" style="color:#c9a24b;text-decoration:underline;">Privacy Policy</a> and <a href="terms.html" style="color:#c9a24b;text-decoration:underline;">Terms</a>.
           </p>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <button id="btnAcceptAllCookies" type="button" style="min-height:44px;min-width:44px;padding:9px 18px;border-radius:6px;background:#c9a24b;color:#060f20;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:background 0.18s;touch-manipulation:manipulation;">
+          <button id="btnAcceptAllCookies" type="button" class="radhya-cookie-btn radhya-cookie-btn--accept" style="min-height:44px;min-width:44px;padding:9px 18px;border-radius:6px;background:#c9a24b;color:#060f20;font-size:12px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;">
             Accept All
           </button>
-          <button id="btnEssentialCookies" type="button" style="min-height:44px;min-width:44px;padding:9px 16px;border-radius:6px;background:transparent;color:#f2f4f8;font-size:12px;font-weight:600;border:1px solid rgba(201,162,75,0.45);cursor:pointer;transition:background 0.18s;touch-manipulation:manipulation;">
+          <button id="btnEssentialCookies" type="button" class="radhya-cookie-btn radhya-cookie-btn--essential" style="min-height:44px;min-width:44px;padding:9px 16px;border-radius:6px;background:transparent;color:#f2f4f8;font-size:12px;font-weight:600;border:1px solid rgba(201,162,75,0.45);cursor:pointer;touch-action:manipulation;">
             Essential Only
+          </button>
+          <button id="btnDeclineCookies" type="button" class="radhya-cookie-btn radhya-cookie-btn--decline" style="min-height:44px;min-width:44px;padding:9px 16px;border-radius:6px;background:rgba(255,255,255,0.04);color:#cbd5e1;font-size:12px;font-weight:600;border:1px solid rgba(233,237,245,0.22);cursor:pointer;touch-action:manipulation;">
+            Decline Cookies
           </button>
         </div>
       `;
@@ -2421,45 +3741,152 @@
         window.__radhyaDeepLinkState.timings.bannerVisible = performance.now();
       }
 
-      document.getElementById('btnAcceptAllCookies')?.addEventListener('click', () => {
+      const saveCookieChoice = (consented, tier) => {
         try {
           localStorage.setItem(COOKIE_STORAGE_KEY, JSON.stringify({
-            consented: true,
-            tier: 'all',
+            consented,
+            tier,
+            version: 'DPDP-2026-2027-v1',
             timestamp: new Date().toISOString()
           }));
         } catch (e) {}
+        if (!consented || tier === 'declined') {
+          purgeOptionalLocalStorage();
+        }
         banner.hidden = true;
         banner.style.display = 'none';
-      });
+      };
 
-      document.getElementById('btnEssentialCookies')?.addEventListener('click', () => {
-        try {
-          localStorage.setItem(COOKIE_STORAGE_KEY, JSON.stringify({
-            consented: true,
-            tier: 'essential',
-            timestamp: new Date().toISOString()
-          }));
-        } catch (e) {}
-        banner.hidden = true;
-        banner.style.display = 'none';
-      });
+      document.getElementById('btnAcceptAllCookies')?.addEventListener('click', () => saveCookieChoice(true, 'all'));
+      document.getElementById('btnEssentialCookies')?.addEventListener('click', () => saveCookieChoice(true, 'essential'));
+      document.getElementById('btnDeclineCookies')?.addEventListener('click', () => saveCookieChoice(false, 'declined'));
     }
 
-    // Attach persistent "Cookie Settings" button to footer or bottom floating trigger
+    // Interactive DPDP 2026-2027 Data Rights & Withdraw Consent Desk (Section 6(4) & Rule 14)
+    function openDataRightsModal() {
+      let modal = document.getElementById('radhyaDataRightsModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'radhyaDataRightsModal';
+        modal.className = 'radhya-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'radhyaDataRightsTitle');
+        modal.innerHTML = `<div class="radhya-modal__overlay"></div><div class="radhya-modal__box"><button type="button" class="radhya-modal__close" aria-label="Close Data Rights Desk">&#10005;</button><div class="radhya-modal__form-view" id="radhyaRightsFormView"><p class="radhya-modal__eyebrow"><span style="color:var(--gold)">&#10022;</span> DPDP ACT &amp; RULES (2026&ndash;2027)</p><h2 class="radhya-modal__title" id="radhyaDataRightsTitle">Data Rights &amp; Withdraw Consent</h2><p class="radhya-modal__sub">Exercise your statutory rights (Access, Correction, Erasure, Grievance Redressal) or withdraw browser consent immediately.</p><div class="radhya-rights-banner"><span><strong>1-Click Browser Opt-Out:</strong> Decline optional storage and clear cached portal data from this browser.</span><button type="button" id="btnInstantWithdrawConsent" class="radhya-rights-optout-btn">Withdraw &amp; Clear</button></div><form id="radhyaDataRightsForm" novalidate><div class="radhya-form-grid"><div class="radhya-form-group"><label for="dpdpReqType">Request Type <span class="req">*</span></label><select id="dpdpReqType" name="reqType"><option value="Withdraw Consent">Withdraw Advisory Consent</option><option value="Erase / Delete My Data">Erase / Delete My Data</option><option value="Access My Data">Access Summary of My Data</option><option value="Correct My Data">Correct / Update My Data</option><option value="Lodge Grievance">Lodge DPDP Grievance (Rule 14)</option></select></div><div class="radhya-form-group"><label for="dpdpReqName">Full Name <span class="req">*</span></label><input type="text" id="dpdpReqName" name="name" placeholder="Your full name"></div></div><div class="radhya-form-grid"><div class="radhya-form-group"><label for="dpdpReqPhone">Registered Phone <span class="req">*</span></label><input type="tel" id="dpdpReqPhone" name="phone" placeholder="+91 98765 43210"></div><div class="radhya-form-group"><label for="dpdpReqEmail">Email <span class="opt">(optional)</span></label><input type="email" id="dpdpReqEmail" name="email" placeholder="name@example.com"></div></div><div class="radhya-form-group"><label for="dpdpReqNotes">Request Details <span class="opt">(optional)</span></label><textarea id="dpdpReqNotes" name="notes" rows="2" placeholder="Specify any enquiry date, correction, or erasure detail..."></textarea></div><div class="radhya-form-error" id="dpdpReqError"></div><button type="submit" class="radhya-submit-btn" id="dpdpReqSubmit"><span class="btn-text">Submit Data Rights Request</span></button><p style="margin:0.65rem 0 0;font-size:11px;color:#94a3b8;line-height:1.45;">Grievance Officer: Rakesh Raj Shukla &bull; anubhav.insurance09@gmail.com &bull; Acknowledgment within 48 hours; statutory resolution within 90 days (DPDP Rule 14).</p></form></div><div class="radhya-modal__success" id="radhyaRightsSuccess"><div class="radhya-success-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h3 class="radhya-success-title">Request Logged</h3><p class="radhya-success-desc" id="radhyaRightsSuccessDesc"></p><button type="button" class="btn radhya-rights-done-btn" style="min-width:140px;margin-top:1rem;">Done</button></div></div>`;
+        document.body.appendChild(modal);
+
+        const closeRights = () => {
+          modal.classList.remove('open');
+          document.body.style.overflow = '';
+        };
+        modal.querySelector('.radhya-modal__overlay')?.addEventListener('click', closeRights);
+        modal.querySelector('.radhya-modal__close')?.addEventListener('click', closeRights);
+        modal.querySelector('.radhya-rights-done-btn')?.addEventListener('click', closeRights);
+
+        modal.querySelector('#btnInstantWithdrawConsent')?.addEventListener('click', () => {
+          purgeOptionalLocalStorage();
+          try {
+            localStorage.setItem(COOKIE_STORAGE_KEY, JSON.stringify({
+              consented: false,
+              tier: 'declined',
+              version: 'DPDP-2026-2027-v1',
+              timestamp: new Date().toISOString()
+            }));
+          } catch (_) {}
+          const b = document.getElementById('radhyaCookieBanner');
+          if (b) { b.hidden = true; b.style.display = 'none'; }
+          if (typeof window.__radhyaShowToast === 'function') {
+            window.__radhyaShowToast('Browser consent withdrawn & optional data cleared', 2600);
+          }
+        });
+
+        modal.querySelector('#radhyaDataRightsForm')?.addEventListener('submit', async ev => {
+          ev.preventDefault();
+          const f = ev.target;
+          const err = modal.querySelector('#dpdpReqError');
+          const btn = modal.querySelector('#dpdpReqSubmit');
+          const reqType = f.reqType.value;
+          const reqName = (f.name.value || '').trim();
+          const reqPhone = (f.phone.value || '').trim();
+          const reqEmail = (f.email.value || '').trim();
+          const reqNotes = (f.notes.value || '').trim();
+          err.style.display = 'none';
+          if (!reqName || reqPhone.replace(/\D/g, '').length < 10) {
+            err.textContent = 'Please enter your Full Name and a valid 10-digit Phone Number.';
+            err.style.display = 'block';
+            return;
+          }
+          btn.disabled = true;
+          btn.querySelector('.btn-text').textContent = 'Logging request...';
+          const refId = 'DPDP-' + Date.now().toString(36).toUpperCase();
+          try {
+            await fetch('/api/whatsapp-enquiry.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fullName: reqName,
+                phone: reqPhone,
+                email: reqEmail,
+                division: 'DPDP_DATA_RIGHTS',
+                productInterest: '[' + refId + '] ' + reqType,
+                message: reqNotes || ('Data Principal request: ' + reqType),
+                consentGranted: reqType !== 'Withdraw Consent',
+                consentTimestamp: new Date().toISOString(),
+                consentVersion: 'DPDP-2026-2027-v1',
+                consentPurpose: 'DPDP Rule 14 - ' + reqType
+              })
+            });
+          } catch (_) {}
+          if (reqType === 'Withdraw Consent' || reqType === 'Erase / Delete My Data') {
+            purgeOptionalLocalStorage();
+          }
+          modal.querySelector('#radhyaRightsFormView').style.display = 'none';
+          const ok = modal.querySelector('#radhyaRightsSuccess');
+          ok.classList.add('visible');
+          modal.querySelector('#radhyaRightsSuccessDesc').textContent = 'Reference ' + refId + ': Your "' + reqType + '" request has been logged with our Grievance Officer (Rakesh Raj Shukla). You will receive acknowledgment within 48 hours and statutory resolution within 90 days.';
+          f.reset();
+          btn.disabled = false;
+          btn.querySelector('.btn-text').textContent = 'Submit Data Rights Request';
+        });
+      }
+      modal.querySelector('#radhyaRightsFormView').style.display = 'block';
+      modal.querySelector('#radhyaRightsSuccess').classList.remove('visible');
+      modal.querySelector('#dpdpReqError').style.display = 'none';
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    window.openRadhyaDataRightsModal = openDataRightsModal;
+
+    // Bind persistent "Cookie Settings" and "Data Rights & Withdraw Consent" controls inside footer .footer-legal-nav
     function attachFooterSettingsTrigger() {
       const footer = document.querySelector('footer, #site-footer, .footer');
-      if (footer && !document.getElementById('btnOpenCookieSettings')) {
-        const link = document.createElement('button');
-        link.id = 'btnOpenCookieSettings';
-        link.type = 'button';
-        link.textContent = 'Cookie Settings';
-        link.style.cssText = 'background:none;border:none;color:#94a3b8;font-size:11px;text-decoration:underline;cursor:pointer;padding:4px 8px;font-family:inherit;margin:0 4px;';
-        link.addEventListener('click', showBanner);
-
-        // Try inserting into footer nav or bottom note
-        const footerLinks = footer.querySelector('.footer-links, .footer__links, .footer-legal') || footer;
-        footerLinks.appendChild(link);
+      if (!footer) return;
+      const footerLinks = footer.querySelector('.footer-legal-nav, .footer-links, .footer__links, .footer-legal, .wrap') || footer;
+      let cookieBtn = document.getElementById('btnOpenCookieSettings');
+      if (!cookieBtn) {
+        cookieBtn = document.createElement('button');
+        cookieBtn.id = 'btnOpenCookieSettings';
+        cookieBtn.type = 'button';
+        cookieBtn.className = 'footer-control-btn';
+        cookieBtn.textContent = 'Cookie Settings';
+        footerLinks.appendChild(cookieBtn);
+      }
+      if (!cookieBtn.dataset.bound) {
+        cookieBtn.dataset.bound = '1';
+        cookieBtn.addEventListener('click', showBanner);
+      }
+      let rightsBtn = document.getElementById('btnOpenDataRights');
+      if (!rightsBtn) {
+        rightsBtn = document.createElement('button');
+        rightsBtn.id = 'btnOpenDataRights';
+        rightsBtn.type = 'button';
+        rightsBtn.className = 'footer-control-btn footer-control-btn--accent';
+        rightsBtn.textContent = 'Data Rights & Withdraw Consent';
+        footerLinks.appendChild(rightsBtn);
+      }
+      if (!rightsBtn.dataset.bound) {
+        rightsBtn.dataset.bound = '1';
+        rightsBtn.addEventListener('click', openDataRightsModal);
       }
     }
 
@@ -2486,25 +3913,12 @@
   }
 
   // =========================================================================
-  // TASK 2: DEEP-LINK CONTROLLER (INTRO -> COOKIES -> CARD MODAL)
+  // TASK 2: FAST SILENT DEEP-LINK CONTROLLER (<2s OPEN, ZERO LOADING WINDOW)
   // =========================================================================
-  function showDeepLinkLoader(show) {
-    let el = document.getElementById('radhyaDeepLinkLoader');
-    if (show) {
-      if (!el) {
-        el = document.createElement('div');
-        el.id = 'radhyaDeepLinkLoader';
-        el.className = 'radhya-deeplink-loader';
-        el.setAttribute('role', 'status');
-        el.setAttribute('aria-live', 'polite');
-        el.innerHTML = '<span class="radhya-deeplink-spinner" aria-hidden="true"></span><span>Loading listing...</span>';
-        document.body.appendChild(el);
-      }
-      el.hidden = false;
-    } else if (el) {
-      el.hidden = true;
-      el.remove();
-    }
+  function showDeepLinkLoader() {
+    // Intentionally silent: zero loading windows or blocking spinners
+    const existing = document.getElementById('radhyaDeepLinkLoader');
+    if (existing) existing.remove();
   }
 
   function cleanCardParamFallback() {
@@ -2532,15 +3946,26 @@
     return null;
   }
 
+  async function resolveFastSingleCard(targetId) {
+    if (window.__radhyaSingleCardPrefetchPromise) {
+      try {
+        const data = await window.__radhyaSingleCardPrefetchPromise;
+        if (data && Array.isArray(data.cards)) {
+          const found = data.cards.find(c => c && c.id === targetId);
+          if (found) return found;
+        }
+      } catch (_) {}
+    }
+    return null;
+  }
+
   async function initDeepLinkFlow() {
     const dls = window.__radhyaDeepLinkState;
     if (!dls || !dls.hasCardParam) return;
 
     const pageType = document.body?.dataset?.page || '';
 
-    // Invalid ?card= parameter (security sanitized): wait for intro, show toast, clean URL
     if (dls.invalidCardParam) {
-      await Promise.resolve(window.__radhyaIntroDone);
       showWebsiteToast('This listing is no longer available', 3000);
       cleanCardParamFallback();
       return;
@@ -2549,15 +3974,15 @@
     const targetId = dls.validCardId;
     if (!targetId) return;
 
-    // index.html?card=<id>: do NOT play index intro; fetch cards, resolve role page, location.replace
+    // index.html?card=<id>: resolve via fast single-card prefetch first, then redirect silently
     if (pageType === 'home') {
-      const loaderTimer = setTimeout(() => showDeepLinkLoader(true), 350);
-      const syncResult = await initialCardsLoadedPromise;
-      clearTimeout(loaderTimer);
-      showDeepLinkLoader(false);
-
-      const registry = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
-      const found = registry.find(c => c && c.id === targetId);
+      let found = await resolveFastSingleCard(targetId);
+      let syncResult = { ok: !!found, apiFailed: false };
+      if (!found) {
+        syncResult = await initialCardsLoadedPromise;
+        const registry = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+        found = registry.find(c => c && c.id === targetId) || null;
+      }
       if (found) {
         const targetPage = resolveCardRolePage(found);
         window.location.replace(targetPage + window.location.search + window.location.hash);
@@ -2569,71 +3994,55 @@
           window.location.replace(inferred + window.location.search + window.location.hash);
           return;
         }
-        if (typeof window.__radhyaStartIntroNow === 'function') window.__radhyaStartIntroNow();
-        await Promise.resolve(window.__radhyaIntroDone);
         showWebsiteToast("Couldn't load the latest listings", 3500);
         return;
       }
-      if (typeof window.__radhyaStartIntroNow === 'function') window.__radhyaStartIntroNow();
-      await Promise.resolve(window.__radhyaIntroDone);
       showWebsiteToast('This listing is no longer available', 3000);
       cleanCardParamFallback();
       return;
     }
 
-    // Role pages: if intro was deferred to verify card ownership before playing intro, resolve cards first
-    if (dls.deferredIntro) {
-      const loaderTimer = setTimeout(() => showDeepLinkLoader(true), 350);
-      await initialCardsLoadedPromise;
-      clearTimeout(loaderTimer);
-      showDeepLinkLoader(false);
+    // Role pages: check DOM immediately (instant if cached in v2), otherwise race fast single-card prefetch
+    const escapedId = (typeof CSS !== 'undefined' && typeof CSS.escape === 'function')
+      ? CSS.escape(targetId)
+      : targetId.replace(/[^A-Za-z0-9_-]/g, '');
 
-      const registryPre = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
-      const preCard = registryPre.find(c => c && c.id === targetId);
-      if (preCard) {
-        const correctRolePage = resolveCardRolePage(preCard);
+    let cardEl = document.querySelector(`.prop-card[data-card-id="${escapedId}"]`);
+    let syncResult = { ok: !!cardEl, apiFailed: false };
+
+    if (!cardEl) {
+      const fastCard = await resolveFastSingleCard(targetId);
+      if (fastCard) {
+        const correctRolePage = resolveCardRolePage(fastCard);
+        const currFile = (window.location.pathname.split('/').pop() || '').toLowerCase();
+        if (correctRolePage && currFile && correctRolePage.toLowerCase() !== currFile) {
+          window.location.replace(correctRolePage + window.location.search + window.location.hash);
+          return;
+        }
+        const existingReg = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+        const merged = existingReg.some(c => c && c.id === fastCard.id) ? existingReg : [fastCard, ...existingReg];
+        rebindInteractiveCards(merged);
+        ensureAllCardShareButtons();
+        cardEl = document.querySelector(`.prop-card[data-card-id="${escapedId}"]`);
+        syncResult = { ok: true, apiFailed: false };
+      }
+    }
+
+    if (!cardEl) {
+      syncResult = await initialCardsLoadedPromise;
+      const registry = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
+      const registryCard = registry.find(c => c && c.id === targetId);
+      if (registryCard) {
+        const correctRolePage = resolveCardRolePage(registryCard);
         const currFile = (window.location.pathname.split('/').pop() || '').toLowerCase();
         if (correctRolePage && currFile && correctRolePage.toLowerCase() !== currFile) {
           window.location.replace(correctRolePage + window.location.search + window.location.hash);
           return;
         }
       }
-      if (typeof window.__radhyaStartIntroNow === 'function') {
-        window.__radhyaStartIntroNow();
-      }
+      ensureAllCardShareButtons();
+      cardEl = document.querySelector(`.prop-card[data-card-id="${escapedId}"]`);
     }
-
-    // Role pages: await BOTH introDone AND cardsLoaded
-    let cardsSettled = false;
-    initialCardsLoadedPromise.finally(() => { cardsSettled = true; });
-
-    await Promise.resolve(window.__radhyaIntroDone);
-    if (!cardsSettled) {
-      showDeepLinkLoader(true);
-    }
-    const syncResult = await initialCardsLoadedPromise;
-    showDeepLinkLoader(false);
-
-    // Check if card exists in registry on a DIFFERENT role page -> redirect cleanly
-    const registry = Array.isArray(window.__radhyaCardsRegistry) ? window.__radhyaCardsRegistry : [];
-    const registryCard = registry.find(c => c && c.id === targetId);
-    if (registryCard) {
-      const correctRolePage = resolveCardRolePage(registryCard);
-      const currFile = (window.location.pathname.split('/').pop() || '').toLowerCase();
-      if (correctRolePage && currFile && correctRolePage.toLowerCase() !== currFile) {
-        window.location.replace(correctRolePage + window.location.search + window.location.hash);
-        return;
-      }
-    }
-
-    // Ensure all cards have stable data-card-id attributes before lookup
-    ensureAllCardShareButtons();
-
-    // Match exact card by ID using CSS.escape (never unescaped selector or innerHTML)
-    const escapedId = (typeof CSS !== 'undefined' && typeof CSS.escape === 'function')
-      ? CSS.escape(targetId)
-      : targetId.replace(/[^A-Za-z0-9_-]/g, '');
-    const cardEl = document.querySelector(`.prop-card[data-card-id="${escapedId}"]`);
 
     if (!cardEl) {
       if (syncResult && syncResult.apiFailed) {
@@ -2677,7 +4086,10 @@
       initPropSliders(parentSection);
     }
 
-    // 2. Scroll card smoothly into center view (respecting prefers-reduced-motion)
+    // 2. Wait for first-time intro animation to complete before revealing & opening the card modal
+    await Promise.resolve(window.__radhyaIntroDone);
+
+    // 3. Scroll card smoothly into center view (respecting prefers-reduced-motion)
     try {
       cardEl.scrollIntoView({
         block: 'center',
@@ -2685,7 +4097,7 @@
       });
     } catch (_) {}
 
-    // 3. Yield one micro-frame so cookie banner renders right after introDone, then open existing View details modal
+    // 4. Yield one micro-frame so cookie banner renders right after introDone, then open existing View details modal
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 30)));
     if (typeof window.__radhyaOpenPropModal === 'function') {
       window.__radhyaOpenPropModal(cardEl);

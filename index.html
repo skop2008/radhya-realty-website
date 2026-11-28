@@ -53,14 +53,17 @@
 <!-- Performance & Resource Hints -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://radhya-crm.onrender.com" crossorigin>
+<link rel="dns-prefetch" href="https://radhya-crm.onrender.com">
 <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://images.unsplash.com">
-<link rel="preload" as="style" href="style.css?v=20261124-1215">
-<link rel="preload" as="script" href="main.js?v=20261124-1215">
+<script>(function(){try{var h=location.hostname,isL=(h==="localhost"||h==="127.0.0.1"||!h||location.protocol==="file:"),rBase=document.querySelector("link[rel=preconnect][href*=onrender]")?.href.replace(/\/$/,"")||"",p=new URLSearchParams(location.search),cid=p.get("card"),lq="?lite=1";function getJson(u,ms){var c=typeof AbortController!=="undefined"?new AbortController():null,t=c?setTimeout(function(){c.abort();},ms):null;return fetch(u,{signal:c?c.signal:undefined,priority:"high"}).then(function(r){if(t)clearTimeout(t);return r.ok?r.json():null;}).catch(function(){if(t)clearTimeout(t);return null;});}function race(q,ms){if(!isL)return getJson(rBase+"/api/v1/public/cards"+q,ms);return getJson("http://localhost:3000/api/v1/public/cards"+q,400).then(function(d){return d&&Array.isArray(d.cards)?d:getJson("data/cards-registry.json",1500).then(function(l){return Array.isArray(l)?{cards:l}:(l&&Array.isArray(l.cards)?l:null);});});}if(cid&&/^[A-Za-z0-9_-]{1,100}$/.test(cid)){window.__radhyaSingleCardPrefetchPromise=isL?getJson("http://localhost:3000/api/v1/public/cards?id="+encodeURIComponent(cid),500):getJson(rBase+"/api/v1/public/cards?id="+encodeURIComponent(cid),45000);}window.__radhyaPrefetchPromise=race(lq,45000);}catch(_){}})();</script>
+<link rel="preload" as="style" href="style.css?v=20261128-0835">
+<link rel="preload" as="script" href="main.js?v=20261128-0925">
 
 <!-- Google Fonts & Stylesheet -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261124-1215">
+<link rel="stylesheet" href="style.css?v=20261128-0835">
 
 <!-- Enterprise Structured Data (Schema.org @graph) -->
 <script type="application/ld+json">
@@ -511,7 +514,17 @@
 
   <section class="section" id="showcase">
     <div class="wrap">
-      <p class="eyebrow" style="text-align:center;margin-bottom:3rem;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;letter-spacing:.12em">Our World</p>
+      <div class="our-world-header">
+        <div class="our-world-ornament" aria-hidden="true">
+          <span class="our-world-rule"></span>
+          <span class="our-world-diamond"></span>
+          <span class="our-world-eyebrow">Anubhav Bharat Group &bull; Five Divisions</span>
+          <span class="our-world-diamond"></span>
+          <span class="our-world-rule"></span>
+        </div>
+        <h2 class="our-world-title">Our World</h2>
+        <p class="our-world-sub">Property, renovation, finance, vehicles, and protection&mdash;brought together under one trusted roof.</p>
+      </div>
     </div>
     <div class="showcase-row">
 
@@ -529,9 +542,9 @@
                 <stop offset="0%" stop-color="#e3c883" stop-opacity="0.9"/>
                 <stop offset="100%" stop-color="#c9a24b" stop-opacity="0.5"/>
               </linearGradient>
-              <linearGradient id="glassCyan" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#a8d5ff" stop-opacity="0.8"/>
-                <stop offset="100%" stop-color="#5a9be6" stop-opacity="0.3"/>
+              <linearGradient id="glassSky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c6daf2" stop-opacity="0.72"/>
+                <stop offset="100%" stop-color="#2c4f84" stop-opacity="0.34"/>
               </linearGradient>
               <linearGradient id="cloudGrad" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
@@ -574,17 +587,17 @@
               <line x1="68" y1="68" x2="68" y2="72" stroke="#e3c883" stroke-width="1.2"/>
               <line x1="34" y1="68" x2="72" y2="68" stroke="#e3c883" stroke-width="1.5"/>
               <rect x="26" y="98" width="24" height="12" rx="1" fill="url(#glassGold)"/>
-              <rect x="54" y="98" width="24" height="12" rx="1" fill="url(#glassCyan)"/>
+              <rect x="54" y="98" width="24" height="12" rx="1" fill="url(#glassSky)"/>
               <line x1="26" y1="110" x2="50" y2="110" stroke="#c9a24b" stroke-width="1"/>
               <line x1="54" y1="110" x2="78" y2="110" stroke="#c9a24b" stroke-width="1"/>
-              <rect x="26" y="118" width="24" height="12" rx="1" fill="url(#glassCyan)"/>
+              <rect x="26" y="118" width="24" height="12" rx="1" fill="url(#glassSky)"/>
               <rect x="54" y="118" width="24" height="12" rx="1" fill="url(#glassGold)"/>
               <rect x="26" y="138" width="24" height="12" rx="1" fill="url(#glassGold)"/>
               <rect x="54" y="138" width="24" height="12" rx="1" fill="url(#glassGold)"/>
-              <rect x="26" y="158" width="24" height="12" rx="1" fill="url(#glassCyan)"/>
+              <rect x="26" y="158" width="24" height="12" rx="1" fill="url(#glassSky)"/>
               <rect x="54" y="158" width="24" height="12" rx="1" fill="url(#glassGold)"/>
               <rect x="26" y="178" width="24" height="12" rx="1" fill="url(#glassGold)"/>
-              <rect x="54" y="178" width="24" height="12" rx="1" fill="url(#glassCyan)"/>
+              <rect x="54" y="178" width="24" height="12" rx="1" fill="url(#glassSky)"/>
             </g>
             <!-- Center Tower -->
             <g class="sc-bldg-center">
@@ -596,19 +609,19 @@
               <line x1="137" y1="35" x2="137" y2="205" stroke="#c9a24b" stroke-width="1" opacity="0.6"/>
               <line x1="160" y1="45" x2="160" y2="205" stroke="#1d3b75" stroke-width="1.5"/>
               <rect x="104" y="52" width="66" height="14" rx="1" fill="url(#glassGold)"/>
-              <rect x="104" y="72" width="28" height="11" rx="1" fill="url(#glassCyan)"/>
+              <rect x="104" y="72" width="28" height="11" rx="1" fill="url(#glassSky)"/>
               <rect x="142" y="72" width="28" height="11" rx="1" fill="url(#glassGold)"/>
               <rect x="104" y="88" width="28" height="11" rx="1" fill="url(#glassGold)"/>
-              <rect x="142" y="88" width="28" height="11" rx="1" fill="url(#glassCyan)"/>
+              <rect x="142" y="88" width="28" height="11" rx="1" fill="url(#glassSky)"/>
               <rect x="104" y="104" width="28" height="11" rx="1" fill="url(#glassGold)"/>
               <rect x="142" y="104" width="28" height="11" rx="1" fill="url(#glassGold)"/>
-              <rect x="104" y="120" width="28" height="11" rx="1" fill="url(#glassCyan)"/>
+              <rect x="104" y="120" width="28" height="11" rx="1" fill="url(#glassSky)"/>
               <rect x="142" y="120" width="28" height="11" rx="1" fill="url(#glassGold)"/>
               <rect x="104" y="136" width="28" height="11" rx="1" fill="url(#glassGold)"/>
-              <rect x="142" y="136" width="28" height="11" rx="1" fill="url(#glassCyan)"/>
+              <rect x="142" y="136" width="28" height="11" rx="1" fill="url(#glassSky)"/>
               <rect x="104" y="152" width="28" height="11" rx="1" fill="url(#glassGold)"/>
               <rect x="142" y="152" width="28" height="11" rx="1" fill="url(#glassGold)"/>
-              <rect x="104" y="168" width="28" height="11" rx="1" fill="url(#glassCyan)"/>
+              <rect x="104" y="168" width="28" height="11" rx="1" fill="url(#glassSky)"/>
               <rect x="142" y="168" width="28" height="11" rx="1" fill="url(#glassGold)"/>
               <rect x="122" y="186" width="30" height="19" rx="2" fill="url(#glassGold)"/>
               <line x1="137" y1="186" x2="137" y2="205" stroke="#0a1730" stroke-width="1.2"/>
@@ -618,13 +631,13 @@
               <rect x="190" y="80" width="68" height="125" rx="2" fill="#122448" stroke="#1d386d" stroke-width="1"/>
               <rect x="195" y="70" width="58" height="10" rx="1" fill="#17305f" stroke="#c9a24b" stroke-width="1"/>
               <rect x="198" y="88" width="22" height="12" rx="1" fill="url(#glassGold)"/>
-              <rect x="228" y="88" width="24" height="12" rx="1" fill="url(#glassCyan)"/>
-              <rect x="198" y="108" width="22" height="12" rx="1" fill="url(#glassCyan)"/>
+              <rect x="228" y="88" width="24" height="12" rx="1" fill="url(#glassSky)"/>
+              <rect x="198" y="108" width="22" height="12" rx="1" fill="url(#glassSky)"/>
               <rect x="228" y="108" width="24" height="12" rx="1" fill="url(#glassGold)"/>
               <rect x="198" y="128" width="22" height="12" rx="1" fill="url(#glassGold)"/>
               <rect x="228" y="128" width="24" height="12" rx="1" fill="url(#glassGold)"/>
-              <rect x="198" y="148" width="22" height="12" rx="1" fill="url(#glassCyan)"/>
-              <rect x="228" y="148" width="24" height="12" rx="1" fill="url(#glassCyan)"/>
+              <rect x="198" y="148" width="22" height="12" rx="1" fill="url(#glassSky)"/>
+              <rect x="228" y="148" width="24" height="12" rx="1" fill="url(#glassSky)"/>
               <rect x="198" y="168" width="22" height="12" rx="1" fill="url(#glassGold)"/>
               <rect x="228" y="168" width="24" height="12" rx="1" fill="url(#glassGold)"/>
             </g>
@@ -929,47 +942,7 @@
 
 <div id="site-footer"></div>
 
-<!-- =========================================================================
-     RADHYA REALTY OFFICIAL INGESTION SNIPPET
-     Connects website contact form submissions to the Live Radhya CRM
-     ========================================================================= -->
-<script>
-async function submitRadhyaLeadToCRM(formData) {
-  // Live CRM ingestion endpoint
-  const crmEndpoint = 'http://localhost:3000/api/v1/webhooks/website-ingest';
-  
-  const payload = {
-    fullName: formData.name || formData.fullName,
-    phone: formData.phone,
-    email: formData.email,
-    cityLocality: formData.city || 'Delhi-NCR',
-    division: formData.division, // 'REAL_ESTATE' | 'RENOVATION' | 'LOAN' | 'AUTO_MOTO' | 'INSURANCE' | 'TOURS_AND_TRAVELS'
-    productInterest: formData.productOrProperty || formData.interest,
-    estimatedBudget: Number(formData.budget || formData.dealValue || 0),
-    message: formData.message,
-    sourceWebsite: (typeof window !== 'undefined' && window.location ? window.location.href : 'https://anubhavbharatgroup.com'),
-    secretKey: 'radhya-sec-99532-enterprise-token-2026'
-  };
-
-  try {
-    const res = await fetch(crmEndpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      throw new Error(`Server returned HTTP ${res.status}: ${res.statusText}`);
-    }
-    const result = await res.json();
-    console.log('CRM Ingestion Response:', result);
-    return result;
-  } catch (err) {
-    console.error('CRM Webhook Ingestion Error:', err);
-    throw err;
-  }
-}
-window.submitRadhyaLeadToCRM = submitRadhyaLeadToCRM;
-</script>
-<script src="main.js?v=20261121-2230"></script>
+<script src="main.js?v=20261128-0925"></script>
+<script src="liquid-glass.js?v=20261128-0835" defer></script>
 </body>
 </html>
